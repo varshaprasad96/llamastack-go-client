@@ -119,11 +119,11 @@ func TestEvalBenchmarkJobRunWithOptionalParams(t *testing.T) {
 		llamastackclient.EvalBenchmarkJobRunParams{
 			BenchmarkConfig: llamastackclient.BenchmarkConfigParam{
 				EvalCandidate: llamastackclient.BenchmarkConfigEvalCandidateUnionParam{
-					OfModel: &llamastackclient.BenchmarkConfigEvalCandidateModelParam{
+					OfModel: &llamastackclient.ModelCandidateParam{
 						Model: "model",
 						SamplingParams: llamastackclient.SamplingParams{
 							Strategy: llamastackclient.SamplingParamsStrategyUnion{
-								OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
+								OfGreedy: &llamastackclient.GreedySamplingStrategyParam{},
 							},
 							MaxTokens:         llamastackclient.Int(0),
 							RepetitionPenalty: llamastackclient.Float(0),

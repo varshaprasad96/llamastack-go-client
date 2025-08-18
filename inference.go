@@ -12,6 +12,7 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared"
 	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
@@ -187,9 +188,196 @@ func (r *CompletionMessageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Configuration for grammar-guided response generation.
+type GrammarResponseFormat struct {
+	// The BNF grammar specification the response should conform to
+	Bnf map[string]GrammarResponseFormatBnfUnion `json:"bnf,required"`
+	// Must be "grammar" to identify this format type
+	Type constant.Grammar `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bnf         respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GrammarResponseFormat) RawJSON() string { return r.JSON.raw }
+func (r *GrammarResponseFormat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this GrammarResponseFormat to a GrammarResponseFormatParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// GrammarResponseFormatParam.Overrides()
+func (r GrammarResponseFormat) ToParam() GrammarResponseFormatParam {
+	return param.Override[GrammarResponseFormatParam](json.RawMessage(r.RawJSON()))
+}
+
+// GrammarResponseFormatBnfUnion contains all possible properties and values from
+// [bool], [float64], [string], [[]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type GrammarResponseFormatBnfUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u GrammarResponseFormatBnfUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GrammarResponseFormatBnfUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GrammarResponseFormatBnfUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u GrammarResponseFormatBnfUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u GrammarResponseFormatBnfUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *GrammarResponseFormatBnfUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for grammar-guided response generation.
+//
+// The properties Bnf, Type are required.
+type GrammarResponseFormatParam struct {
+	// The BNF grammar specification the response should conform to
+	Bnf map[string]GrammarResponseFormatBnfUnionParam `json:"bnf,omitzero,required"`
+	// Must be "grammar" to identify this format type
+	//
+	// This field can be elided, and will marshal its zero value as "grammar".
+	Type constant.Grammar `json:"type,required"`
+	paramObj
+}
+
+func (r GrammarResponseFormatParam) MarshalJSON() (data []byte, err error) {
+	type shadow GrammarResponseFormatParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GrammarResponseFormatParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type GrammarResponseFormatBnfUnionParam struct {
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u GrammarResponseFormatBnfUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
+}
+func (u *GrammarResponseFormatBnfUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *GrammarResponseFormatBnfUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfAnyArray) {
+		return &u.OfAnyArray
+	}
+	return nil
+}
+
+// Greedy sampling strategy that selects the highest probability token at each
+// step.
+type GreedySamplingStrategy struct {
+	// Must be "greedy" to identify this sampling strategy
+	Type constant.Greedy `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GreedySamplingStrategy) RawJSON() string { return r.JSON.raw }
+func (r *GreedySamplingStrategy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this GreedySamplingStrategy to a GreedySamplingStrategyParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// GreedySamplingStrategyParam.Overrides()
+func (r GreedySamplingStrategy) ToParam() GreedySamplingStrategyParam {
+	return param.Override[GreedySamplingStrategyParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewGreedySamplingStrategyParam() GreedySamplingStrategyParam {
+	return GreedySamplingStrategyParam{
+		Type: "greedy",
+	}
+}
+
+// Greedy sampling strategy that selects the highest probability token at each
+// step.
+//
+// This struct has a constant value, construct it with
+// [NewGreedySamplingStrategyParam].
+type GreedySamplingStrategyParam struct {
+	// Must be "greedy" to identify this sampling strategy
+	Type constant.Greedy `json:"type,required"`
+	paramObj
+}
+
+func (r GreedySamplingStrategyParam) MarshalJSON() (data []byte, err error) {
+	type shadow GreedySamplingStrategyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GreedySamplingStrategyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // InterleavedContentUnion contains all possible properties and values from
-// [string], [InterleavedContentImageContentItem],
-// [InterleavedContentTextContentItem], [[]InterleavedContentItemUnion].
+// [string], [shared.ImageContentItem], [shared.TextContentItem],
+// [[]InterleavedContentItemUnion].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -201,10 +389,10 @@ type InterleavedContentUnion struct {
 	// This field will be present if the value is a [[]InterleavedContentItemUnion]
 	// instead of an object.
 	OfInterleavedContentItemArray []InterleavedContentItemUnion `json:",inline"`
-	// This field is from variant [InterleavedContentImageContentItem].
-	Image InterleavedContentImageContentItemImage `json:"image"`
-	Type  string                                  `json:"type"`
-	// This field is from variant [InterleavedContentTextContentItem].
+	// This field is from variant [shared.ImageContentItem].
+	Image shared.ImageContentItemImage `json:"image"`
+	Type  string                       `json:"type"`
+	// This field is from variant [shared.TextContentItem].
 	Text string `json:"text"`
 	JSON struct {
 		OfString                      respjson.Field
@@ -221,12 +409,12 @@ func (u InterleavedContentUnion) AsString() (v string) {
 	return
 }
 
-func (u InterleavedContentUnion) AsImageContentItem() (v InterleavedContentImageContentItem) {
+func (u InterleavedContentUnion) AsImageContentItem() (v shared.ImageContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InterleavedContentUnion) AsTextContentItem() (v InterleavedContentTextContentItem) {
+func (u InterleavedContentUnion) AsTextContentItem() (v shared.TextContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -252,78 +440,14 @@ func (r InterleavedContentUnion) ToParam() InterleavedContentUnionParam {
 	return param.Override[InterleavedContentUnionParam](json.RawMessage(r.RawJSON()))
 }
 
-// A image content item
-type InterleavedContentImageContentItem struct {
-	// Image as a base64 encoded string or an URL
-	Image InterleavedContentImageContentItemImage `json:"image,required"`
-	// Discriminator type of the content item. Always "image"
-	Type constant.Image `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Image       respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InterleavedContentImageContentItem) RawJSON() string { return r.JSON.raw }
-func (r *InterleavedContentImageContentItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Image as a base64 encoded string or an URL
-type InterleavedContentImageContentItemImage struct {
-	// base64 encoded image data as string
-	Data string `json:"data"`
-	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
-	// Note that URL could have length limits.
-	URL URL `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InterleavedContentImageContentItemImage) RawJSON() string { return r.JSON.raw }
-func (r *InterleavedContentImageContentItemImage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A text content item
-type InterleavedContentTextContentItem struct {
-	// Text content
-	Text string `json:"text,required"`
-	// Discriminator type of the content item. Always "text"
-	Type constant.Text `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InterleavedContentTextContentItem) RawJSON() string { return r.JSON.raw }
-func (r *InterleavedContentTextContentItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func InterleavedContentParamOfImageContentItem(image InterleavedContentImageContentItemImageParam) InterleavedContentUnionParam {
-	var variant InterleavedContentImageContentItemParam
+func InterleavedContentParamOfImageContentItem(image shared.ImageContentItemImageParam) InterleavedContentUnionParam {
+	var variant shared.ImageContentItemParam
 	variant.Image = image
 	return InterleavedContentUnionParam{OfImageContentItem: &variant}
 }
 
 func InterleavedContentParamOfTextContentItem(text string) InterleavedContentUnionParam {
-	var variant InterleavedContentTextContentItemParam
+	var variant shared.TextContentItemParam
 	variant.Text = text
 	return InterleavedContentUnionParam{OfTextContentItem: &variant}
 }
@@ -332,10 +456,10 @@ func InterleavedContentParamOfTextContentItem(text string) InterleavedContentUni
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InterleavedContentUnionParam struct {
-	OfString                      param.Opt[string]                        `json:",omitzero,inline"`
-	OfImageContentItem            *InterleavedContentImageContentItemParam `json:",omitzero,inline"`
-	OfTextContentItem             *InterleavedContentTextContentItemParam  `json:",omitzero,inline"`
-	OfInterleavedContentItemArray []InterleavedContentItemUnionParam       `json:",omitzero,inline"`
+	OfString                      param.Opt[string]                  `json:",omitzero,inline"`
+	OfImageContentItem            *shared.ImageContentItemParam      `json:",omitzero,inline"`
+	OfTextContentItem             *shared.TextContentItemParam       `json:",omitzero,inline"`
+	OfInterleavedContentItemArray []InterleavedContentItemUnionParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -360,7 +484,7 @@ func (u *InterleavedContentUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InterleavedContentUnionParam) GetImage() *InterleavedContentImageContentItemImageParam {
+func (u InterleavedContentUnionParam) GetImage() *shared.ImageContentItemImageParam {
 	if vt := u.OfImageContentItem; vt != nil {
 		return &vt.Image
 	}
@@ -385,78 +509,18 @@ func (u InterleavedContentUnionParam) GetType() *string {
 	return nil
 }
 
-// A image content item
-//
-// The properties Image, Type are required.
-type InterleavedContentImageContentItemParam struct {
-	// Image as a base64 encoded string or an URL
-	Image InterleavedContentImageContentItemImageParam `json:"image,omitzero,required"`
-	// Discriminator type of the content item. Always "image"
-	//
-	// This field can be elided, and will marshal its zero value as "image".
-	Type constant.Image `json:"type,required"`
-	paramObj
-}
-
-func (r InterleavedContentImageContentItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow InterleavedContentImageContentItemParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InterleavedContentImageContentItemParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Image as a base64 encoded string or an URL
-type InterleavedContentImageContentItemImageParam struct {
-	// base64 encoded image data as string
-	Data param.Opt[string] `json:"data,omitzero"`
-	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
-	// Note that URL could have length limits.
-	URL URLParam `json:"url,omitzero"`
-	paramObj
-}
-
-func (r InterleavedContentImageContentItemImageParam) MarshalJSON() (data []byte, err error) {
-	type shadow InterleavedContentImageContentItemImageParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InterleavedContentImageContentItemImageParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A text content item
-//
-// The properties Text, Type are required.
-type InterleavedContentTextContentItemParam struct {
-	// Text content
-	Text string `json:"text,required"`
-	// Discriminator type of the content item. Always "text"
-	//
-	// This field can be elided, and will marshal its zero value as "text".
-	Type constant.Text `json:"type,required"`
-	paramObj
-}
-
-func (r InterleavedContentTextContentItemParam) MarshalJSON() (data []byte, err error) {
-	type shadow InterleavedContentTextContentItemParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InterleavedContentTextContentItemParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // InterleavedContentItemUnion contains all possible properties and values from
-// [InterleavedContentItemImage], [InterleavedContentItemText].
+// [shared.ImageContentItem], [shared.TextContentItem].
 //
 // Use the [InterleavedContentItemUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InterleavedContentItemUnion struct {
-	// This field is from variant [InterleavedContentItemImage].
-	Image InterleavedContentItemImageImage `json:"image"`
+	// This field is from variant [shared.ImageContentItem].
+	Image shared.ImageContentItemImage `json:"image"`
 	// Any of "image", "text".
 	Type string `json:"type"`
-	// This field is from variant [InterleavedContentItemText].
+	// This field is from variant [shared.TextContentItem].
 	Text string `json:"text"`
 	JSON struct {
 		Image respjson.Field
@@ -470,17 +534,14 @@ type InterleavedContentItemUnion struct {
 // [InterleavedContentItemUnion] to add type safety for the return type of
 // [InterleavedContentItemUnion.AsAny]
 type anyInterleavedContentItem interface {
-	implInterleavedContentItemUnion()
+	ImplInterleavedContentItemUnion()
 }
-
-func (InterleavedContentItemImage) implInterleavedContentItemUnion() {}
-func (InterleavedContentItemText) implInterleavedContentItemUnion()  {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := InterleavedContentItemUnion.AsAny().(type) {
-//	case llamastackclient.InterleavedContentItemImage:
-//	case llamastackclient.InterleavedContentItemText:
+//	case shared.ImageContentItem:
+//	case shared.TextContentItem:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -494,12 +555,12 @@ func (u InterleavedContentItemUnion) AsAny() anyInterleavedContentItem {
 	return nil
 }
 
-func (u InterleavedContentItemUnion) AsImage() (v InterleavedContentItemImage) {
+func (u InterleavedContentItemUnion) AsImage() (v shared.ImageContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InterleavedContentItemUnion) AsText() (v InterleavedContentItemText) {
+func (u InterleavedContentItemUnion) AsText() (v shared.TextContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -521,78 +582,14 @@ func (r InterleavedContentItemUnion) ToParam() InterleavedContentItemUnionParam 
 	return param.Override[InterleavedContentItemUnionParam](json.RawMessage(r.RawJSON()))
 }
 
-// A image content item
-type InterleavedContentItemImage struct {
-	// Image as a base64 encoded string or an URL
-	Image InterleavedContentItemImageImage `json:"image,required"`
-	// Discriminator type of the content item. Always "image"
-	Type constant.Image `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Image       respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InterleavedContentItemImage) RawJSON() string { return r.JSON.raw }
-func (r *InterleavedContentItemImage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Image as a base64 encoded string or an URL
-type InterleavedContentItemImageImage struct {
-	// base64 encoded image data as string
-	Data string `json:"data"`
-	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
-	// Note that URL could have length limits.
-	URL URL `json:"url"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InterleavedContentItemImageImage) RawJSON() string { return r.JSON.raw }
-func (r *InterleavedContentItemImageImage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A text content item
-type InterleavedContentItemText struct {
-	// Text content
-	Text string `json:"text,required"`
-	// Discriminator type of the content item. Always "text"
-	Type constant.Text `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Text        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r InterleavedContentItemText) RawJSON() string { return r.JSON.raw }
-func (r *InterleavedContentItemText) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func InterleavedContentItemParamOfImage(image InterleavedContentItemImageImageParam) InterleavedContentItemUnionParam {
-	var variant InterleavedContentItemImageParam
+func InterleavedContentItemParamOfImage(image shared.ImageContentItemImageParam) InterleavedContentItemUnionParam {
+	var variant shared.ImageContentItemParam
 	variant.Image = image
 	return InterleavedContentItemUnionParam{OfImage: &variant}
 }
 
 func InterleavedContentItemParamOfText(text string) InterleavedContentItemUnionParam {
-	var variant InterleavedContentItemTextParam
+	var variant shared.TextContentItemParam
 	variant.Text = text
 	return InterleavedContentItemUnionParam{OfText: &variant}
 }
@@ -601,8 +598,8 @@ func InterleavedContentItemParamOfText(text string) InterleavedContentItemUnionP
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InterleavedContentItemUnionParam struct {
-	OfImage *InterleavedContentItemImageParam `json:",omitzero,inline"`
-	OfText  *InterleavedContentItemTextParam  `json:",omitzero,inline"`
+	OfImage *shared.ImageContentItemParam `json:",omitzero,inline"`
+	OfText  *shared.TextContentItemParam  `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -623,7 +620,7 @@ func (u *InterleavedContentItemUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InterleavedContentItemUnionParam) GetImage() *InterleavedContentItemImageImageParam {
+func (u InterleavedContentItemUnionParam) GetImage() *shared.ImageContentItemImageParam {
 	if vt := u.OfImage; vt != nil {
 		return &vt.Image
 	}
@@ -651,81 +648,158 @@ func (u InterleavedContentItemUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[InterleavedContentItemUnionParam](
 		"type",
-		apijson.Discriminator[InterleavedContentItemImageParam]("image"),
-		apijson.Discriminator[InterleavedContentItemTextParam]("text"),
+		apijson.Discriminator[shared.ImageContentItemParam]("image"),
+		apijson.Discriminator[shared.TextContentItemParam]("text"),
 	)
 }
 
-// A image content item
+// Configuration for JSON schema-guided response generation.
+type JsonSchemaResponseFormat struct {
+	// The JSON schema the response should conform to. In a Python SDK, this is often a
+	// `pydantic` model.
+	JsonSchema map[string]JsonSchemaResponseFormatJsonSchemaUnion `json:"json_schema,required"`
+	// Must be "json_schema" to identify this format type
+	Type constant.JsonSchema `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		JsonSchema  respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JsonSchemaResponseFormat) RawJSON() string { return r.JSON.raw }
+func (r *JsonSchemaResponseFormat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this JsonSchemaResponseFormat to a
+// JsonSchemaResponseFormatParam.
 //
-// The properties Image, Type are required.
-type InterleavedContentItemImageParam struct {
-	// Image as a base64 encoded string or an URL
-	Image InterleavedContentItemImageImageParam `json:"image,omitzero,required"`
-	// Discriminator type of the content item. Always "image"
-	//
-	// This field can be elided, and will marshal its zero value as "image".
-	Type constant.Image `json:"type,required"`
-	paramObj
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// JsonSchemaResponseFormatParam.Overrides()
+func (r JsonSchemaResponseFormat) ToParam() JsonSchemaResponseFormatParam {
+	return param.Override[JsonSchemaResponseFormatParam](json.RawMessage(r.RawJSON()))
 }
 
-func (r InterleavedContentItemImageParam) MarshalJSON() (data []byte, err error) {
-	type shadow InterleavedContentItemImageParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InterleavedContentItemImageParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Image as a base64 encoded string or an URL
-type InterleavedContentItemImageImageParam struct {
-	// base64 encoded image data as string
-	Data param.Opt[string] `json:"data,omitzero"`
-	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
-	// Note that URL could have length limits.
-	URL URLParam `json:"url,omitzero"`
-	paramObj
-}
-
-func (r InterleavedContentItemImageImageParam) MarshalJSON() (data []byte, err error) {
-	type shadow InterleavedContentItemImageImageParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *InterleavedContentItemImageImageParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A text content item
+// JsonSchemaResponseFormatJsonSchemaUnion contains all possible properties and
+// values from [bool], [float64], [string], [[]any].
 //
-// The properties Text, Type are required.
-type InterleavedContentItemTextParam struct {
-	// Text content
-	Text string `json:"text,required"`
-	// Discriminator type of the content item. Always "text"
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type JsonSchemaResponseFormatJsonSchemaUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u JsonSchemaResponseFormatJsonSchemaUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JsonSchemaResponseFormatJsonSchemaUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JsonSchemaResponseFormatJsonSchemaUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JsonSchemaResponseFormatJsonSchemaUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JsonSchemaResponseFormatJsonSchemaUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *JsonSchemaResponseFormatJsonSchemaUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configuration for JSON schema-guided response generation.
+//
+// The properties JsonSchema, Type are required.
+type JsonSchemaResponseFormatParam struct {
+	// The JSON schema the response should conform to. In a Python SDK, this is often a
+	// `pydantic` model.
+	JsonSchema map[string]JsonSchemaResponseFormatJsonSchemaUnionParam `json:"json_schema,omitzero,required"`
+	// Must be "json_schema" to identify this format type
 	//
-	// This field can be elided, and will marshal its zero value as "text".
-	Type constant.Text `json:"type,required"`
+	// This field can be elided, and will marshal its zero value as "json_schema".
+	Type constant.JsonSchema `json:"type,required"`
 	paramObj
 }
 
-func (r InterleavedContentItemTextParam) MarshalJSON() (data []byte, err error) {
-	type shadow InterleavedContentItemTextParam
+func (r JsonSchemaResponseFormatParam) MarshalJSON() (data []byte, err error) {
+	type shadow JsonSchemaResponseFormatParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *InterleavedContentItemTextParam) UnmarshalJSON(data []byte) error {
+func (r *JsonSchemaResponseFormatParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type JsonSchemaResponseFormatJsonSchemaUnionParam struct {
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u JsonSchemaResponseFormatJsonSchemaUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
+}
+func (u *JsonSchemaResponseFormatJsonSchemaUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *JsonSchemaResponseFormatJsonSchemaUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfAnyArray) {
+		return &u.OfAnyArray
+	}
+	return nil
 }
 
 func MessageParamOfUser[
-	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
 ](content T) MessageUnionParam {
 	var user UserMessageParam
 	switch v := any(content).(type) {
 	case string:
 		user.Content.OfString = param.NewOpt(v)
-	case InterleavedContentImageContentItemParam:
+	case shared.ImageContentItemParam:
 		user.Content.OfImageContentItem = &v
-	case InterleavedContentTextContentItemParam:
+	case shared.TextContentItemParam:
 		user.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		user.Content.OfInterleavedContentItemArray = v
@@ -734,15 +808,15 @@ func MessageParamOfUser[
 }
 
 func MessageParamOfSystem[
-	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
 ](content T) MessageUnionParam {
 	var system SystemMessageParam
 	switch v := any(content).(type) {
 	case string:
 		system.Content.OfString = param.NewOpt(v)
-	case InterleavedContentImageContentItemParam:
+	case shared.ImageContentItemParam:
 		system.Content.OfImageContentItem = &v
-	case InterleavedContentTextContentItemParam:
+	case shared.TextContentItemParam:
 		system.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		system.Content.OfInterleavedContentItemArray = v
@@ -751,16 +825,16 @@ func MessageParamOfSystem[
 }
 
 func MessageParamOfTool[
-	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
 ](callID string, content T) MessageUnionParam {
 	var tool ToolResponseMessageParam
 	tool.CallID = callID
 	switch v := any(content).(type) {
 	case string:
 		tool.Content.OfString = param.NewOpt(v)
-	case InterleavedContentImageContentItemParam:
+	case shared.ImageContentItemParam:
 		tool.Content.OfImageContentItem = &v
-	case InterleavedContentTextContentItemParam:
+	case shared.TextContentItemParam:
 		tool.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		tool.Content.OfInterleavedContentItemArray = v
@@ -769,15 +843,15 @@ func MessageParamOfTool[
 }
 
 func MessageParamOfAssistant[
-	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
 ](content T, stopReason CompletionMessageStopReason) MessageUnionParam {
 	var assistant CompletionMessageParam
 	switch v := any(content).(type) {
 	case string:
 		assistant.Content.OfString = param.NewOpt(v)
-	case InterleavedContentImageContentItemParam:
+	case shared.ImageContentItemParam:
 		assistant.Content.OfImageContentItem = &v
-	case InterleavedContentTextContentItemParam:
+	case shared.TextContentItemParam:
 		assistant.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		assistant.Content.OfInterleavedContentItemArray = v
@@ -912,18 +986,18 @@ func (r *MetricInResponse) UnmarshalJSON(data []byte) error {
 }
 
 // ResponseFormatUnion contains all possible properties and values from
-// [ResponseFormatJsonSchema], [ResponseFormatGrammar].
+// [JsonSchemaResponseFormat], [GrammarResponseFormat].
 //
 // Use the [ResponseFormatUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ResponseFormatUnion struct {
-	// This field is from variant [ResponseFormatJsonSchema].
-	JsonSchema map[string]ResponseFormatJsonSchemaJsonSchemaUnion `json:"json_schema"`
+	// This field is from variant [JsonSchemaResponseFormat].
+	JsonSchema map[string]JsonSchemaResponseFormatJsonSchemaUnion `json:"json_schema"`
 	// Any of "json_schema", "grammar".
 	Type string `json:"type"`
-	// This field is from variant [ResponseFormatGrammar].
-	Bnf  map[string]ResponseFormatGrammarBnfUnion `json:"bnf"`
+	// This field is from variant [GrammarResponseFormat].
+	Bnf  map[string]GrammarResponseFormatBnfUnion `json:"bnf"`
 	JSON struct {
 		JsonSchema respjson.Field
 		Type       respjson.Field
@@ -938,14 +1012,14 @@ type anyResponseFormat interface {
 	implResponseFormatUnion()
 }
 
-func (ResponseFormatJsonSchema) implResponseFormatUnion() {}
-func (ResponseFormatGrammar) implResponseFormatUnion()    {}
+func (JsonSchemaResponseFormat) implResponseFormatUnion() {}
+func (GrammarResponseFormat) implResponseFormatUnion()    {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := ResponseFormatUnion.AsAny().(type) {
-//	case llamastackclient.ResponseFormatJsonSchema:
-//	case llamastackclient.ResponseFormatGrammar:
+//	case llamastackclient.JsonSchemaResponseFormat:
+//	case llamastackclient.GrammarResponseFormat:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -959,12 +1033,12 @@ func (u ResponseFormatUnion) AsAny() anyResponseFormat {
 	return nil
 }
 
-func (u ResponseFormatUnion) AsJsonSchema() (v ResponseFormatJsonSchema) {
+func (u ResponseFormatUnion) AsJsonSchema() (v JsonSchemaResponseFormat) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ResponseFormatUnion) AsGrammar() (v ResponseFormatGrammar) {
+func (u ResponseFormatUnion) AsGrammar() (v GrammarResponseFormat) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -985,161 +1059,14 @@ func (r ResponseFormatUnion) ToParam() ResponseFormatUnionParam {
 	return param.Override[ResponseFormatUnionParam](json.RawMessage(r.RawJSON()))
 }
 
-// Configuration for JSON schema-guided response generation.
-type ResponseFormatJsonSchema struct {
-	// The JSON schema the response should conform to. In a Python SDK, this is often a
-	// `pydantic` model.
-	JsonSchema map[string]ResponseFormatJsonSchemaJsonSchemaUnion `json:"json_schema,required"`
-	// Must be "json_schema" to identify this format type
-	Type constant.JsonSchema `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		JsonSchema  respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ResponseFormatJsonSchema) RawJSON() string { return r.JSON.raw }
-func (r *ResponseFormatJsonSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ResponseFormatJsonSchemaJsonSchemaUnion contains all possible properties and
-// values from [bool], [float64], [string], [[]any].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfBool OfFloat OfString OfAnyArray]
-type ResponseFormatJsonSchemaJsonSchemaUnion struct {
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
-	JSON       struct {
-		OfBool     respjson.Field
-		OfFloat    respjson.Field
-		OfString   respjson.Field
-		OfAnyArray respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (u ResponseFormatJsonSchemaJsonSchemaUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ResponseFormatJsonSchemaJsonSchemaUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ResponseFormatJsonSchemaJsonSchemaUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ResponseFormatJsonSchemaJsonSchemaUnion) AsAnyArray() (v []any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u ResponseFormatJsonSchemaJsonSchemaUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *ResponseFormatJsonSchemaJsonSchemaUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration for grammar-guided response generation.
-type ResponseFormatGrammar struct {
-	// The BNF grammar specification the response should conform to
-	Bnf map[string]ResponseFormatGrammarBnfUnion `json:"bnf,required"`
-	// Must be "grammar" to identify this format type
-	Type constant.Grammar `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Bnf         respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ResponseFormatGrammar) RawJSON() string { return r.JSON.raw }
-func (r *ResponseFormatGrammar) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ResponseFormatGrammarBnfUnion contains all possible properties and values from
-// [bool], [float64], [string], [[]any].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfBool OfFloat OfString OfAnyArray]
-type ResponseFormatGrammarBnfUnion struct {
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
-	JSON       struct {
-		OfBool     respjson.Field
-		OfFloat    respjson.Field
-		OfString   respjson.Field
-		OfAnyArray respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (u ResponseFormatGrammarBnfUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ResponseFormatGrammarBnfUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ResponseFormatGrammarBnfUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ResponseFormatGrammarBnfUnion) AsAnyArray() (v []any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u ResponseFormatGrammarBnfUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *ResponseFormatGrammarBnfUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func ResponseFormatParamOfJsonSchema(jsonSchema map[string]ResponseFormatJsonSchemaJsonSchemaUnionParam) ResponseFormatUnionParam {
-	var variant ResponseFormatJsonSchemaParam
+func ResponseFormatParamOfJsonSchema(jsonSchema map[string]JsonSchemaResponseFormatJsonSchemaUnionParam) ResponseFormatUnionParam {
+	var variant JsonSchemaResponseFormatParam
 	variant.JsonSchema = jsonSchema
 	return ResponseFormatUnionParam{OfJsonSchema: &variant}
 }
 
-func ResponseFormatParamOfGrammar(bnf map[string]ResponseFormatGrammarBnfUnionParam) ResponseFormatUnionParam {
-	var grammar ResponseFormatGrammarParam
+func ResponseFormatParamOfGrammar(bnf map[string]GrammarResponseFormatBnfUnionParam) ResponseFormatUnionParam {
+	var grammar GrammarResponseFormatParam
 	grammar.Bnf = bnf
 	return ResponseFormatUnionParam{OfGrammar: &grammar}
 }
@@ -1148,8 +1075,8 @@ func ResponseFormatParamOfGrammar(bnf map[string]ResponseFormatGrammarBnfUnionPa
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ResponseFormatUnionParam struct {
-	OfJsonSchema *ResponseFormatJsonSchemaParam `json:",omitzero,inline"`
-	OfGrammar    *ResponseFormatGrammarParam    `json:",omitzero,inline"`
+	OfJsonSchema *JsonSchemaResponseFormatParam `json:",omitzero,inline"`
+	OfGrammar    *GrammarResponseFormatParam    `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1170,7 +1097,7 @@ func (u *ResponseFormatUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ResponseFormatUnionParam) GetJsonSchema() map[string]ResponseFormatJsonSchemaJsonSchemaUnionParam {
+func (u ResponseFormatUnionParam) GetJsonSchema() map[string]JsonSchemaResponseFormatJsonSchemaUnionParam {
 	if vt := u.OfJsonSchema; vt != nil {
 		return vt.JsonSchema
 	}
@@ -1178,7 +1105,7 @@ func (u ResponseFormatUnionParam) GetJsonSchema() map[string]ResponseFormatJsonS
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ResponseFormatUnionParam) GetBnf() map[string]ResponseFormatGrammarBnfUnionParam {
+func (u ResponseFormatUnionParam) GetBnf() map[string]GrammarResponseFormatBnfUnionParam {
 	if vt := u.OfGrammar; vt != nil {
 		return vt.Bnf
 	}
@@ -1198,114 +1125,9 @@ func (u ResponseFormatUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[ResponseFormatUnionParam](
 		"type",
-		apijson.Discriminator[ResponseFormatJsonSchemaParam]("json_schema"),
-		apijson.Discriminator[ResponseFormatGrammarParam]("grammar"),
+		apijson.Discriminator[JsonSchemaResponseFormatParam]("json_schema"),
+		apijson.Discriminator[GrammarResponseFormatParam]("grammar"),
 	)
-}
-
-// Configuration for JSON schema-guided response generation.
-//
-// The properties JsonSchema, Type are required.
-type ResponseFormatJsonSchemaParam struct {
-	// The JSON schema the response should conform to. In a Python SDK, this is often a
-	// `pydantic` model.
-	JsonSchema map[string]ResponseFormatJsonSchemaJsonSchemaUnionParam `json:"json_schema,omitzero,required"`
-	// Must be "json_schema" to identify this format type
-	//
-	// This field can be elided, and will marshal its zero value as "json_schema".
-	Type constant.JsonSchema `json:"type,required"`
-	paramObj
-}
-
-func (r ResponseFormatJsonSchemaParam) MarshalJSON() (data []byte, err error) {
-	type shadow ResponseFormatJsonSchemaParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResponseFormatJsonSchemaParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type ResponseFormatJsonSchemaJsonSchemaUnionParam struct {
-	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
-	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
-	OfString   param.Opt[string]  `json:",omitzero,inline"`
-	OfAnyArray []any              `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u ResponseFormatJsonSchemaJsonSchemaUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
-}
-func (u *ResponseFormatJsonSchemaJsonSchemaUnionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *ResponseFormatJsonSchemaJsonSchemaUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfBool) {
-		return &u.OfBool.Value
-	} else if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfAnyArray) {
-		return &u.OfAnyArray
-	}
-	return nil
-}
-
-// Configuration for grammar-guided response generation.
-//
-// The properties Bnf, Type are required.
-type ResponseFormatGrammarParam struct {
-	// The BNF grammar specification the response should conform to
-	Bnf map[string]ResponseFormatGrammarBnfUnionParam `json:"bnf,omitzero,required"`
-	// Must be "grammar" to identify this format type
-	//
-	// This field can be elided, and will marshal its zero value as "grammar".
-	Type constant.Grammar `json:"type,required"`
-	paramObj
-}
-
-func (r ResponseFormatGrammarParam) MarshalJSON() (data []byte, err error) {
-	type shadow ResponseFormatGrammarParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ResponseFormatGrammarParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type ResponseFormatGrammarBnfUnionParam struct {
-	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
-	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
-	OfString   param.Opt[string]  `json:",omitzero,inline"`
-	OfAnyArray []any              `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u ResponseFormatGrammarBnfUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
-}
-func (u *ResponseFormatGrammarBnfUnionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *ResponseFormatGrammarBnfUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfBool) {
-		return &u.OfBool.Value
-	} else if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfAnyArray) {
-		return &u.OfAnyArray
-	}
-	return nil
 }
 
 // Sampling parameters.
@@ -1349,8 +1171,7 @@ func (r SamplingParamsResp) ToParam() SamplingParams {
 }
 
 // SamplingParamsStrategyUnionResp contains all possible properties and values from
-// [SamplingParamsStrategyGreedyResp], [SamplingParamsStrategyTopPResp],
-// [SamplingParamsStrategyTopKResp].
+// [GreedySamplingStrategy], [TopPSamplingStrategy], [TopKSamplingStrategy].
 //
 // Use the [SamplingParamsStrategyUnionResp.AsAny] method to switch on the variant.
 //
@@ -1358,11 +1179,11 @@ func (r SamplingParamsResp) ToParam() SamplingParams {
 type SamplingParamsStrategyUnionResp struct {
 	// Any of "greedy", "top_p", "top_k".
 	Type string `json:"type"`
-	// This field is from variant [SamplingParamsStrategyTopPResp].
+	// This field is from variant [TopPSamplingStrategy].
 	Temperature float64 `json:"temperature"`
-	// This field is from variant [SamplingParamsStrategyTopPResp].
+	// This field is from variant [TopPSamplingStrategy].
 	TopP float64 `json:"top_p"`
-	// This field is from variant [SamplingParamsStrategyTopKResp].
+	// This field is from variant [TopKSamplingStrategy].
 	TopK int64 `json:"top_k"`
 	JSON struct {
 		Type        respjson.Field
@@ -1380,16 +1201,16 @@ type anySamplingParamsStrategyResp interface {
 	implSamplingParamsStrategyUnionResp()
 }
 
-func (SamplingParamsStrategyGreedyResp) implSamplingParamsStrategyUnionResp() {}
-func (SamplingParamsStrategyTopPResp) implSamplingParamsStrategyUnionResp()   {}
-func (SamplingParamsStrategyTopKResp) implSamplingParamsStrategyUnionResp()   {}
+func (GreedySamplingStrategy) implSamplingParamsStrategyUnionResp() {}
+func (TopPSamplingStrategy) implSamplingParamsStrategyUnionResp()   {}
+func (TopKSamplingStrategy) implSamplingParamsStrategyUnionResp()   {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := SamplingParamsStrategyUnionResp.AsAny().(type) {
-//	case llamastackclient.SamplingParamsStrategyGreedyResp:
-//	case llamastackclient.SamplingParamsStrategyTopPResp:
-//	case llamastackclient.SamplingParamsStrategyTopKResp:
+//	case llamastackclient.GreedySamplingStrategy:
+//	case llamastackclient.TopPSamplingStrategy:
+//	case llamastackclient.TopKSamplingStrategy:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1405,17 +1226,17 @@ func (u SamplingParamsStrategyUnionResp) AsAny() anySamplingParamsStrategyResp {
 	return nil
 }
 
-func (u SamplingParamsStrategyUnionResp) AsGreedy() (v SamplingParamsStrategyGreedyResp) {
+func (u SamplingParamsStrategyUnionResp) AsGreedy() (v GreedySamplingStrategy) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u SamplingParamsStrategyUnionResp) AsTopP() (v SamplingParamsStrategyTopPResp) {
+func (u SamplingParamsStrategyUnionResp) AsTopP() (v TopPSamplingStrategy) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u SamplingParamsStrategyUnionResp) AsTopK() (v SamplingParamsStrategyTopKResp) {
+func (u SamplingParamsStrategyUnionResp) AsTopK() (v TopKSamplingStrategy) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1424,71 +1245,6 @@ func (u SamplingParamsStrategyUnionResp) AsTopK() (v SamplingParamsStrategyTopKR
 func (u SamplingParamsStrategyUnionResp) RawJSON() string { return u.JSON.raw }
 
 func (r *SamplingParamsStrategyUnionResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Greedy sampling strategy that selects the highest probability token at each
-// step.
-type SamplingParamsStrategyGreedyResp struct {
-	// Must be "greedy" to identify this sampling strategy
-	Type constant.Greedy `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SamplingParamsStrategyGreedyResp) RawJSON() string { return r.JSON.raw }
-func (r *SamplingParamsStrategyGreedyResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Top-p (nucleus) sampling strategy that samples from the smallest set of tokens
-// with cumulative probability >= p.
-type SamplingParamsStrategyTopPResp struct {
-	// Must be "top_p" to identify this sampling strategy
-	Type constant.TopP `json:"type,required"`
-	// Controls randomness in sampling. Higher values increase randomness
-	Temperature float64 `json:"temperature"`
-	// Cumulative probability threshold for nucleus sampling. Defaults to 0.95
-	TopP float64 `json:"top_p"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Temperature respjson.Field
-		TopP        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SamplingParamsStrategyTopPResp) RawJSON() string { return r.JSON.raw }
-func (r *SamplingParamsStrategyTopPResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Top-k sampling strategy that restricts sampling to the k most likely tokens.
-type SamplingParamsStrategyTopKResp struct {
-	// Number of top tokens to consider for sampling. Must be at least 1
-	TopK int64 `json:"top_k,required"`
-	// Must be "top_k" to identify this sampling strategy
-	Type constant.TopK `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		TopK        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SamplingParamsStrategyTopKResp) RawJSON() string { return r.JSON.raw }
-func (r *SamplingParamsStrategyTopKResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1523,9 +1279,9 @@ func (r *SamplingParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type SamplingParamsStrategyUnion struct {
-	OfGreedy *SamplingParamsStrategyGreedy `json:",omitzero,inline"`
-	OfTopP   *SamplingParamsStrategyTopP   `json:",omitzero,inline"`
-	OfTopK   *SamplingParamsStrategyTopK   `json:",omitzero,inline"`
+	OfGreedy *GreedySamplingStrategyParam `json:",omitzero,inline"`
+	OfTopP   *TopPSamplingStrategyParam   `json:",omitzero,inline"`
+	OfTopK   *TopKSamplingStrategyParam   `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1586,80 +1342,10 @@ func (u SamplingParamsStrategyUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[SamplingParamsStrategyUnion](
 		"type",
-		apijson.Discriminator[SamplingParamsStrategyGreedy]("greedy"),
-		apijson.Discriminator[SamplingParamsStrategyTopP]("top_p"),
-		apijson.Discriminator[SamplingParamsStrategyTopK]("top_k"),
+		apijson.Discriminator[GreedySamplingStrategyParam]("greedy"),
+		apijson.Discriminator[TopPSamplingStrategyParam]("top_p"),
+		apijson.Discriminator[TopKSamplingStrategyParam]("top_k"),
 	)
-}
-
-func NewSamplingParamsStrategyGreedy() SamplingParamsStrategyGreedy {
-	return SamplingParamsStrategyGreedy{
-		Type: "greedy",
-	}
-}
-
-// Greedy sampling strategy that selects the highest probability token at each
-// step.
-//
-// This struct has a constant value, construct it with
-// [NewSamplingParamsStrategyGreedy].
-type SamplingParamsStrategyGreedy struct {
-	// Must be "greedy" to identify this sampling strategy
-	Type constant.Greedy `json:"type,required"`
-	paramObj
-}
-
-func (r SamplingParamsStrategyGreedy) MarshalJSON() (data []byte, err error) {
-	type shadow SamplingParamsStrategyGreedy
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SamplingParamsStrategyGreedy) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Top-p (nucleus) sampling strategy that samples from the smallest set of tokens
-// with cumulative probability >= p.
-//
-// The property Type is required.
-type SamplingParamsStrategyTopP struct {
-	// Controls randomness in sampling. Higher values increase randomness
-	Temperature param.Opt[float64] `json:"temperature,omitzero"`
-	// Cumulative probability threshold for nucleus sampling. Defaults to 0.95
-	TopP param.Opt[float64] `json:"top_p,omitzero"`
-	// Must be "top_p" to identify this sampling strategy
-	//
-	// This field can be elided, and will marshal its zero value as "top_p".
-	Type constant.TopP `json:"type,required"`
-	paramObj
-}
-
-func (r SamplingParamsStrategyTopP) MarshalJSON() (data []byte, err error) {
-	type shadow SamplingParamsStrategyTopP
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SamplingParamsStrategyTopP) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Top-k sampling strategy that restricts sampling to the k most likely tokens.
-//
-// The properties TopK, Type are required.
-type SamplingParamsStrategyTopK struct {
-	// Number of top tokens to consider for sampling. Must be at least 1
-	TopK int64 `json:"top_k,required"`
-	// Must be "top_k" to identify this sampling strategy
-	//
-	// This field can be elided, and will marshal its zero value as "top_k".
-	Type constant.TopK `json:"type,required"`
-	paramObj
-}
-
-func (r SamplingParamsStrategyTopK) MarshalJSON() (data []byte, err error) {
-	type shadow SamplingParamsStrategyTopK
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SamplingParamsStrategyTopK) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // A system message providing instructions or context to the model.
@@ -2242,6 +1928,115 @@ func (u *ToolDefinitionParameterDefaultUnionParam) asAny() any {
 		return &u.OfAnyArray
 	}
 	return nil
+}
+
+// Top-k sampling strategy that restricts sampling to the k most likely tokens.
+type TopKSamplingStrategy struct {
+	// Number of top tokens to consider for sampling. Must be at least 1
+	TopK int64 `json:"top_k,required"`
+	// Must be "top_k" to identify this sampling strategy
+	Type constant.TopK `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		TopK        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TopKSamplingStrategy) RawJSON() string { return r.JSON.raw }
+func (r *TopKSamplingStrategy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TopKSamplingStrategy to a TopKSamplingStrategyParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TopKSamplingStrategyParam.Overrides()
+func (r TopKSamplingStrategy) ToParam() TopKSamplingStrategyParam {
+	return param.Override[TopKSamplingStrategyParam](json.RawMessage(r.RawJSON()))
+}
+
+// Top-k sampling strategy that restricts sampling to the k most likely tokens.
+//
+// The properties TopK, Type are required.
+type TopKSamplingStrategyParam struct {
+	// Number of top tokens to consider for sampling. Must be at least 1
+	TopK int64 `json:"top_k,required"`
+	// Must be "top_k" to identify this sampling strategy
+	//
+	// This field can be elided, and will marshal its zero value as "top_k".
+	Type constant.TopK `json:"type,required"`
+	paramObj
+}
+
+func (r TopKSamplingStrategyParam) MarshalJSON() (data []byte, err error) {
+	type shadow TopKSamplingStrategyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TopKSamplingStrategyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Top-p (nucleus) sampling strategy that samples from the smallest set of tokens
+// with cumulative probability >= p.
+type TopPSamplingStrategy struct {
+	// Must be "top_p" to identify this sampling strategy
+	Type constant.TopP `json:"type,required"`
+	// Controls randomness in sampling. Higher values increase randomness
+	Temperature float64 `json:"temperature"`
+	// Cumulative probability threshold for nucleus sampling. Defaults to 0.95
+	TopP float64 `json:"top_p"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Temperature respjson.Field
+		TopP        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TopPSamplingStrategy) RawJSON() string { return r.JSON.raw }
+func (r *TopPSamplingStrategy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TopPSamplingStrategy to a TopPSamplingStrategyParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TopPSamplingStrategyParam.Overrides()
+func (r TopPSamplingStrategy) ToParam() TopPSamplingStrategyParam {
+	return param.Override[TopPSamplingStrategyParam](json.RawMessage(r.RawJSON()))
+}
+
+// Top-p (nucleus) sampling strategy that samples from the smallest set of tokens
+// with cumulative probability >= p.
+//
+// The property Type is required.
+type TopPSamplingStrategyParam struct {
+	// Controls randomness in sampling. Higher values increase randomness
+	Temperature param.Opt[float64] `json:"temperature,omitzero"`
+	// Cumulative probability threshold for nucleus sampling. Defaults to 0.95
+	TopP param.Opt[float64] `json:"top_p,omitzero"`
+	// Must be "top_p" to identify this sampling strategy
+	//
+	// This field can be elided, and will marshal its zero value as "top_p".
+	Type constant.TopP `json:"type,required"`
+	paramObj
+}
+
+func (r TopPSamplingStrategyParam) MarshalJSON() (data []byte, err error) {
+	type shadow TopPSamplingStrategyParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TopPSamplingStrategyParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // Response from a batch chat completion request.

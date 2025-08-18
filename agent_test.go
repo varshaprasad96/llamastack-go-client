@@ -54,8 +54,8 @@ func TestAgentNewWithOptionalParams(t *testing.T) {
 			Name:                     llamastackclient.String("name"),
 			OutputShields:            []string{"string"},
 			ResponseFormat: llamastackclient.ResponseFormatUnionParam{
-				OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
-					JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
+				OfJsonSchema: &llamastackclient.JsonSchemaResponseFormatParam{
+					JsonSchema: map[string]llamastackclient.JsonSchemaResponseFormatJsonSchemaUnionParam{
 						"foo": {
 							OfBool: llamastackclient.Bool(true),
 						},
@@ -64,7 +64,7 @@ func TestAgentNewWithOptionalParams(t *testing.T) {
 			},
 			SamplingParams: llamastackclient.SamplingParams{
 				Strategy: llamastackclient.SamplingParamsStrategyUnion{
-					OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
+					OfGreedy: &llamastackclient.GreedySamplingStrategyParam{},
 				},
 				MaxTokens:         llamastackclient.Int(0),
 				RepetitionPenalty: llamastackclient.Float(0),
