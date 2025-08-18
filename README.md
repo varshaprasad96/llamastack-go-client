@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/varshaprasad96/llamastack-go-client@v0.0.1'
+go get -u 'github.com/varshaprasad96/llamastack-go-client@v0.1.0'
 ```
 
 <!-- x-release-please-end -->
@@ -363,27 +363,6 @@ file returned by `os.Open` will be sent with the file name on disk.
 
 We also provide a helper `llamastackclient.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
-
-```go
-// A file from the file system
-file, err := os.Open("/path/to/file")
-llamastackclient.OpenAIV1FileNewParams{
-	File:    file,
-	Purpose: llamastackclient.FilePurposeAssistants,
-}
-
-// A file from a string
-llamastackclient.OpenAIV1FileNewParams{
-	File:    strings.NewReader("my file contents"),
-	Purpose: llamastackclient.FilePurposeAssistants,
-}
-
-// With a custom filename and contentType
-llamastackclient.OpenAIV1FileNewParams{
-	File:    llamastackclient.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
-	Purpose: llamastackclient.FilePurposeAssistants,
-}
-```
 
 ### Retries
 

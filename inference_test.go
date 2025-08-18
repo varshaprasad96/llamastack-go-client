@@ -28,7 +28,7 @@ func TestInferenceBatchChatCompletionWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Inference.BatchChatCompletion(context.TODO(), llamastackclient.InferenceBatchChatCompletionParams{
 		MessagesBatch: [][]llamastackclient.MessageUnionParam{{{
-			OfUser: &llamastackclient.UserMessageParam{
+			OfUser: &llamastackclient.MessageUserParam{
 				Content: llamastackclient.InterleavedContentUnionParam{
 					OfString: llamastackclient.String("string"),
 				},
@@ -42,8 +42,8 @@ func TestInferenceBatchChatCompletionWithOptionalParams(t *testing.T) {
 			TopK: llamastackclient.Int(0),
 		},
 		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackclient.JsonSchemaResponseFormatParam{
-				JsonSchema: map[string]llamastackclient.JsonSchemaResponseFormatJsonSchemaUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
 						OfBool: llamastackclient.Bool(true),
 					},
@@ -52,7 +52,7 @@ func TestInferenceBatchChatCompletionWithOptionalParams(t *testing.T) {
 		},
 		SamplingParams: llamastackclient.SamplingParams{
 			Strategy: llamastackclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackclient.GreedySamplingStrategyParam{},
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
 			MaxTokens:         llamastackclient.Int(0),
 			RepetitionPenalty: llamastackclient.Float(0),
@@ -109,8 +109,8 @@ func TestInferenceBatchCompletionWithOptionalParams(t *testing.T) {
 			TopK: llamastackclient.Int(0),
 		},
 		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackclient.JsonSchemaResponseFormatParam{
-				JsonSchema: map[string]llamastackclient.JsonSchemaResponseFormatJsonSchemaUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
 						OfBool: llamastackclient.Bool(true),
 					},
@@ -119,7 +119,7 @@ func TestInferenceBatchCompletionWithOptionalParams(t *testing.T) {
 		},
 		SamplingParams: llamastackclient.SamplingParams{
 			Strategy: llamastackclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackclient.GreedySamplingStrategyParam{},
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
 			MaxTokens:         llamastackclient.Int(0),
 			RepetitionPenalty: llamastackclient.Float(0),
@@ -150,7 +150,7 @@ func TestInferenceChatCompletionWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Inference.ChatCompletion(context.TODO(), llamastackclient.InferenceChatCompletionParams{
 		Messages: []llamastackclient.MessageUnionParam{{
-			OfUser: &llamastackclient.UserMessageParam{
+			OfUser: &llamastackclient.MessageUserParam{
 				Content: llamastackclient.InterleavedContentUnionParam{
 					OfString: llamastackclient.String("string"),
 				},
@@ -164,8 +164,8 @@ func TestInferenceChatCompletionWithOptionalParams(t *testing.T) {
 			TopK: llamastackclient.Int(0),
 		},
 		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackclient.JsonSchemaResponseFormatParam{
-				JsonSchema: map[string]llamastackclient.JsonSchemaResponseFormatJsonSchemaUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
 						OfBool: llamastackclient.Bool(true),
 					},
@@ -174,7 +174,7 @@ func TestInferenceChatCompletionWithOptionalParams(t *testing.T) {
 		},
 		SamplingParams: llamastackclient.SamplingParams{
 			Strategy: llamastackclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackclient.GreedySamplingStrategyParam{},
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
 			MaxTokens:         llamastackclient.Int(0),
 			RepetitionPenalty: llamastackclient.Float(0),
@@ -234,8 +234,8 @@ func TestInferenceCompletionWithOptionalParams(t *testing.T) {
 			TopK: llamastackclient.Int(0),
 		},
 		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackclient.JsonSchemaResponseFormatParam{
-				JsonSchema: map[string]llamastackclient.JsonSchemaResponseFormatJsonSchemaUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
 						OfBool: llamastackclient.Bool(true),
 					},
@@ -244,7 +244,7 @@ func TestInferenceCompletionWithOptionalParams(t *testing.T) {
 		},
 		SamplingParams: llamastackclient.SamplingParams{
 			Strategy: llamastackclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackclient.GreedySamplingStrategyParam{},
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
 			MaxTokens:         llamastackclient.Int(0),
 			RepetitionPenalty: llamastackclient.Float(0),
