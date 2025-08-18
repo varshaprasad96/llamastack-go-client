@@ -1,26 +1,13 @@
-# Shared Params Types
-
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#ImageContentItemParam">ImageContentItemParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#TextContentItemParam">TextContentItemParam</a>
-
-# Shared Response Types
-
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#ImageContentItem">ImageContentItem</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#ScoringResult">ScoringResult</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#TextContentItem">TextContentItem</a>
-
 # Shared
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OpenAIMessageParamUnion">OpenAIMessageParamUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnion">ParamTypeUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDefParam">ToolDefParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#CompletionResponse">CompletionResponse</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OpenAIMessageParamUnionResp">OpenAIMessageParamUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnionResp">ParamTypeUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TokenLogProbs">TokenLogProbs</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDef">ToolDef</a>
@@ -37,11 +24,8 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#CompletionMessageParam">CompletionMessageParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#GrammarResponseFormatParam">GrammarResponseFormatParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#GreedySamplingStrategyParam">GreedySamplingStrategyParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InterleavedContentUnionParam">InterleavedContentUnionParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InterleavedContentItemUnionParam">InterleavedContentItemUnionParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#JsonSchemaResponseFormatParam">JsonSchemaResponseFormatParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#MessageUnionParam">MessageUnionParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ResponseFormatUnionParam">ResponseFormatUnionParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#SamplingParams">SamplingParams</a>
@@ -49,25 +33,18 @@ Params Types:
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolCallParam">ToolCallParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolConfigParam">ToolConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDefinitionParam">ToolDefinitionParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TopKSamplingStrategyParam">TopKSamplingStrategyParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TopPSamplingStrategyParam">TopPSamplingStrategyParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ChatCompletionResponse">ChatCompletionResponse</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#CompletionMessage">CompletionMessage</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#GrammarResponseFormat">GrammarResponseFormat</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#GreedySamplingStrategy">GreedySamplingStrategy</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InterleavedContentUnion">InterleavedContentUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InterleavedContentItemUnion">InterleavedContentItemUnion</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#JsonSchemaResponseFormat">JsonSchemaResponseFormat</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#MetricInResponse">MetricInResponse</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ResponseFormatUnion">ResponseFormatUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#SamplingParamsResp">SamplingParamsResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolCall">ToolCall</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolConfig">ToolConfig</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TopKSamplingStrategy">TopKSamplingStrategy</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TopPSamplingStrategy">TopPSamplingStrategy</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InferenceBatchChatCompletionResponse">InferenceBatchChatCompletionResponse</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InferenceBatchCompletionResponse">InferenceBatchCompletionResponse</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#InferenceEmbeddingsResponse">InferenceEmbeddingsResponse</a>
@@ -84,9 +61,6 @@ Methods:
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#DataConfigParam">DataConfigParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#EfficiencyConfigParam">EfficiencyConfigParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OptimizerConfigParam">OptimizerConfigParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TrainingConfigParam">TrainingConfigParam</a>
 
 Response Types:
@@ -335,9 +309,7 @@ Methods:
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#AgentCandidateParam">AgentCandidateParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#BenchmarkConfigParam">BenchmarkConfigParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ModelCandidateParam">ModelCandidateParam</a>
 
 Response Types:
 

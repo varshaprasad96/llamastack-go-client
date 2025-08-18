@@ -15,7 +15,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared"
 	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
@@ -843,8 +842,9 @@ func (r *TurnOutputAttachment) UnmarshalJSON(data []byte) error {
 }
 
 // TurnOutputAttachmentContentUnion contains all possible properties and values
-// from [string], [shared.ImageContentItem], [shared.TextContentItem],
-// [[]InterleavedContentItemUnion], [URL].
+// from [string], [TurnOutputAttachmentContentImageContentItem],
+// [TurnOutputAttachmentContentTextContentItem], [[]InterleavedContentItemUnion],
+// [URL].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -856,10 +856,10 @@ type TurnOutputAttachmentContentUnion struct {
 	// This field will be present if the value is a [[]InterleavedContentItemUnion]
 	// instead of an object.
 	OfInterleavedContentItemArray []InterleavedContentItemUnion `json:",inline"`
-	// This field is from variant [shared.ImageContentItem].
-	Image shared.ImageContentItemImage `json:"image"`
-	Type  string                       `json:"type"`
-	// This field is from variant [shared.TextContentItem].
+	// This field is from variant [TurnOutputAttachmentContentImageContentItem].
+	Image TurnOutputAttachmentContentImageContentItemImage `json:"image"`
+	Type  string                                           `json:"type"`
+	// This field is from variant [TurnOutputAttachmentContentTextContentItem].
 	Text string `json:"text"`
 	// This field is from variant [URL].
 	Uri  string `json:"uri"`
@@ -879,12 +879,12 @@ func (u TurnOutputAttachmentContentUnion) AsString() (v string) {
 	return
 }
 
-func (u TurnOutputAttachmentContentUnion) AsImageContentItem() (v shared.ImageContentItem) {
+func (u TurnOutputAttachmentContentUnion) AsImageContentItem() (v TurnOutputAttachmentContentImageContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u TurnOutputAttachmentContentUnion) AsTextContentItem() (v shared.TextContentItem) {
+func (u TurnOutputAttachmentContentUnion) AsTextContentItem() (v TurnOutputAttachmentContentTextContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -903,6 +903,70 @@ func (u TurnOutputAttachmentContentUnion) AsURL() (v URL) {
 func (u TurnOutputAttachmentContentUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *TurnOutputAttachmentContentUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A image content item
+type TurnOutputAttachmentContentImageContentItem struct {
+	// Image as a base64 encoded string or an URL
+	Image TurnOutputAttachmentContentImageContentItemImage `json:"image,required"`
+	// Discriminator type of the content item. Always "image"
+	Type constant.Image `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Image       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TurnOutputAttachmentContentImageContentItem) RawJSON() string { return r.JSON.raw }
+func (r *TurnOutputAttachmentContentImageContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Image as a base64 encoded string or an URL
+type TurnOutputAttachmentContentImageContentItemImage struct {
+	// base64 encoded image data as string
+	Data string `json:"data"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URL `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TurnOutputAttachmentContentImageContentItemImage) RawJSON() string { return r.JSON.raw }
+func (r *TurnOutputAttachmentContentImageContentItemImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+type TurnOutputAttachmentContentTextContentItem struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	Type constant.Text `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TurnOutputAttachmentContentTextContentItem) RawJSON() string { return r.JSON.raw }
+func (r *TurnOutputAttachmentContentTextContentItem) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1074,11 +1138,11 @@ func (r *AgentSessionTurnNewParamsDocument) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AgentSessionTurnNewParamsDocumentContentUnion struct {
-	OfString                      param.Opt[string]                  `json:",omitzero,inline"`
-	OfImageContentItem            *shared.ImageContentItemParam      `json:",omitzero,inline"`
-	OfTextContentItem             *shared.TextContentItemParam       `json:",omitzero,inline"`
-	OfInterleavedContentItemArray []InterleavedContentItemUnionParam `json:",omitzero,inline"`
-	OfURL                         *URLParam                          `json:",omitzero,inline"`
+	OfString                      param.Opt[string]                                         `json:",omitzero,inline"`
+	OfImageContentItem            *AgentSessionTurnNewParamsDocumentContentImageContentItem `json:",omitzero,inline"`
+	OfTextContentItem             *AgentSessionTurnNewParamsDocumentContentTextContentItem  `json:",omitzero,inline"`
+	OfInterleavedContentItemArray []InterleavedContentItemUnionParam                        `json:",omitzero,inline"`
+	OfURL                         *URLParam                                                 `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1109,7 +1173,7 @@ func (u *AgentSessionTurnNewParamsDocumentContentUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u AgentSessionTurnNewParamsDocumentContentUnion) GetImage() *shared.ImageContentItemImageParam {
+func (u AgentSessionTurnNewParamsDocumentContentUnion) GetImage() *AgentSessionTurnNewParamsDocumentContentImageContentItemImage {
 	if vt := u.OfImageContentItem; vt != nil {
 		return &vt.Image
 	}
@@ -1140,6 +1204,66 @@ func (u AgentSessionTurnNewParamsDocumentContentUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	}
 	return nil
+}
+
+// A image content item
+//
+// The properties Image, Type are required.
+type AgentSessionTurnNewParamsDocumentContentImageContentItem struct {
+	// Image as a base64 encoded string or an URL
+	Image AgentSessionTurnNewParamsDocumentContentImageContentItemImage `json:"image,omitzero,required"`
+	// Discriminator type of the content item. Always "image"
+	//
+	// This field can be elided, and will marshal its zero value as "image".
+	Type constant.Image `json:"type,required"`
+	paramObj
+}
+
+func (r AgentSessionTurnNewParamsDocumentContentImageContentItem) MarshalJSON() (data []byte, err error) {
+	type shadow AgentSessionTurnNewParamsDocumentContentImageContentItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentSessionTurnNewParamsDocumentContentImageContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Image as a base64 encoded string or an URL
+type AgentSessionTurnNewParamsDocumentContentImageContentItemImage struct {
+	// base64 encoded image data as string
+	Data param.Opt[string] `json:"data,omitzero"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URLParam `json:"url,omitzero"`
+	paramObj
+}
+
+func (r AgentSessionTurnNewParamsDocumentContentImageContentItemImage) MarshalJSON() (data []byte, err error) {
+	type shadow AgentSessionTurnNewParamsDocumentContentImageContentItemImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentSessionTurnNewParamsDocumentContentImageContentItemImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+//
+// The properties Text, Type are required.
+type AgentSessionTurnNewParamsDocumentContentTextContentItem struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	//
+	// This field can be elided, and will marshal its zero value as "text".
+	Type constant.Text `json:"type,required"`
+	paramObj
+}
+
+func (r AgentSessionTurnNewParamsDocumentContentTextContentItem) MarshalJSON() (data []byte, err error) {
+	type shadow AgentSessionTurnNewParamsDocumentContentTextContentItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentSessionTurnNewParamsDocumentContentTextContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AgentSessionTurnGetParams struct {

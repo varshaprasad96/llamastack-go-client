@@ -27,9 +27,9 @@ func TestOpenAIV1ChatCompletionNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Chat.Completions.New(context.TODO(), llamastackclient.OpenAIV1ChatCompletionNewParams{
-		Messages: []llamastackclient.OpenAIMessageParamUnion{{
-			OfUser: &llamastackclient.OpenAIMessageParamUser{
-				Content: llamastackclient.OpenAIMessageParamUserContentUnion{
+		Messages: []llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUnion{{
+			OfUser: &llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUser{
+				Content: llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUserContentUnion{
 					OfString: llamastackclient.String("string"),
 				},
 				Name: llamastackclient.String("name"),
