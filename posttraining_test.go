@@ -13,31 +13,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
-func TestPostTrainingCancel(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := llamastackclient.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	err := client.PostTraining.Cancel(context.TODO(), llamastackclient.PostTrainingCancelParams{
-		JobUuid: "job_uuid",
-	})
-	if err != nil {
-		var apierr *llamastackclient.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestPostTrainingFineTuneSupervisedWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
@@ -104,56 +79,6 @@ func TestPostTrainingFineTuneSupervisedWithOptionalParams(t *testing.T) {
 		},
 		CheckpointDir: llamastackclient.String("checkpoint_dir"),
 		Model:         llamastackclient.String("model"),
-	})
-	if err != nil {
-		var apierr *llamastackclient.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestPostTrainingGetArtifacts(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := llamastackclient.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.PostTraining.GetArtifacts(context.TODO(), llamastackclient.PostTrainingGetArtifactsParams{
-		JobUuid: "job_uuid",
-	})
-	if err != nil {
-		var apierr *llamastackclient.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestPostTrainingGetStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := llamastackclient.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.PostTraining.GetStatus(context.TODO(), llamastackclient.PostTrainingGetStatusParams{
-		JobUuid: "job_uuid",
 	})
 	if err != nil {
 		var apierr *llamastackclient.Error

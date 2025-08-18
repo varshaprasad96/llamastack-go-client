@@ -4,13 +4,9 @@ package llamastackclient
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
-	"net/url"
-	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
-	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
@@ -39,36 +35,11 @@ func NewPostTrainingService(opts ...option.RequestOption) (r PostTrainingService
 	return
 }
 
-// Cancel a training job.
-func (r *PostTrainingService) Cancel(ctx context.Context, body PostTrainingCancelParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
-	path := "v1/post-training/job/cancel"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
-}
-
 // Run supervised fine-tuning of a model.
 func (r *PostTrainingService) FineTuneSupervised(ctx context.Context, body PostTrainingFineTuneSupervisedParams, opts ...option.RequestOption) (res *PostTrainingJob, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/post-training/supervised-fine-tune"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Get the artifacts of a training job.
-func (r *PostTrainingService) GetArtifacts(ctx context.Context, query PostTrainingGetArtifactsParams, opts ...option.RequestOption) (res *PostTrainingGetArtifactsResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v1/post-training/job/artifacts"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-// Get the status of a training job.
-func (r *PostTrainingService) GetStatus(ctx context.Context, query PostTrainingGetStatusParams, opts ...option.RequestOption) (res *PostTrainingGetStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v1/post-training/job/status"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
@@ -226,128 +197,6 @@ func init() {
 	)
 }
 
-// Artifacts of a finetuning job.
-type PostTrainingGetArtifactsResponse struct {
-	// List of model checkpoints created during training
-	Checkpoints []Checkpoint `json:"checkpoints,required"`
-	// Unique identifier for the training job
-	JobUuid string `json:"job_uuid,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Checkpoints respjson.Field
-		JobUuid     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PostTrainingGetArtifactsResponse) RawJSON() string { return r.JSON.raw }
-func (r *PostTrainingGetArtifactsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Status of a finetuning job.
-type PostTrainingGetStatusResponse struct {
-	// List of model checkpoints created during training
-	Checkpoints []Checkpoint `json:"checkpoints,required"`
-	// Unique identifier for the training job
-	JobUuid string `json:"job_uuid,required"`
-	// Current status of the training job
-	//
-	// Any of "completed", "in_progress", "failed", "scheduled", "cancelled".
-	Status PostTrainingGetStatusResponseStatus `json:"status,required"`
-	// (Optional) Timestamp when the job finished, if completed
-	CompletedAt time.Time `json:"completed_at" format:"date-time"`
-	// (Optional) Information about computational resources allocated to the job
-	ResourcesAllocated map[string]PostTrainingGetStatusResponseResourcesAllocatedUnion `json:"resources_allocated"`
-	// (Optional) Timestamp when the job was scheduled
-	ScheduledAt time.Time `json:"scheduled_at" format:"date-time"`
-	// (Optional) Timestamp when the job execution began
-	StartedAt time.Time `json:"started_at" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Checkpoints        respjson.Field
-		JobUuid            respjson.Field
-		Status             respjson.Field
-		CompletedAt        respjson.Field
-		ResourcesAllocated respjson.Field
-		ScheduledAt        respjson.Field
-		StartedAt          respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PostTrainingGetStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *PostTrainingGetStatusResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Current status of the training job
-type PostTrainingGetStatusResponseStatus string
-
-const (
-	PostTrainingGetStatusResponseStatusCompleted  PostTrainingGetStatusResponseStatus = "completed"
-	PostTrainingGetStatusResponseStatusInProgress PostTrainingGetStatusResponseStatus = "in_progress"
-	PostTrainingGetStatusResponseStatusFailed     PostTrainingGetStatusResponseStatus = "failed"
-	PostTrainingGetStatusResponseStatusScheduled  PostTrainingGetStatusResponseStatus = "scheduled"
-	PostTrainingGetStatusResponseStatusCancelled  PostTrainingGetStatusResponseStatus = "cancelled"
-)
-
-// PostTrainingGetStatusResponseResourcesAllocatedUnion contains all possible
-// properties and values from [bool], [float64], [string], [[]any].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfBool OfFloat OfString OfAnyArray]
-type PostTrainingGetStatusResponseResourcesAllocatedUnion struct {
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
-	JSON       struct {
-		OfBool     respjson.Field
-		OfFloat    respjson.Field
-		OfString   respjson.Field
-		OfAnyArray respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (u PostTrainingGetStatusResponseResourcesAllocatedUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PostTrainingGetStatusResponseResourcesAllocatedUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PostTrainingGetStatusResponseResourcesAllocatedUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u PostTrainingGetStatusResponseResourcesAllocatedUnion) AsAnyArray() (v []any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u PostTrainingGetStatusResponseResourcesAllocatedUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *PostTrainingGetStatusResponseResourcesAllocatedUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type PostTrainingListJobsResponse struct {
 	Data []PostTrainingListJobsResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -377,20 +226,6 @@ type PostTrainingListJobsResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r PostTrainingListJobsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *PostTrainingListJobsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type PostTrainingCancelParams struct {
-	// The UUID of the job to cancel.
-	JobUuid string `json:"job_uuid,required"`
-	paramObj
-}
-
-func (r PostTrainingCancelParams) MarshalJSON() (data []byte, err error) {
-	type shadow PostTrainingCancelParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *PostTrainingCancelParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -652,36 +487,6 @@ func (r PostTrainingFineTuneSupervisedParamsAlgorithmConfigQat) MarshalJSON() (d
 }
 func (r *PostTrainingFineTuneSupervisedParamsAlgorithmConfigQat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type PostTrainingGetArtifactsParams struct {
-	// The UUID of the job to get the artifacts of.
-	JobUuid string `query:"job_uuid,required" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PostTrainingGetArtifactsParams]'s query parameters as
-// `url.Values`.
-func (r PostTrainingGetArtifactsParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type PostTrainingGetStatusParams struct {
-	// The UUID of the job to get the status of.
-	JobUuid string `query:"job_uuid,required" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [PostTrainingGetStatusParams]'s query parameters as
-// `url.Values`.
-func (r PostTrainingGetStatusParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }
 
 type PostTrainingOptimizePreferencesParams struct {
