@@ -2,7 +2,7 @@ package param_test
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"testing"
 )
 

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"bytes"
@@ -10,9 +10,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestOpenAIV1FileNew(t *testing.T) {
@@ -24,16 +24,16 @@ func TestOpenAIV1FileNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Files.New(context.TODO(), llamastackgoclient.OpenAIV1FileNewParams{
+	_, err := client.OpenAI.V1.Files.New(context.TODO(), llamastackclient.OpenAIV1FileNewParams{
 		File:    io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		Purpose: llamastackgoclient.FilePurposeAssistants,
+		Purpose: llamastackclient.FilePurposeAssistants,
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -50,13 +50,13 @@ func TestOpenAIV1FileGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Files.Get(context.TODO(), "file_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -73,18 +73,18 @@ func TestOpenAIV1FileListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Files.List(context.TODO(), llamastackgoclient.OpenAIV1FileListParams{
-		After:   llamastackgoclient.String("after"),
-		Limit:   llamastackgoclient.Int(0),
-		Order:   llamastackgoclient.OrderAsc,
-		Purpose: llamastackgoclient.FilePurposeAssistants,
+	_, err := client.OpenAI.V1.Files.List(context.TODO(), llamastackclient.OpenAIV1FileListParams{
+		After:   llamastackclient.String("after"),
+		Limit:   llamastackclient.Int(0),
+		Order:   llamastackclient.OrderAsc,
+		Purpose: llamastackclient.FilePurposeAssistants,
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -101,13 +101,13 @@ func TestOpenAIV1FileDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Files.Delete(context.TODO(), "file_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -124,13 +124,13 @@ func TestOpenAIV1FileGetContent(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Files.GetContent(context.TODO(), "file_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

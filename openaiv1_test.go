@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestOpenAIV1CompletionsWithOptionalParams(t *testing.T) {
@@ -22,44 +22,44 @@ func TestOpenAIV1CompletionsWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Completions(context.TODO(), llamastackgoclient.OpenAIV1CompletionsParams{
+	_, err := client.OpenAI.V1.Completions(context.TODO(), llamastackclient.OpenAIV1CompletionsParams{
 		Model: "model",
-		Prompt: llamastackgoclient.OpenAIV1CompletionsParamsPromptUnion{
-			OfString: llamastackgoclient.String("string"),
+		Prompt: llamastackclient.OpenAIV1CompletionsParamsPromptUnion{
+			OfString: llamastackclient.String("string"),
 		},
-		BestOf:           llamastackgoclient.Int(0),
-		Echo:             llamastackgoclient.Bool(true),
-		FrequencyPenalty: llamastackgoclient.Float(0),
+		BestOf:           llamastackclient.Int(0),
+		Echo:             llamastackclient.Bool(true),
+		FrequencyPenalty: llamastackclient.Float(0),
 		GuidedChoice:     []string{"string"},
 		LogitBias: map[string]float64{
 			"foo": 0,
 		},
-		Logprobs:        llamastackgoclient.Bool(true),
-		MaxTokens:       llamastackgoclient.Int(0),
-		N:               llamastackgoclient.Int(0),
-		PresencePenalty: llamastackgoclient.Float(0),
-		PromptLogprobs:  llamastackgoclient.Int(0),
-		Seed:            llamastackgoclient.Int(0),
-		Stop: llamastackgoclient.OpenAIV1CompletionsParamsStopUnion{
-			OfString: llamastackgoclient.String("string"),
+		Logprobs:        llamastackclient.Bool(true),
+		MaxTokens:       llamastackclient.Int(0),
+		N:               llamastackclient.Int(0),
+		PresencePenalty: llamastackclient.Float(0),
+		PromptLogprobs:  llamastackclient.Int(0),
+		Seed:            llamastackclient.Int(0),
+		Stop: llamastackclient.OpenAIV1CompletionsParamsStopUnion{
+			OfString: llamastackclient.String("string"),
 		},
-		Stream: llamastackgoclient.Bool(true),
-		StreamOptions: map[string]llamastackgoclient.OpenAIV1CompletionsParamsStreamOptionUnion{
+		Stream: llamastackclient.Bool(true),
+		StreamOptions: map[string]llamastackclient.OpenAIV1CompletionsParamsStreamOptionUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
-		Suffix:      llamastackgoclient.String("suffix"),
-		Temperature: llamastackgoclient.Float(0),
-		TopP:        llamastackgoclient.Float(0),
-		User:        llamastackgoclient.String("user"),
+		Suffix:      llamastackclient.String("suffix"),
+		Temperature: llamastackclient.Float(0),
+		TopP:        llamastackclient.Float(0),
+		User:        llamastackclient.String("user"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -76,21 +76,21 @@ func TestOpenAIV1EmbeddingsWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Embeddings(context.TODO(), llamastackgoclient.OpenAIV1EmbeddingsParams{
-		Input: llamastackgoclient.OpenAIV1EmbeddingsParamsInputUnion{
-			OfString: llamastackgoclient.String("string"),
+	_, err := client.OpenAI.V1.Embeddings(context.TODO(), llamastackclient.OpenAIV1EmbeddingsParams{
+		Input: llamastackclient.OpenAIV1EmbeddingsParamsInputUnion{
+			OfString: llamastackclient.String("string"),
 		},
 		Model:          "model",
-		Dimensions:     llamastackgoclient.Int(0),
-		EncodingFormat: llamastackgoclient.String("encoding_format"),
-		User:           llamastackgoclient.String("user"),
+		Dimensions:     llamastackclient.Int(0),
+		EncodingFormat: llamastackclient.String("encoding_format"),
+		User:           llamastackclient.String("user"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -107,18 +107,18 @@ func TestOpenAIV1Moderations(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Moderations(context.TODO(), llamastackgoclient.OpenAIV1ModerationsParams{
-		Input: llamastackgoclient.OpenAIV1ModerationsParamsInputUnion{
-			OfString: llamastackgoclient.String("string"),
+	_, err := client.OpenAI.V1.Moderations(context.TODO(), llamastackclient.OpenAIV1ModerationsParams{
+		Input: llamastackclient.OpenAIV1ModerationsParamsInputUnion{
+			OfString: llamastackclient.String("string"),
 		},
 		Model: "model",
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -135,13 +135,13 @@ func TestOpenAIV1GetModels(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.GetModels(context.TODO())
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

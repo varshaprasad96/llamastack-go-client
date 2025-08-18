@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestTelemetryTraceQueryWithOptionalParams(t *testing.T) {
@@ -22,24 +22,24 @@ func TestTelemetryTraceQueryWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Telemetry.Traces.Query(context.TODO(), llamastackgoclient.TelemetryTraceQueryParams{
-		AttributeFilters: []llamastackgoclient.QueryConditionParam{{
+	_, err := client.Telemetry.Traces.Query(context.TODO(), llamastackclient.TelemetryTraceQueryParams{
+		AttributeFilters: []llamastackclient.QueryConditionParam{{
 			Key: "key",
-			Op:  llamastackgoclient.QueryConditionOpEq,
-			Value: llamastackgoclient.QueryConditionValueUnionParam{
-				OfBool: llamastackgoclient.Bool(true),
+			Op:  llamastackclient.QueryConditionOpEq,
+			Value: llamastackclient.QueryConditionValueUnionParam{
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
-		Limit:   llamastackgoclient.Int(0),
-		Offset:  llamastackgoclient.Int(0),
+		Limit:   llamastackclient.Int(0),
+		Offset:  llamastackclient.Int(0),
 		OrderBy: []string{"string"},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -56,19 +56,19 @@ func TestTelemetryTraceGetSpan(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Telemetry.Traces.GetSpan(
 		context.TODO(),
 		"span_id",
-		llamastackgoclient.TelemetryTraceGetSpanParams{
+		llamastackclient.TelemetryTraceGetSpanParams{
 			TraceID: "trace_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -85,13 +85,13 @@ func TestTelemetryTraceGetTrace(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Telemetry.Traces.GetTrace(context.TODO(), "trace_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

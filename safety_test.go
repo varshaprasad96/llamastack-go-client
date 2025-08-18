@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestSafetyRunShield(t *testing.T) {
@@ -22,30 +22,30 @@ func TestSafetyRunShield(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Safety.RunShield(context.TODO(), llamastackgoclient.SafetyRunShieldParams{
-		Messages: []llamastackgoclient.MessageUnionParam{{
-			OfUser: &llamastackgoclient.UserMessageParam{
-				Content: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+	_, err := client.Safety.RunShield(context.TODO(), llamastackclient.SafetyRunShieldParams{
+		Messages: []llamastackclient.MessageUnionParam{{
+			OfUser: &llamastackclient.UserMessageParam{
+				Content: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
-				Context: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+				Context: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
 			},
 		}},
-		Params: map[string]llamastackgoclient.SafetyRunShieldParamsParamUnion{
+		Params: map[string]llamastackclient.SafetyRunShieldParamsParamUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
 		ShieldID: "shield_id",
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

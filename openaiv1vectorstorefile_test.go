@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestOpenAIV1VectorStoreFileNewWithOptionalParams(t *testing.T) {
@@ -22,27 +22,27 @@ func TestOpenAIV1VectorStoreFileNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Files.New(
 		context.TODO(),
 		"vector_store_id",
-		llamastackgoclient.OpenAIV1VectorStoreFileNewParams{
+		llamastackclient.OpenAIV1VectorStoreFileNewParams{
 			FileID: "file_id",
-			Attributes: map[string]llamastackgoclient.OpenAIV1VectorStoreFileNewParamsAttributeUnion{
+			Attributes: map[string]llamastackclient.OpenAIV1VectorStoreFileNewParamsAttributeUnion{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			},
-			ChunkingStrategy: llamastackgoclient.ChunkingStrategyUnionParam{
-				OfAuto: &llamastackgoclient.ChunkingStrategyAutoParam{},
+			ChunkingStrategy: llamastackclient.ChunkingStrategyUnionParam{
+				OfAuto: &llamastackclient.ChunkingStrategyAutoParam{},
 			},
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -59,19 +59,19 @@ func TestOpenAIV1VectorStoreFileGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Files.Get(
 		context.TODO(),
 		"file_id",
-		llamastackgoclient.OpenAIV1VectorStoreFileGetParams{
+		llamastackclient.OpenAIV1VectorStoreFileGetParams{
 			VectorStoreID: "vector_store_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -88,24 +88,24 @@ func TestOpenAIV1VectorStoreFileUpdate(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Files.Update(
 		context.TODO(),
 		"file_id",
-		llamastackgoclient.OpenAIV1VectorStoreFileUpdateParams{
+		llamastackclient.OpenAIV1VectorStoreFileUpdateParams{
 			VectorStoreID: "vector_store_id",
-			Attributes: map[string]llamastackgoclient.OpenAIV1VectorStoreFileUpdateParamsAttributeUnion{
+			Attributes: map[string]llamastackclient.OpenAIV1VectorStoreFileUpdateParamsAttributeUnion{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			},
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -122,23 +122,23 @@ func TestOpenAIV1VectorStoreFileListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Files.List(
 		context.TODO(),
 		"vector_store_id",
-		llamastackgoclient.OpenAIV1VectorStoreFileListParams{
-			After:  llamastackgoclient.String("after"),
-			Before: llamastackgoclient.String("before"),
-			Filter: llamastackgoclient.FileStatusCompleted,
-			Limit:  llamastackgoclient.Int(0),
-			Order:  llamastackgoclient.String("order"),
+		llamastackclient.OpenAIV1VectorStoreFileListParams{
+			After:  llamastackclient.String("after"),
+			Before: llamastackclient.String("before"),
+			Filter: llamastackclient.FileStatusCompleted,
+			Limit:  llamastackclient.Int(0),
+			Order:  llamastackclient.String("order"),
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -155,19 +155,19 @@ func TestOpenAIV1VectorStoreFileDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Files.Delete(
 		context.TODO(),
 		"file_id",
-		llamastackgoclient.OpenAIV1VectorStoreFileDeleteParams{
+		llamastackclient.OpenAIV1VectorStoreFileDeleteParams{
 			VectorStoreID: "vector_store_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -184,19 +184,19 @@ func TestOpenAIV1VectorStoreFileGetContent(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Files.GetContent(
 		context.TODO(),
 		"file_id",
-		llamastackgoclient.OpenAIV1VectorStoreFileGetContentParams{
+		llamastackclient.OpenAIV1VectorStoreFileGetContentParams{
 			VectorStoreID: "vector_store_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

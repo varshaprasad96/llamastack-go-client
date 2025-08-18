@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestInferenceBatchChatCompletionWithOptionalParams(t *testing.T) {
@@ -22,64 +22,64 @@ func TestInferenceBatchChatCompletionWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Inference.BatchChatCompletion(context.TODO(), llamastackgoclient.InferenceBatchChatCompletionParams{
-		MessagesBatch: [][]llamastackgoclient.MessageUnionParam{{{
-			OfUser: &llamastackgoclient.UserMessageParam{
-				Content: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+	_, err := client.Inference.BatchChatCompletion(context.TODO(), llamastackclient.InferenceBatchChatCompletionParams{
+		MessagesBatch: [][]llamastackclient.MessageUnionParam{{{
+			OfUser: &llamastackclient.UserMessageParam{
+				Content: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
-				Context: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+				Context: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
 			},
 		}}},
 		ModelID: "model_id",
-		Logprobs: llamastackgoclient.InferenceBatchChatCompletionParamsLogprobs{
-			TopK: llamastackgoclient.Int(0),
+		Logprobs: llamastackclient.InferenceBatchChatCompletionParamsLogprobs{
+			TopK: llamastackclient.Int(0),
 		},
-		ResponseFormat: llamastackgoclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackgoclient.ResponseFormatJsonSchemaParam{
-				JsonSchema: map[string]llamastackgoclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
+		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				},
 			},
 		},
-		SamplingParams: llamastackgoclient.SamplingParams{
-			Strategy: llamastackgoclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackgoclient.SamplingParamsStrategyGreedy{},
+		SamplingParams: llamastackclient.SamplingParams{
+			Strategy: llamastackclient.SamplingParamsStrategyUnion{
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
-			MaxTokens:         llamastackgoclient.Int(0),
-			RepetitionPenalty: llamastackgoclient.Float(0),
+			MaxTokens:         llamastackclient.Int(0),
+			RepetitionPenalty: llamastackclient.Float(0),
 			Stop:              []string{"string"},
 		},
-		ToolConfig: llamastackgoclient.ToolConfigParam{
-			SystemMessageBehavior: llamastackgoclient.ToolConfigSystemMessageBehaviorAppend,
-			ToolChoice:            llamastackgoclient.ToolConfigToolChoiceAuto,
-			ToolPromptFormat:      llamastackgoclient.ToolConfigToolPromptFormatJson,
+		ToolConfig: llamastackclient.ToolConfigParam{
+			SystemMessageBehavior: llamastackclient.ToolConfigSystemMessageBehaviorAppend,
+			ToolChoice:            llamastackclient.ToolConfigToolChoiceAuto,
+			ToolPromptFormat:      llamastackclient.ToolConfigToolPromptFormatJson,
 		},
-		Tools: []llamastackgoclient.ToolDefinitionParam{{
-			ToolName:    llamastackgoclient.ToolDefinitionToolNameBraveSearch,
-			Description: llamastackgoclient.String("description"),
-			Parameters: map[string]llamastackgoclient.ToolDefinitionParameterParam{
+		Tools: []llamastackclient.ToolDefinitionParam{{
+			ToolName:    llamastackclient.ToolDefinitionToolNameBraveSearch,
+			Description: llamastackclient.String("description"),
+			Parameters: map[string]llamastackclient.ToolDefinitionParameterParam{
 				"foo": {
 					ParamType: "param_type",
-					Default: llamastackgoclient.ToolDefinitionParameterDefaultUnionParam{
-						OfBool: llamastackgoclient.Bool(true),
+					Default: llamastackclient.ToolDefinitionParameterDefaultUnionParam{
+						OfBool: llamastackclient.Bool(true),
 					},
-					Description: llamastackgoclient.String("description"),
-					Required:    llamastackgoclient.Bool(true),
+					Description: llamastackclient.String("description"),
+					Required:    llamastackclient.Bool(true),
 				},
 			},
 		}},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -96,38 +96,38 @@ func TestInferenceBatchCompletionWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Inference.BatchCompletion(context.TODO(), llamastackgoclient.InferenceBatchCompletionParams{
-		ContentBatch: []llamastackgoclient.InterleavedContentUnionParam{{
-			OfString: llamastackgoclient.String("string"),
+	_, err := client.Inference.BatchCompletion(context.TODO(), llamastackclient.InferenceBatchCompletionParams{
+		ContentBatch: []llamastackclient.InterleavedContentUnionParam{{
+			OfString: llamastackclient.String("string"),
 		}},
 		ModelID: "model_id",
-		Logprobs: llamastackgoclient.InferenceBatchCompletionParamsLogprobs{
-			TopK: llamastackgoclient.Int(0),
+		Logprobs: llamastackclient.InferenceBatchCompletionParamsLogprobs{
+			TopK: llamastackclient.Int(0),
 		},
-		ResponseFormat: llamastackgoclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackgoclient.ResponseFormatJsonSchemaParam{
-				JsonSchema: map[string]llamastackgoclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
+		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				},
 			},
 		},
-		SamplingParams: llamastackgoclient.SamplingParams{
-			Strategy: llamastackgoclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackgoclient.SamplingParamsStrategyGreedy{},
+		SamplingParams: llamastackclient.SamplingParams{
+			Strategy: llamastackclient.SamplingParamsStrategyUnion{
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
-			MaxTokens:         llamastackgoclient.Int(0),
-			RepetitionPenalty: llamastackgoclient.Float(0),
+			MaxTokens:         llamastackclient.Int(0),
+			RepetitionPenalty: llamastackclient.Float(0),
 			Stop:              []string{"string"},
 		},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -144,67 +144,67 @@ func TestInferenceChatCompletionWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Inference.ChatCompletion(context.TODO(), llamastackgoclient.InferenceChatCompletionParams{
-		Messages: []llamastackgoclient.MessageUnionParam{{
-			OfUser: &llamastackgoclient.UserMessageParam{
-				Content: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+	_, err := client.Inference.ChatCompletion(context.TODO(), llamastackclient.InferenceChatCompletionParams{
+		Messages: []llamastackclient.MessageUnionParam{{
+			OfUser: &llamastackclient.UserMessageParam{
+				Content: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
-				Context: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+				Context: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
 			},
 		}},
 		ModelID: "model_id",
-		Logprobs: llamastackgoclient.InferenceChatCompletionParamsLogprobs{
-			TopK: llamastackgoclient.Int(0),
+		Logprobs: llamastackclient.InferenceChatCompletionParamsLogprobs{
+			TopK: llamastackclient.Int(0),
 		},
-		ResponseFormat: llamastackgoclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackgoclient.ResponseFormatJsonSchemaParam{
-				JsonSchema: map[string]llamastackgoclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
+		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				},
 			},
 		},
-		SamplingParams: llamastackgoclient.SamplingParams{
-			Strategy: llamastackgoclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackgoclient.SamplingParamsStrategyGreedy{},
+		SamplingParams: llamastackclient.SamplingParams{
+			Strategy: llamastackclient.SamplingParamsStrategyUnion{
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
-			MaxTokens:         llamastackgoclient.Int(0),
-			RepetitionPenalty: llamastackgoclient.Float(0),
+			MaxTokens:         llamastackclient.Int(0),
+			RepetitionPenalty: llamastackclient.Float(0),
 			Stop:              []string{"string"},
 		},
-		Stream:     llamastackgoclient.Bool(true),
-		ToolChoice: llamastackgoclient.InferenceChatCompletionParamsToolChoiceAuto,
-		ToolConfig: llamastackgoclient.ToolConfigParam{
-			SystemMessageBehavior: llamastackgoclient.ToolConfigSystemMessageBehaviorAppend,
-			ToolChoice:            llamastackgoclient.ToolConfigToolChoiceAuto,
-			ToolPromptFormat:      llamastackgoclient.ToolConfigToolPromptFormatJson,
+		Stream:     llamastackclient.Bool(true),
+		ToolChoice: llamastackclient.InferenceChatCompletionParamsToolChoiceAuto,
+		ToolConfig: llamastackclient.ToolConfigParam{
+			SystemMessageBehavior: llamastackclient.ToolConfigSystemMessageBehaviorAppend,
+			ToolChoice:            llamastackclient.ToolConfigToolChoiceAuto,
+			ToolPromptFormat:      llamastackclient.ToolConfigToolPromptFormatJson,
 		},
-		ToolPromptFormat: llamastackgoclient.InferenceChatCompletionParamsToolPromptFormatJson,
-		Tools: []llamastackgoclient.ToolDefinitionParam{{
-			ToolName:    llamastackgoclient.ToolDefinitionToolNameBraveSearch,
-			Description: llamastackgoclient.String("description"),
-			Parameters: map[string]llamastackgoclient.ToolDefinitionParameterParam{
+		ToolPromptFormat: llamastackclient.InferenceChatCompletionParamsToolPromptFormatJson,
+		Tools: []llamastackclient.ToolDefinitionParam{{
+			ToolName:    llamastackclient.ToolDefinitionToolNameBraveSearch,
+			Description: llamastackclient.String("description"),
+			Parameters: map[string]llamastackclient.ToolDefinitionParameterParam{
 				"foo": {
 					ParamType: "param_type",
-					Default: llamastackgoclient.ToolDefinitionParameterDefaultUnionParam{
-						OfBool: llamastackgoclient.Bool(true),
+					Default: llamastackclient.ToolDefinitionParameterDefaultUnionParam{
+						OfBool: llamastackclient.Bool(true),
 					},
-					Description: llamastackgoclient.String("description"),
-					Required:    llamastackgoclient.Bool(true),
+					Description: llamastackclient.String("description"),
+					Required:    llamastackclient.Bool(true),
 				},
 			},
 		}},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -221,39 +221,39 @@ func TestInferenceCompletionWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Inference.Completion(context.TODO(), llamastackgoclient.InferenceCompletionParams{
-		Content: llamastackgoclient.InterleavedContentUnionParam{
-			OfString: llamastackgoclient.String("string"),
+	_, err := client.Inference.Completion(context.TODO(), llamastackclient.InferenceCompletionParams{
+		Content: llamastackclient.InterleavedContentUnionParam{
+			OfString: llamastackclient.String("string"),
 		},
 		ModelID: "model_id",
-		Logprobs: llamastackgoclient.InferenceCompletionParamsLogprobs{
-			TopK: llamastackgoclient.Int(0),
+		Logprobs: llamastackclient.InferenceCompletionParamsLogprobs{
+			TopK: llamastackclient.Int(0),
 		},
-		ResponseFormat: llamastackgoclient.ResponseFormatUnionParam{
-			OfJsonSchema: &llamastackgoclient.ResponseFormatJsonSchemaParam{
-				JsonSchema: map[string]llamastackgoclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
+		ResponseFormat: llamastackclient.ResponseFormatUnionParam{
+			OfJsonSchema: &llamastackclient.ResponseFormatJsonSchemaParam{
+				JsonSchema: map[string]llamastackclient.ResponseFormatJsonSchemaJsonSchemaUnionParam{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				},
 			},
 		},
-		SamplingParams: llamastackgoclient.SamplingParams{
-			Strategy: llamastackgoclient.SamplingParamsStrategyUnion{
-				OfGreedy: &llamastackgoclient.SamplingParamsStrategyGreedy{},
+		SamplingParams: llamastackclient.SamplingParams{
+			Strategy: llamastackclient.SamplingParamsStrategyUnion{
+				OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 			},
-			MaxTokens:         llamastackgoclient.Int(0),
-			RepetitionPenalty: llamastackgoclient.Float(0),
+			MaxTokens:         llamastackclient.Int(0),
+			RepetitionPenalty: llamastackclient.Float(0),
 			Stop:              []string{"string"},
 		},
-		Stream: llamastackgoclient.Bool(true),
+		Stream: llamastackclient.Bool(true),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -270,21 +270,21 @@ func TestInferenceEmbeddingsWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Inference.Embeddings(context.TODO(), llamastackgoclient.InferenceEmbeddingsParams{
-		Contents: llamastackgoclient.InferenceEmbeddingsParamsContentsUnion{
+	_, err := client.Inference.Embeddings(context.TODO(), llamastackclient.InferenceEmbeddingsParams{
+		Contents: llamastackclient.InferenceEmbeddingsParamsContentsUnion{
 			OfStringArray: []string{"string"},
 		},
 		ModelID:         "model_id",
-		OutputDimension: llamastackgoclient.Int(0),
-		TaskType:        llamastackgoclient.InferenceEmbeddingsParamsTaskTypeQuery,
-		TextTruncation:  llamastackgoclient.InferenceEmbeddingsParamsTextTruncationNone,
+		OutputDimension: llamastackclient.Int(0),
+		TaskType:        llamastackclient.InferenceEmbeddingsParamsTaskTypeQuery,
+		TextTruncation:  llamastackclient.InferenceEmbeddingsParamsTextTruncationNone,
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

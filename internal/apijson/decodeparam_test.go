@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"reflect"
 	"testing"
 )

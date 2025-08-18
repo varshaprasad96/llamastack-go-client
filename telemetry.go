@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
 )
 
 // TelemetryService contains methods and other services that help with interacting
@@ -324,9 +324,9 @@ type telemetryLogEventParamsEventUnionAttributes struct{ any }
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
-//	case *map[string]llamastackgoclient.TelemetryLogEventParamsEventUnstructuredLogEventAttributeUnion:
-//	case *map[string]llamastackgoclient.TelemetryLogEventParamsEventMetricEventAttributeUnion:
-//	case *map[string]llamastackgoclient.TelemetryLogEventParamsEventStructuredLogEventAttributeUnion:
+//	case *map[string]llamastackclient.TelemetryLogEventParamsEventUnstructuredLogEventAttributeUnion:
+//	case *map[string]llamastackclient.TelemetryLogEventParamsEventMetricEventAttributeUnion:
+//	case *map[string]llamastackclient.TelemetryLogEventParamsEventStructuredLogEventAttributeUnion:
 //	default:
 //	    fmt.Errorf("not present")
 //	}

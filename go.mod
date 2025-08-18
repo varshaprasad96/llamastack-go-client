@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/llamastack-go-client-go
+module github.com/varshaprasad96/llamastack-go-client
 
 go 1.21
 

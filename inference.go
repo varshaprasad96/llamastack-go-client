@@ -1,18 +1,18 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
 	"encoding/json"
 	"net/http"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
-	"github.com/stainless-sdks/llamastack-go-client-go/shared/constant"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // InferenceService contains methods and other services that help with interacting
@@ -186,44 +186,6 @@ func (r CompletionMessageParam) MarshalJSON() (data []byte, err error) {
 func (r *CompletionMessageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Response from a completion request.
-type CompletionResponse struct {
-	// The generated completion text
-	Content string `json:"content,required"`
-	// Reason why generation stopped
-	//
-	// Any of "end_of_turn", "end_of_message", "out_of_tokens".
-	StopReason CompletionResponseStopReason `json:"stop_reason,required"`
-	// Optional log probabilities for generated tokens
-	Logprobs []TokenLogProbs `json:"logprobs"`
-	// (Optional) List of metrics associated with the API response
-	Metrics []MetricInResponse `json:"metrics"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Content     respjson.Field
-		StopReason  respjson.Field
-		Logprobs    respjson.Field
-		Metrics     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CompletionResponse) RawJSON() string { return r.JSON.raw }
-func (r *CompletionResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reason why generation stopped
-type CompletionResponseStopReason string
-
-const (
-	CompletionResponseStopReasonEndOfTurn    CompletionResponseStopReason = "end_of_turn"
-	CompletionResponseStopReasonEndOfMessage CompletionResponseStopReason = "end_of_message"
-	CompletionResponseStopReasonOutOfTokens  CompletionResponseStopReason = "out_of_tokens"
-)
 
 // InterleavedContentUnion contains all possible properties and values from
 // [string], [InterleavedContentImageContentItem],
@@ -517,8 +479,8 @@ func (InterleavedContentItemText) implInterleavedContentItemUnion()  {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := InterleavedContentItemUnion.AsAny().(type) {
-//	case llamastackgoclient.InterleavedContentItemImage:
-//	case llamastackgoclient.InterleavedContentItemText:
+//	case llamastackclient.InterleavedContentItemImage:
+//	case llamastackclient.InterleavedContentItemText:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -982,8 +944,8 @@ func (ResponseFormatGrammar) implResponseFormatUnion()    {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := ResponseFormatUnion.AsAny().(type) {
-//	case llamastackgoclient.ResponseFormatJsonSchema:
-//	case llamastackgoclient.ResponseFormatGrammar:
+//	case llamastackclient.ResponseFormatJsonSchema:
+//	case llamastackclient.ResponseFormatGrammar:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1425,9 +1387,9 @@ func (SamplingParamsStrategyTopKResp) implSamplingParamsStrategyUnionResp()   {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := SamplingParamsStrategyUnionResp.AsAny().(type) {
-//	case llamastackgoclient.SamplingParamsStrategyGreedyResp:
-//	case llamastackgoclient.SamplingParamsStrategyTopPResp:
-//	case llamastackgoclient.SamplingParamsStrategyTopKResp:
+//	case llamastackclient.SamplingParamsStrategyGreedyResp:
+//	case llamastackclient.SamplingParamsStrategyTopPResp:
+//	case llamastackclient.SamplingParamsStrategyTopKResp:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1720,24 +1682,6 @@ func (r SystemMessageParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SystemMessageParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Log probabilities for generated tokens.
-type TokenLogProbs struct {
-	// Dictionary mapping tokens to their log probabilities
-	LogprobsByToken map[string]float64 `json:"logprobs_by_token,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		LogprobsByToken respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TokenLogProbs) RawJSON() string { return r.JSON.raw }
-func (r *TokenLogProbs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

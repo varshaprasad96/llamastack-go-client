@@ -1,6 +1,6 @@
 # Llamastack Go Client Go API Library
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/llamastack-go-client-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/llamastack-go-client-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client"><img src="https://pkg.go.dev/badge/github.com/varshaprasad96/llamastack-go-client.svg" alt="Go Reference"></a>
 
 The Llamastack Go Client Go library provides convenient access to the Llamastack Go Client REST API
 from applications written in Go.
@@ -9,17 +9,25 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/llamastack-go-client-go" // imported as llamastackgoclient
+	"github.com/varshaprasad96/llamastack-go-client" // imported as llamastackclient
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/llamastack-go-client-go@v0.0.1'
+go get -u 'github.com/varshaprasad96/llamastack-go-client@v0.0.1'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -35,21 +43,21 @@ package main
 import (
 	"context"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func main() {
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("LLAMASTACK_GO_CLIENT_API_KEY")
 	)
 	err := client.Datasetio.AppendRows(
 		context.TODO(),
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -63,13 +71,13 @@ func main() {
 
 ### Request fields
 
-The llamastackgoclient library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+The llamastackclient library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
 semantics from the Go 1.24+ `encoding/json` release for request fields.
 
 Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:"...,required"\`</code>. These
 fields are always serialized, even their zero values.
 
-Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `llamastackgoclient.String(string)`, `llamastackgoclient.Int(int64)`, etc.
+Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `llamastackclient.String(string)`, `llamastackclient.Int(int64)`, etc.
 
 Any `param.Opt[T]`, map, slice, struct or string enum uses the
 tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
@@ -77,17 +85,17 @@ tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
 The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
 
 ```go
-p := llamastackgoclient.ExampleParams{
-	ID:   "id_xxx",                         // required property
-	Name: llamastackgoclient.String("..."), // optional property
+p := llamastackclient.ExampleParams{
+	ID:   "id_xxx",                       // required property
+	Name: llamastackclient.String("..."), // optional property
 
-	Point: llamastackgoclient.Point{
-		X: 0,                         // required field will serialize as 0
-		Y: llamastackgoclient.Int(1), // optional field will serialize as 1
+	Point: llamastackclient.Point{
+		X: 0,                       // required field will serialize as 0
+		Y: llamastackclient.Int(1), // optional field will serialize as 1
 		// ... omitted non-required fields will not be serialized
 	},
 
-	Origin: llamastackgoclient.Origin{}, // the zero value of [Origin] is considered omitted
+	Origin: llamastackclient.Origin{}, // the zero value of [Origin] is considered omitted
 }
 ```
 
@@ -116,7 +124,7 @@ p.SetExtraFields(map[string]any{
 })
 
 // Send a number instead of an object
-custom := param.Override[llamastackgoclient.FooParams](12)
+custom := param.Override[llamastackclient.FooParams](12)
 ```
 
 ### Request unions
@@ -257,7 +265,7 @@ This library uses the functional options pattern. Functions defined in the
 requests. For example:
 
 ```go
-client := llamastackgoclient.NewClient(
+client := llamastackclient.NewClient(
 	// Adds a header to every request made by the client
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
@@ -272,7 +280,7 @@ client.Datasetio.AppendRows(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/llamastack-go-client-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/option).
 
 ### Pagination
 
@@ -286,7 +294,7 @@ with additional helper methods like `.GetNextPage()`, e.g.:
 ### Errors
 
 When the API returns a non-success status code, we return an error with type
-`*llamastackgoclient.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*llamastackclient.Error`. This contains the `StatusCode`, `*http.Request`, and
 `*http.Response` values of the request, as well as the JSON of the error body
 (much like other response objects in the SDK).
 
@@ -296,16 +304,16 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 err := client.Datasetio.AppendRows(
 	context.TODO(),
 	"REPLACE_ME",
-	llamastackgoclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+	llamastackclient.DatasetioAppendRowsParams{
+		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
 	},
 )
 if err != nil {
-	var apierr *llamastackgoclient.Error
+	var apierr *llamastackclient.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
@@ -331,10 +339,10 @@ defer cancel()
 client.Datasetio.AppendRows(
 	ctx,
 	"REPLACE_ME",
-	llamastackgoclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+	llamastackclient.DatasetioAppendRowsParams{
+		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
 	},
@@ -353,27 +361,27 @@ The file name and content-type can be customized by implementing `Name() string`
 string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
 file returned by `os.Open` will be sent with the file name on disk.
 
-We also provide a helper `llamastackgoclient.File(reader io.Reader, filename string, contentType string)`
+We also provide a helper `llamastackclient.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-llamastackgoclient.OpenAIV1FileNewParams{
+llamastackclient.OpenAIV1FileNewParams{
 	File:    file,
-	Purpose: llamastackgoclient.FilePurposeAssistants,
+	Purpose: llamastackclient.FilePurposeAssistants,
 }
 
 // A file from a string
-llamastackgoclient.OpenAIV1FileNewParams{
+llamastackclient.OpenAIV1FileNewParams{
 	File:    strings.NewReader("my file contents"),
-	Purpose: llamastackgoclient.FilePurposeAssistants,
+	Purpose: llamastackclient.FilePurposeAssistants,
 }
 
 // With a custom filename and contentType
-llamastackgoclient.OpenAIV1FileNewParams{
-	File:    llamastackgoclient.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
-	Purpose: llamastackgoclient.FilePurposeAssistants,
+llamastackclient.OpenAIV1FileNewParams{
+	File:    llamastackclient.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
+	Purpose: llamastackclient.FilePurposeAssistants,
 }
 ```
 
@@ -387,7 +395,7 @@ You can use the `WithMaxRetries` option to configure or disable this:
 
 ```go
 // Configure the default for all requests:
-client := llamastackgoclient.NewClient(
+client := llamastackclient.NewClient(
 	option.WithMaxRetries(0), // default is 2
 )
 
@@ -395,10 +403,10 @@ client := llamastackgoclient.NewClient(
 client.Datasetio.AppendRows(
 	context.TODO(),
 	"REPLACE_ME",
-	llamastackgoclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+	llamastackclient.DatasetioAppendRowsParams{
+		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
 	},
@@ -417,10 +425,10 @@ var response *http.Response
 err := client.Datasetio.AppendRows(
 	context.TODO(),
 	"REPLACE_ME",
-	llamastackgoclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+	llamastackclient.DatasetioAppendRowsParams{
+		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
 	},
@@ -470,7 +478,7 @@ or the `option.WithJSONSet()` methods.
 params := FooNewParams{
     ID:   "id_xxxx",
     Data: FooNewParamsData{
-        FirstName: llamastackgoclient.String("John"),
+        FirstName: llamastackclient.String("John"),
     },
 }
 client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
@@ -505,7 +513,7 @@ func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, 
     return res, err
 }
 
-client := llamastackgoclient.NewClient(
+client := llamastackclient.NewClient(
 	option.WithMiddleware(Logger),
 )
 ```
@@ -530,7 +538,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/llamastack-go-client-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/varshaprasad96/llamastack-go-client/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

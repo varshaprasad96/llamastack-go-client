@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestAgentSessionTurnNewWithOptionalParams(t *testing.T) {
@@ -22,44 +22,44 @@ func TestAgentSessionTurnNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Agents.Session.Turn.New(
 		context.TODO(),
 		"session_id",
-		llamastackgoclient.AgentSessionTurnNewParams{
+		llamastackclient.AgentSessionTurnNewParams{
 			AgentID: "agent_id",
-			Messages: []llamastackgoclient.AgentSessionTurnNewParamsMessageUnion{{
-				OfUserMessage: &llamastackgoclient.UserMessageParam{
-					Content: llamastackgoclient.InterleavedContentUnionParam{
-						OfString: llamastackgoclient.String("string"),
+			Messages: []llamastackclient.AgentSessionTurnNewParamsMessageUnion{{
+				OfUserMessage: &llamastackclient.UserMessageParam{
+					Content: llamastackclient.InterleavedContentUnionParam{
+						OfString: llamastackclient.String("string"),
 					},
-					Context: llamastackgoclient.InterleavedContentUnionParam{
-						OfString: llamastackgoclient.String("string"),
+					Context: llamastackclient.InterleavedContentUnionParam{
+						OfString: llamastackclient.String("string"),
 					},
 				},
 			}},
-			Documents: []llamastackgoclient.AgentSessionTurnNewParamsDocument{{
-				Content: llamastackgoclient.AgentSessionTurnNewParamsDocumentContentUnion{
-					OfString: llamastackgoclient.String("string"),
+			Documents: []llamastackclient.AgentSessionTurnNewParamsDocument{{
+				Content: llamastackclient.AgentSessionTurnNewParamsDocumentContentUnion{
+					OfString: llamastackclient.String("string"),
 				},
 				MimeType: "mime_type",
 			}},
-			Stream: llamastackgoclient.Bool(true),
-			ToolConfig: llamastackgoclient.ToolConfigParam{
-				SystemMessageBehavior: llamastackgoclient.ToolConfigSystemMessageBehaviorAppend,
-				ToolChoice:            llamastackgoclient.ToolConfigToolChoiceAuto,
-				ToolPromptFormat:      llamastackgoclient.ToolConfigToolPromptFormatJson,
+			Stream: llamastackclient.Bool(true),
+			ToolConfig: llamastackclient.ToolConfigParam{
+				SystemMessageBehavior: llamastackclient.ToolConfigSystemMessageBehaviorAppend,
+				ToolChoice:            llamastackclient.ToolConfigToolChoiceAuto,
+				ToolPromptFormat:      llamastackclient.ToolConfigToolPromptFormatJson,
 			},
-			Toolgroups: []llamastackgoclient.AgentToolUnionParam{{
-				OfString: llamastackgoclient.String("string"),
+			Toolgroups: []llamastackclient.AgentToolUnionParam{{
+				OfString: llamastackclient.String("string"),
 			}},
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -76,20 +76,20 @@ func TestAgentSessionTurnGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Agents.Session.Turn.Get(
 		context.TODO(),
 		"turn_id",
-		llamastackgoclient.AgentSessionTurnGetParams{
+		llamastackclient.AgentSessionTurnGetParams{
 			AgentID:   "agent_id",
 			SessionID: "session_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -106,33 +106,33 @@ func TestAgentSessionTurnResumeWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Agents.Session.Turn.Resume(
 		context.TODO(),
 		"turn_id",
-		llamastackgoclient.AgentSessionTurnResumeParams{
+		llamastackclient.AgentSessionTurnResumeParams{
 			AgentID:   "agent_id",
 			SessionID: "session_id",
-			ToolResponses: []llamastackgoclient.ToolResponseParam{{
+			ToolResponses: []llamastackclient.ToolResponseParam{{
 				CallID: "call_id",
-				Content: llamastackgoclient.InterleavedContentUnionParam{
-					OfString: llamastackgoclient.String("string"),
+				Content: llamastackclient.InterleavedContentUnionParam{
+					OfString: llamastackclient.String("string"),
 				},
-				ToolName: llamastackgoclient.ToolResponseToolNameBraveSearch,
-				Metadata: map[string]llamastackgoclient.ToolResponseMetadataUnionParam{
+				ToolName: llamastackclient.ToolResponseToolNameBraveSearch,
+				Metadata: map[string]llamastackclient.ToolResponseMetadataUnionParam{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				},
 			}},
-			Stream: llamastackgoclient.Bool(true),
+			Stream: llamastackclient.Bool(true),
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

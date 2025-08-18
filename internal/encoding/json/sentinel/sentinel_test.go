@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/encoding/json/sentinel"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/internal/encoding/json/sentinel"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"reflect"
 	"slices"
 	"testing"
