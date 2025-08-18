@@ -15,31 +15,10 @@ import (
 // interacting with the llamastack-go-client API. You should not instantiate this
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options                 []option.RequestOption
-	Shared                  SharedService
-	Datasetio               DatasetioService
-	Inference               InferenceService
-	PostTraining            PostTrainingService
-	Agents                  AgentService
-	OpenAI                  OpenAIService
-	Eval                    EvalService
-	Datasets                DatasetService
-	Models                  ModelService
-	ScoringFunctions        ScoringFunctionService
-	Shields                 ShieldService
-	Telemetry               TelemetryService
-	Tools                   ToolService
-	Toolgroups              ToolgroupService
-	VectorDBs               VectorDBService
-	Health                  HealthService
-	ToolRuntime             ToolRuntimeService
-	VectorIo                VectorIoService
-	Providers               ProviderService
-	Inspect                 InspectService
-	Safety                  SafetyService
-	Scoring                 ScoringService
-	SyntheticDataGeneration SyntheticDataGenerationService
-	Version                 VersionService
+	Options   []option.RequestOption
+	Types     TypeService
+	Datasetio DatasetioService
+	Inference InferenceService
 }
 
 // DefaultClientOptions read from the environment (LLAMASTACK_GO_CLIENT_API_KEY,
@@ -64,30 +43,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
-	r.Shared = NewSharedService(opts...)
+	r.Types = NewTypeService(opts...)
 	r.Datasetio = NewDatasetioService(opts...)
 	r.Inference = NewInferenceService(opts...)
-	r.PostTraining = NewPostTrainingService(opts...)
-	r.Agents = NewAgentService(opts...)
-	r.OpenAI = NewOpenAIService(opts...)
-	r.Eval = NewEvalService(opts...)
-	r.Datasets = NewDatasetService(opts...)
-	r.Models = NewModelService(opts...)
-	r.ScoringFunctions = NewScoringFunctionService(opts...)
-	r.Shields = NewShieldService(opts...)
-	r.Telemetry = NewTelemetryService(opts...)
-	r.Tools = NewToolService(opts...)
-	r.Toolgroups = NewToolgroupService(opts...)
-	r.VectorDBs = NewVectorDBService(opts...)
-	r.Health = NewHealthService(opts...)
-	r.ToolRuntime = NewToolRuntimeService(opts...)
-	r.VectorIo = NewVectorIoService(opts...)
-	r.Providers = NewProviderService(opts...)
-	r.Inspect = NewInspectService(opts...)
-	r.Safety = NewSafetyService(opts...)
-	r.Scoring = NewScoringService(opts...)
-	r.SyntheticDataGeneration = NewSyntheticDataGenerationService(opts...)
-	r.Version = NewVersionService(opts...)
 
 	return
 }
