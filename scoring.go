@@ -4,6 +4,7 @@ package llamastackclient
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -11,7 +12,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared"
 )
 
 // ScoringService contains methods and other services that help with interacting
@@ -52,7 +52,7 @@ func (r *ScoringService) ScoreBatch(ctx context.Context, body ScoringScoreBatchP
 // The response from scoring.
 type ScoringScoreResponse struct {
 	// A map of scoring function name to ScoringResult.
-	Results map[string]shared.ScoringResult `json:"results,required"`
+	Results map[string]ScoringScoreResponseResult `json:"results,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Results     respjson.Field
@@ -67,10 +67,135 @@ func (r *ScoringScoreResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A scoring result for a single row.
+type ScoringScoreResponseResult struct {
+	// Map of metric name to aggregated value
+	AggregatedResults map[string]ScoringScoreResponseResultAggregatedResultUnion `json:"aggregated_results,required"`
+	// The scoring result for each row. Each row is a map of column name to value.
+	ScoreRows []map[string]ScoringScoreResponseResultScoreRowUnion `json:"score_rows,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AggregatedResults respjson.Field
+		ScoreRows         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ScoringScoreResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *ScoringScoreResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ScoringScoreResponseResultAggregatedResultUnion contains all possible properties
+// and values from [bool], [float64], [string], [[]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type ScoringScoreResponseResultAggregatedResultUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u ScoringScoreResponseResultAggregatedResultUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreResponseResultAggregatedResultUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreResponseResultAggregatedResultUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreResponseResultAggregatedResultUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ScoringScoreResponseResultAggregatedResultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ScoringScoreResponseResultAggregatedResultUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ScoringScoreResponseResultScoreRowUnion contains all possible properties and
+// values from [bool], [float64], [string], [[]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type ScoringScoreResponseResultScoreRowUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u ScoringScoreResponseResultScoreRowUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreResponseResultScoreRowUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreResponseResultScoreRowUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreResponseResultScoreRowUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ScoringScoreResponseResultScoreRowUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ScoringScoreResponseResultScoreRowUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response from batch scoring operations on datasets.
 type ScoringScoreBatchResponse struct {
 	// A map of scoring function name to ScoringResult
-	Results map[string]shared.ScoringResult `json:"results,required"`
+	Results map[string]ScoringScoreBatchResponseResult `json:"results,required"`
 	// (Optional) The identifier of the dataset that was scored
 	DatasetID string `json:"dataset_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -85,6 +210,131 @@ type ScoringScoreBatchResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ScoringScoreBatchResponse) RawJSON() string { return r.JSON.raw }
 func (r *ScoringScoreBatchResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A scoring result for a single row.
+type ScoringScoreBatchResponseResult struct {
+	// Map of metric name to aggregated value
+	AggregatedResults map[string]ScoringScoreBatchResponseResultAggregatedResultUnion `json:"aggregated_results,required"`
+	// The scoring result for each row. Each row is a map of column name to value.
+	ScoreRows []map[string]ScoringScoreBatchResponseResultScoreRowUnion `json:"score_rows,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AggregatedResults respjson.Field
+		ScoreRows         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ScoringScoreBatchResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *ScoringScoreBatchResponseResult) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ScoringScoreBatchResponseResultAggregatedResultUnion contains all possible
+// properties and values from [bool], [float64], [string], [[]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type ScoringScoreBatchResponseResultAggregatedResultUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u ScoringScoreBatchResponseResultAggregatedResultUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreBatchResponseResultAggregatedResultUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreBatchResponseResultAggregatedResultUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreBatchResponseResultAggregatedResultUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ScoringScoreBatchResponseResultAggregatedResultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ScoringScoreBatchResponseResultAggregatedResultUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ScoringScoreBatchResponseResultScoreRowUnion contains all possible properties
+// and values from [bool], [float64], [string], [[]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type ScoringScoreBatchResponseResultScoreRowUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u ScoringScoreBatchResponseResultScoreRowUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreBatchResponseResultScoreRowUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreBatchResponseResultScoreRowUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ScoringScoreBatchResponseResultScoreRowUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ScoringScoreBatchResponseResultScoreRowUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ScoringScoreBatchResponseResultScoreRowUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

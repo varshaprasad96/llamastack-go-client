@@ -59,101 +59,6 @@ func (r *PostTrainingService) OptimizePreferences(ctx context.Context, body Post
 	return
 }
 
-// Configuration for training data and data loading.
-//
-// The properties BatchSize, DataFormat, DatasetID, Shuffle are required.
-type DataConfigParam struct {
-	// Number of samples per training batch
-	BatchSize int64 `json:"batch_size,required"`
-	// Format of the dataset (instruct or dialog)
-	//
-	// Any of "instruct", "dialog".
-	DataFormat DataConfigDataFormat `json:"data_format,omitzero,required"`
-	// Unique identifier for the training dataset
-	DatasetID string `json:"dataset_id,required"`
-	// Whether to shuffle the dataset during training
-	Shuffle bool `json:"shuffle,required"`
-	// (Optional) Whether to pack multiple samples into a single sequence for
-	// efficiency
-	Packed param.Opt[bool] `json:"packed,omitzero"`
-	// (Optional) Whether to compute loss on input tokens as well as output tokens
-	TrainOnInput param.Opt[bool] `json:"train_on_input,omitzero"`
-	// (Optional) Unique identifier for the validation dataset
-	ValidationDatasetID param.Opt[string] `json:"validation_dataset_id,omitzero"`
-	paramObj
-}
-
-func (r DataConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow DataConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *DataConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Format of the dataset (instruct or dialog)
-type DataConfigDataFormat string
-
-const (
-	DataConfigDataFormatInstruct DataConfigDataFormat = "instruct"
-	DataConfigDataFormatDialog   DataConfigDataFormat = "dialog"
-)
-
-// Configuration for memory and compute efficiency optimizations.
-type EfficiencyConfigParam struct {
-	// (Optional) Whether to use activation checkpointing to reduce memory usage
-	EnableActivationCheckpointing param.Opt[bool] `json:"enable_activation_checkpointing,omitzero"`
-	// (Optional) Whether to offload activations to CPU to save GPU memory
-	EnableActivationOffloading param.Opt[bool] `json:"enable_activation_offloading,omitzero"`
-	// (Optional) Whether to offload FSDP parameters to CPU
-	FsdpCPUOffload param.Opt[bool] `json:"fsdp_cpu_offload,omitzero"`
-	// (Optional) Whether to use memory-efficient FSDP wrapping
-	MemoryEfficientFsdpWrap param.Opt[bool] `json:"memory_efficient_fsdp_wrap,omitzero"`
-	paramObj
-}
-
-func (r EfficiencyConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow EfficiencyConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *EfficiencyConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configuration parameters for the optimization algorithm.
-//
-// The properties Lr, NumWarmupSteps, OptimizerType, WeightDecay are required.
-type OptimizerConfigParam struct {
-	// Learning rate for the optimizer
-	Lr float64 `json:"lr,required"`
-	// Number of steps for learning rate warmup
-	NumWarmupSteps int64 `json:"num_warmup_steps,required"`
-	// Type of optimizer to use (adam, adamw, or sgd)
-	//
-	// Any of "adam", "adamw", "sgd".
-	OptimizerType OptimizerConfigOptimizerType `json:"optimizer_type,omitzero,required"`
-	// Weight decay coefficient for regularization
-	WeightDecay float64 `json:"weight_decay,required"`
-	paramObj
-}
-
-func (r OptimizerConfigParam) MarshalJSON() (data []byte, err error) {
-	type shadow OptimizerConfigParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *OptimizerConfigParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Type of optimizer to use (adam, adamw, or sgd)
-type OptimizerConfigOptimizerType string
-
-const (
-	OptimizerConfigOptimizerTypeAdam  OptimizerConfigOptimizerType = "adam"
-	OptimizerConfigOptimizerTypeAdamw OptimizerConfigOptimizerType = "adamw"
-	OptimizerConfigOptimizerTypeSgd   OptimizerConfigOptimizerType = "sgd"
-)
-
 type PostTrainingJob struct {
 	JobUuid string `json:"job_uuid,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -186,11 +91,11 @@ type TrainingConfigParam struct {
 	// (Optional) Maximum number of validation steps per epoch
 	MaxValidationSteps param.Opt[int64] `json:"max_validation_steps,omitzero"`
 	// (Optional) Configuration for data loading and formatting
-	DataConfig DataConfigParam `json:"data_config,omitzero"`
+	DataConfig TrainingConfigDataConfigParam `json:"data_config,omitzero"`
 	// (Optional) Configuration for memory and compute optimizations
-	EfficiencyConfig EfficiencyConfigParam `json:"efficiency_config,omitzero"`
+	EfficiencyConfig TrainingConfigEfficiencyConfigParam `json:"efficiency_config,omitzero"`
 	// (Optional) Configuration for the optimization algorithm
-	OptimizerConfig OptimizerConfigParam `json:"optimizer_config,omitzero"`
+	OptimizerConfig TrainingConfigOptimizerConfigParam `json:"optimizer_config,omitzero"`
 	paramObj
 }
 
@@ -200,6 +105,96 @@ func (r TrainingConfigParam) MarshalJSON() (data []byte, err error) {
 }
 func (r *TrainingConfigParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// (Optional) Configuration for data loading and formatting
+//
+// The properties BatchSize, DataFormat, DatasetID, Shuffle are required.
+type TrainingConfigDataConfigParam struct {
+	// Number of samples per training batch
+	BatchSize int64 `json:"batch_size,required"`
+	// Format of the dataset (instruct or dialog)
+	//
+	// Any of "instruct", "dialog".
+	DataFormat string `json:"data_format,omitzero,required"`
+	// Unique identifier for the training dataset
+	DatasetID string `json:"dataset_id,required"`
+	// Whether to shuffle the dataset during training
+	Shuffle bool `json:"shuffle,required"`
+	// (Optional) Whether to pack multiple samples into a single sequence for
+	// efficiency
+	Packed param.Opt[bool] `json:"packed,omitzero"`
+	// (Optional) Whether to compute loss on input tokens as well as output tokens
+	TrainOnInput param.Opt[bool] `json:"train_on_input,omitzero"`
+	// (Optional) Unique identifier for the validation dataset
+	ValidationDatasetID param.Opt[string] `json:"validation_dataset_id,omitzero"`
+	paramObj
+}
+
+func (r TrainingConfigDataConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TrainingConfigDataConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TrainingConfigDataConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TrainingConfigDataConfigParam](
+		"data_format", "instruct", "dialog",
+	)
+}
+
+// (Optional) Configuration for memory and compute optimizations
+type TrainingConfigEfficiencyConfigParam struct {
+	// (Optional) Whether to use activation checkpointing to reduce memory usage
+	EnableActivationCheckpointing param.Opt[bool] `json:"enable_activation_checkpointing,omitzero"`
+	// (Optional) Whether to offload activations to CPU to save GPU memory
+	EnableActivationOffloading param.Opt[bool] `json:"enable_activation_offloading,omitzero"`
+	// (Optional) Whether to offload FSDP parameters to CPU
+	FsdpCPUOffload param.Opt[bool] `json:"fsdp_cpu_offload,omitzero"`
+	// (Optional) Whether to use memory-efficient FSDP wrapping
+	MemoryEfficientFsdpWrap param.Opt[bool] `json:"memory_efficient_fsdp_wrap,omitzero"`
+	paramObj
+}
+
+func (r TrainingConfigEfficiencyConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TrainingConfigEfficiencyConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TrainingConfigEfficiencyConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// (Optional) Configuration for the optimization algorithm
+//
+// The properties Lr, NumWarmupSteps, OptimizerType, WeightDecay are required.
+type TrainingConfigOptimizerConfigParam struct {
+	// Learning rate for the optimizer
+	Lr float64 `json:"lr,required"`
+	// Number of steps for learning rate warmup
+	NumWarmupSteps int64 `json:"num_warmup_steps,required"`
+	// Type of optimizer to use (adam, adamw, or sgd)
+	//
+	// Any of "adam", "adamw", "sgd".
+	OptimizerType string `json:"optimizer_type,omitzero,required"`
+	// Weight decay coefficient for regularization
+	WeightDecay float64 `json:"weight_decay,required"`
+	paramObj
+}
+
+func (r TrainingConfigOptimizerConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow TrainingConfigOptimizerConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TrainingConfigOptimizerConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TrainingConfigOptimizerConfigParam](
+		"optimizer_type", "adam", "adamw", "sgd",
+	)
 }
 
 type PostTrainingListJobsResponse struct {

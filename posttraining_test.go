@@ -42,9 +42,9 @@ func TestPostTrainingFineTuneSupervisedWithOptionalParams(t *testing.T) {
 			GradientAccumulationSteps: 0,
 			MaxStepsPerEpoch:          0,
 			NEpochs:                   0,
-			DataConfig: llamastackclient.DataConfigParam{
+			DataConfig: llamastackclient.TrainingConfigDataConfigParam{
 				BatchSize:           0,
-				DataFormat:          llamastackclient.DataConfigDataFormatInstruct,
+				DataFormat:          "instruct",
 				DatasetID:           "dataset_id",
 				Shuffle:             true,
 				Packed:              llamastackclient.Bool(true),
@@ -52,17 +52,17 @@ func TestPostTrainingFineTuneSupervisedWithOptionalParams(t *testing.T) {
 				ValidationDatasetID: llamastackclient.String("validation_dataset_id"),
 			},
 			Dtype: llamastackclient.String("dtype"),
-			EfficiencyConfig: llamastackclient.EfficiencyConfigParam{
+			EfficiencyConfig: llamastackclient.TrainingConfigEfficiencyConfigParam{
 				EnableActivationCheckpointing: llamastackclient.Bool(true),
 				EnableActivationOffloading:    llamastackclient.Bool(true),
 				FsdpCPUOffload:                llamastackclient.Bool(true),
 				MemoryEfficientFsdpWrap:       llamastackclient.Bool(true),
 			},
 			MaxValidationSteps: llamastackclient.Int(0),
-			OptimizerConfig: llamastackclient.OptimizerConfigParam{
+			OptimizerConfig: llamastackclient.TrainingConfigOptimizerConfigParam{
 				Lr:             0,
 				NumWarmupSteps: 0,
-				OptimizerType:  llamastackclient.OptimizerConfigOptimizerTypeAdam,
+				OptimizerType:  "adam",
 				WeightDecay:    0,
 			},
 		},
@@ -146,9 +146,9 @@ func TestPostTrainingOptimizePreferencesWithOptionalParams(t *testing.T) {
 			GradientAccumulationSteps: 0,
 			MaxStepsPerEpoch:          0,
 			NEpochs:                   0,
-			DataConfig: llamastackclient.DataConfigParam{
+			DataConfig: llamastackclient.TrainingConfigDataConfigParam{
 				BatchSize:           0,
-				DataFormat:          llamastackclient.DataConfigDataFormatInstruct,
+				DataFormat:          "instruct",
 				DatasetID:           "dataset_id",
 				Shuffle:             true,
 				Packed:              llamastackclient.Bool(true),
@@ -156,17 +156,17 @@ func TestPostTrainingOptimizePreferencesWithOptionalParams(t *testing.T) {
 				ValidationDatasetID: llamastackclient.String("validation_dataset_id"),
 			},
 			Dtype: llamastackclient.String("dtype"),
-			EfficiencyConfig: llamastackclient.EfficiencyConfigParam{
+			EfficiencyConfig: llamastackclient.TrainingConfigEfficiencyConfigParam{
 				EnableActivationCheckpointing: llamastackclient.Bool(true),
 				EnableActivationOffloading:    llamastackclient.Bool(true),
 				FsdpCPUOffload:                llamastackclient.Bool(true),
 				MemoryEfficientFsdpWrap:       llamastackclient.Bool(true),
 			},
 			MaxValidationSteps: llamastackclient.Int(0),
-			OptimizerConfig: llamastackclient.OptimizerConfigParam{
+			OptimizerConfig: llamastackclient.TrainingConfigOptimizerConfigParam{
 				Lr:             0,
 				NumWarmupSteps: 0,
-				OptimizerType:  llamastackclient.OptimizerConfigOptimizerTypeAdam,
+				OptimizerType:  "adam",
 				WeightDecay:    0,
 			},
 		},
