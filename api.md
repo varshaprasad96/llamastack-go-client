@@ -2,11 +2,13 @@
 
 Params Types:
 
+- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnion">ParamTypeUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDefParam">ToolDefParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#CompletionResponse">CompletionResponse</a>
+- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnionResp">ParamTypeUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TokenLogProbs">TokenLogProbs</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDef">ToolDef</a>
 
@@ -380,14 +382,12 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#AggregationFunctionType">AggregationFunctionType</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnion">ParamTypeUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ScoringFnParamsUnion">ScoringFnParamsUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ScoringFnParamsType">ScoringFnParamsType</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#AggregationFunctionType">AggregationFunctionType</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnionResp">ParamTypeUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ScoringFn">ScoringFn</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ScoringFnParamsUnionResp">ScoringFnParamsUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ScoringFnParamsType">ScoringFnParamsType</a>
