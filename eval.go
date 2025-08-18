@@ -1,0 +1,28 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package llamastackgoclient
+
+import (
+	"github.com/stainless-sdks/llamastack-go-client-go/option"
+)
+
+// EvalService contains methods and other services that help with interacting with
+// the llamastack-go-client API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewEvalService] method instead.
+type EvalService struct {
+	Options    []option.RequestOption
+	Benchmarks EvalBenchmarkService
+}
+
+// NewEvalService generates a new service that applies the given options to each
+// request. These options are applied after the parent client's options (if there
+// is one), and before any request-specific options.
+func NewEvalService(opts ...option.RequestOption) (r EvalService) {
+	r = EvalService{}
+	r.Options = opts
+	r.Benchmarks = NewEvalBenchmarkService(opts...)
+	return
+}
