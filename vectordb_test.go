@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestVectorDBNewWithOptionalParams(t *testing.T) {
@@ -22,20 +22,20 @@ func TestVectorDBNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.VectorDBs.New(context.TODO(), llamastackgoclient.VectorDBNewParams{
+	_, err := client.VectorDBs.New(context.TODO(), llamastackclient.VectorDBNewParams{
 		EmbeddingModel:     "embedding_model",
 		VectorDBID:         "vector_db_id",
-		EmbeddingDimension: llamastackgoclient.Int(0),
-		ProviderID:         llamastackgoclient.String("provider_id"),
-		ProviderVectorDBID: llamastackgoclient.String("provider_vector_db_id"),
-		VectorDBName:       llamastackgoclient.String("vector_db_name"),
+		EmbeddingDimension: llamastackclient.Int(0),
+		ProviderID:         llamastackclient.String("provider_id"),
+		ProviderVectorDBID: llamastackclient.String("provider_vector_db_id"),
+		VectorDBName:       llamastackclient.String("vector_db_name"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -52,13 +52,13 @@ func TestVectorDBGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VectorDBs.Get(context.TODO(), "vector_db_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -75,13 +75,13 @@ func TestVectorDBList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.VectorDBs.List(context.TODO())
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -98,13 +98,13 @@ func TestVectorDBDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.VectorDBs.Delete(context.TODO(), "vector_db_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

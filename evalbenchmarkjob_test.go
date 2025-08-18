@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestEvalBenchmarkJobGet(t *testing.T) {
@@ -22,19 +22,19 @@ func TestEvalBenchmarkJobGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Eval.Benchmarks.Jobs.Get(
 		context.TODO(),
 		"job_id",
-		llamastackgoclient.EvalBenchmarkJobGetParams{
+		llamastackclient.EvalBenchmarkJobGetParams{
 			BenchmarkID: "benchmark_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -51,19 +51,19 @@ func TestEvalBenchmarkJobCancel(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Eval.Benchmarks.Jobs.Cancel(
 		context.TODO(),
 		"job_id",
-		llamastackgoclient.EvalBenchmarkJobCancelParams{
+		llamastackclient.EvalBenchmarkJobCancelParams{
 			BenchmarkID: "benchmark_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -80,19 +80,19 @@ func TestEvalBenchmarkJobResult(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Eval.Benchmarks.Jobs.Result(
 		context.TODO(),
 		"job_id",
-		llamastackgoclient.EvalBenchmarkJobResultParams{
+		llamastackclient.EvalBenchmarkJobResultParams{
 			BenchmarkID: "benchmark_id",
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -109,50 +109,50 @@ func TestEvalBenchmarkJobRunWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Eval.Benchmarks.Jobs.Run(
 		context.TODO(),
 		"benchmark_id",
-		llamastackgoclient.EvalBenchmarkJobRunParams{
-			BenchmarkConfig: llamastackgoclient.BenchmarkConfigParam{
-				EvalCandidate: llamastackgoclient.BenchmarkConfigEvalCandidateUnionParam{
-					OfModel: &llamastackgoclient.BenchmarkConfigEvalCandidateModelParam{
+		llamastackclient.EvalBenchmarkJobRunParams{
+			BenchmarkConfig: llamastackclient.BenchmarkConfigParam{
+				EvalCandidate: llamastackclient.BenchmarkConfigEvalCandidateUnionParam{
+					OfModel: &llamastackclient.BenchmarkConfigEvalCandidateModelParam{
 						Model: "model",
-						SamplingParams: llamastackgoclient.SamplingParams{
-							Strategy: llamastackgoclient.SamplingParamsStrategyUnion{
-								OfGreedy: &llamastackgoclient.SamplingParamsStrategyGreedy{},
+						SamplingParams: llamastackclient.SamplingParams{
+							Strategy: llamastackclient.SamplingParamsStrategyUnion{
+								OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 							},
-							MaxTokens:         llamastackgoclient.Int(0),
-							RepetitionPenalty: llamastackgoclient.Float(0),
+							MaxTokens:         llamastackclient.Int(0),
+							RepetitionPenalty: llamastackclient.Float(0),
 							Stop:              []string{"string"},
 						},
-						SystemMessage: llamastackgoclient.SystemMessageParam{
-							Content: llamastackgoclient.InterleavedContentUnionParam{
-								OfString: llamastackgoclient.String("string"),
+						SystemMessage: llamastackclient.SystemMessageParam{
+							Content: llamastackclient.InterleavedContentUnionParam{
+								OfString: llamastackclient.String("string"),
 							},
 						},
 					},
 				},
-				ScoringParams: map[string]llamastackgoclient.ScoringFnParamsUnion{
+				ScoringParams: map[string]llamastackclient.ScoringFnParamsUnion{
 					"foo": {
-						OfLlmAsJudgeScoringFns: &llamastackgoclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
-							AggregationFunctions: []llamastackgoclient.AggregationFunctionType{llamastackgoclient.AggregationFunctionTypeAverage},
+						OfLlmAsJudgeScoringFns: &llamastackclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
+							AggregationFunctions: []llamastackclient.AggregationFunctionType{llamastackclient.AggregationFunctionTypeAverage},
 							JudgeModel:           "judge_model",
 							JudgeScoreRegexes:    []string{"string"},
-							Type:                 llamastackgoclient.ScoringFnParamsTypeLlmAsJudge,
-							PromptTemplate:       llamastackgoclient.String("prompt_template"),
+							Type:                 llamastackclient.ScoringFnParamsTypeLlmAsJudge,
+							PromptTemplate:       llamastackclient.String("prompt_template"),
 						},
 					},
 				},
-				NumExamples: llamastackgoclient.Int(0),
+				NumExamples: llamastackclient.Int(0),
 			},
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

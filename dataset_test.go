@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestDatasetNewWithOptionalParams(t *testing.T) {
@@ -22,26 +22,26 @@ func TestDatasetNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Datasets.New(context.TODO(), llamastackgoclient.DatasetNewParams{
-		Purpose: llamastackgoclient.DatasetNewParamsPurposePostTrainingMessages,
-		Source: llamastackgoclient.DataSourceUnionParam{
-			OfUri: &llamastackgoclient.DataSourceUriParam{
+	_, err := client.Datasets.New(context.TODO(), llamastackclient.DatasetNewParams{
+		Purpose: llamastackclient.DatasetNewParamsPurposePostTrainingMessages,
+		Source: llamastackclient.DataSourceUnionParam{
+			OfUri: &llamastackclient.DataSourceUriParam{
 				Uri: "uri",
 			},
 		},
-		DatasetID: llamastackgoclient.String("dataset_id"),
-		Metadata: map[string]llamastackgoclient.DatasetNewParamsMetadataUnion{
+		DatasetID: llamastackclient.String("dataset_id"),
+		Metadata: map[string]llamastackclient.DatasetNewParamsMetadataUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -58,13 +58,13 @@ func TestDatasetGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Datasets.Get(context.TODO(), "dataset_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -81,13 +81,13 @@ func TestDatasetList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Datasets.List(context.TODO())
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -104,13 +104,13 @@ func TestDatasetDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Datasets.Delete(context.TODO(), "dataset_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

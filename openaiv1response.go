@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apiquery"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
-	"github.com/stainless-sdks/llamastack-go-client-go/shared/constant"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // OpenAIV1ResponseService contains methods and other services that help with
@@ -165,12 +165,12 @@ func (OutputMcpListTools) implOutputUnion()              {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := OutputUnion.AsAny().(type) {
-//	case llamastackgoclient.ResponseMessage:
-//	case llamastackgoclient.OutputMessageWebSearchToolCall:
-//	case llamastackgoclient.OutputMessageFileSearchToolCall:
-//	case llamastackgoclient.OutputMessageFunctionToolCall:
-//	case llamastackgoclient.OutputMcpCall:
-//	case llamastackgoclient.OutputMcpListTools:
+//	case llamastackclient.ResponseMessage:
+//	case llamastackclient.OutputMessageWebSearchToolCall:
+//	case llamastackclient.OutputMessageFileSearchToolCall:
+//	case llamastackclient.OutputMessageFunctionToolCall:
+//	case llamastackclient.OutputMcpCall:
+//	case llamastackclient.OutputMcpListTools:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1194,8 +1194,8 @@ func (ResponseMessageContentArrayItemInputImage) implResponseMessageContentArray
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := ResponseMessageContentArrayItemUnion.AsAny().(type) {
-//	case llamastackgoclient.ResponseMessageContentArrayItemInputText:
-//	case llamastackgoclient.ResponseMessageContentArrayItemInputImage:
+//	case llamastackclient.ResponseMessageContentArrayItemInputText:
+//	case llamastackclient.ResponseMessageContentArrayItemInputImage:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1371,10 +1371,10 @@ func (ResponseMessageContentArrayItemAnnotationFilePath) implResponseMessageCont
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := ResponseMessageContentArrayItemAnnotationUnion.AsAny().(type) {
-//	case llamastackgoclient.ResponseMessageContentArrayItemAnnotationFileCitation:
-//	case llamastackgoclient.ResponseMessageContentArrayItemAnnotationURLCitation:
-//	case llamastackgoclient.ResponseMessageContentArrayItemAnnotationContainerFileCitation:
-//	case llamastackgoclient.ResponseMessageContentArrayItemAnnotationFilePath:
+//	case llamastackclient.ResponseMessageContentArrayItemAnnotationFileCitation:
+//	case llamastackclient.ResponseMessageContentArrayItemAnnotationURLCitation:
+//	case llamastackclient.ResponseMessageContentArrayItemAnnotationContainerFileCitation:
+//	case llamastackclient.ResponseMessageContentArrayItemAnnotationFilePath:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}

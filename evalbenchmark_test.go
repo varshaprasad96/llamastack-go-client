@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestEvalBenchmarkNewWithOptionalParams(t *testing.T) {
@@ -22,24 +22,24 @@ func TestEvalBenchmarkNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Eval.Benchmarks.New(context.TODO(), llamastackgoclient.EvalBenchmarkNewParams{
+	err := client.Eval.Benchmarks.New(context.TODO(), llamastackclient.EvalBenchmarkNewParams{
 		BenchmarkID:      "benchmark_id",
 		DatasetID:        "dataset_id",
 		ScoringFunctions: []string{"string"},
-		Metadata: map[string]llamastackgoclient.EvalBenchmarkNewParamsMetadataUnion{
+		Metadata: map[string]llamastackclient.EvalBenchmarkNewParamsMetadataUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
-		ProviderBenchmarkID: llamastackgoclient.String("provider_benchmark_id"),
-		ProviderID:          llamastackgoclient.String("provider_id"),
+		ProviderBenchmarkID: llamastackclient.String("provider_benchmark_id"),
+		ProviderID:          llamastackclient.String("provider_id"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -56,13 +56,13 @@ func TestEvalBenchmarkGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Eval.Benchmarks.Get(context.TODO(), "benchmark_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -79,13 +79,13 @@ func TestEvalBenchmarkList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Eval.Benchmarks.List(context.TODO())
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -102,56 +102,56 @@ func TestEvalBenchmarkEvaluateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Eval.Benchmarks.Evaluate(
 		context.TODO(),
 		"benchmark_id",
-		llamastackgoclient.EvalBenchmarkEvaluateParams{
-			BenchmarkConfig: llamastackgoclient.BenchmarkConfigParam{
-				EvalCandidate: llamastackgoclient.BenchmarkConfigEvalCandidateUnionParam{
-					OfModel: &llamastackgoclient.BenchmarkConfigEvalCandidateModelParam{
+		llamastackclient.EvalBenchmarkEvaluateParams{
+			BenchmarkConfig: llamastackclient.BenchmarkConfigParam{
+				EvalCandidate: llamastackclient.BenchmarkConfigEvalCandidateUnionParam{
+					OfModel: &llamastackclient.BenchmarkConfigEvalCandidateModelParam{
 						Model: "model",
-						SamplingParams: llamastackgoclient.SamplingParams{
-							Strategy: llamastackgoclient.SamplingParamsStrategyUnion{
-								OfGreedy: &llamastackgoclient.SamplingParamsStrategyGreedy{},
+						SamplingParams: llamastackclient.SamplingParams{
+							Strategy: llamastackclient.SamplingParamsStrategyUnion{
+								OfGreedy: &llamastackclient.SamplingParamsStrategyGreedy{},
 							},
-							MaxTokens:         llamastackgoclient.Int(0),
-							RepetitionPenalty: llamastackgoclient.Float(0),
+							MaxTokens:         llamastackclient.Int(0),
+							RepetitionPenalty: llamastackclient.Float(0),
 							Stop:              []string{"string"},
 						},
-						SystemMessage: llamastackgoclient.SystemMessageParam{
-							Content: llamastackgoclient.InterleavedContentUnionParam{
-								OfString: llamastackgoclient.String("string"),
+						SystemMessage: llamastackclient.SystemMessageParam{
+							Content: llamastackclient.InterleavedContentUnionParam{
+								OfString: llamastackclient.String("string"),
 							},
 						},
 					},
 				},
-				ScoringParams: map[string]llamastackgoclient.ScoringFnParamsUnion{
+				ScoringParams: map[string]llamastackclient.ScoringFnParamsUnion{
 					"foo": {
-						OfLlmAsJudgeScoringFns: &llamastackgoclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
-							AggregationFunctions: []llamastackgoclient.AggregationFunctionType{llamastackgoclient.AggregationFunctionTypeAverage},
+						OfLlmAsJudgeScoringFns: &llamastackclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
+							AggregationFunctions: []llamastackclient.AggregationFunctionType{llamastackclient.AggregationFunctionTypeAverage},
 							JudgeModel:           "judge_model",
 							JudgeScoreRegexes:    []string{"string"},
-							Type:                 llamastackgoclient.ScoringFnParamsTypeLlmAsJudge,
-							PromptTemplate:       llamastackgoclient.String("prompt_template"),
+							Type:                 llamastackclient.ScoringFnParamsTypeLlmAsJudge,
+							PromptTemplate:       llamastackclient.String("prompt_template"),
 						},
 					},
 				},
-				NumExamples: llamastackgoclient.Int(0),
+				NumExamples: llamastackclient.Int(0),
 			},
-			InputRows: []map[string]llamastackgoclient.EvalBenchmarkEvaluateParamsInputRowUnion{{
+			InputRows: []map[string]llamastackclient.EvalBenchmarkEvaluateParamsInputRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 			ScoringFunctions: []string{"string"},
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

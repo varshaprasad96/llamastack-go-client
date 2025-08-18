@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
-	"github.com/stainless-sdks/llamastack-go-client-go/shared/constant"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // DatasetService contains methods and other services that help with interacting
@@ -110,8 +110,8 @@ func (DataSourceRows) implDataSourceUnion() {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := DataSourceUnion.AsAny().(type) {
-//	case llamastackgoclient.DataSourceUri:
-//	case llamastackgoclient.DataSourceRows:
+//	case llamastackclient.DataSourceUri:
+//	case llamastackclient.DataSourceRows:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}

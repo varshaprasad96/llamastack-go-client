@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestTelemetrySpanExportWithOptionalParams(t *testing.T) {
@@ -22,24 +22,24 @@ func TestTelemetrySpanExportWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Telemetry.Spans.Export(context.TODO(), llamastackgoclient.TelemetrySpanExportParams{
-		AttributeFilters: []llamastackgoclient.QueryConditionParam{{
+	err := client.Telemetry.Spans.Export(context.TODO(), llamastackclient.TelemetrySpanExportParams{
+		AttributeFilters: []llamastackclient.QueryConditionParam{{
 			Key: "key",
-			Op:  llamastackgoclient.QueryConditionOpEq,
-			Value: llamastackgoclient.QueryConditionValueUnionParam{
-				OfBool: llamastackgoclient.Bool(true),
+			Op:  llamastackclient.QueryConditionOpEq,
+			Value: llamastackclient.QueryConditionValueUnionParam{
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
 		AttributesToSave: []string{"string"},
 		DatasetID:        "dataset_id",
-		MaxDepth:         llamastackgoclient.Int(0),
+		MaxDepth:         llamastackclient.Int(0),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -56,23 +56,23 @@ func TestTelemetrySpanQueryWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Telemetry.Spans.Query(context.TODO(), llamastackgoclient.TelemetrySpanQueryParams{
-		AttributeFilters: []llamastackgoclient.QueryConditionParam{{
+	_, err := client.Telemetry.Spans.Query(context.TODO(), llamastackclient.TelemetrySpanQueryParams{
+		AttributeFilters: []llamastackclient.QueryConditionParam{{
 			Key: "key",
-			Op:  llamastackgoclient.QueryConditionOpEq,
-			Value: llamastackgoclient.QueryConditionValueUnionParam{
-				OfBool: llamastackgoclient.Bool(true),
+			Op:  llamastackclient.QueryConditionOpEq,
+			Value: llamastackclient.QueryConditionValueUnionParam{
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
 		AttributesToReturn: []string{"string"},
-		MaxDepth:           llamastackgoclient.Int(0),
+		MaxDepth:           llamastackclient.Int(0),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -89,20 +89,20 @@ func TestTelemetrySpanGetTreeWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Telemetry.Spans.GetTree(
 		context.TODO(),
 		"span_id",
-		llamastackgoclient.TelemetrySpanGetTreeParams{
+		llamastackclient.TelemetrySpanGetTreeParams{
 			AttributesToReturn: []string{"string"},
-			MaxDepth:           llamastackgoclient.Int(0),
+			MaxDepth:           llamastackclient.Int(0),
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

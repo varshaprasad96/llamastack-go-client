@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestVectorIoInsertWithOptionalParams(t *testing.T) {
@@ -22,41 +22,41 @@ func TestVectorIoInsertWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.VectorIo.Insert(context.TODO(), llamastackgoclient.VectorIoInsertParams{
-		Chunks: []llamastackgoclient.ChunkParam{{
-			Content: llamastackgoclient.InterleavedContentUnionParam{
-				OfString: llamastackgoclient.String("string"),
+	err := client.VectorIo.Insert(context.TODO(), llamastackclient.VectorIoInsertParams{
+		Chunks: []llamastackclient.ChunkParam{{
+			Content: llamastackclient.InterleavedContentUnionParam{
+				OfString: llamastackclient.String("string"),
 			},
-			Metadata: map[string]llamastackgoclient.ChunkMetadataUnionParam{
+			Metadata: map[string]llamastackclient.ChunkMetadataUnionParam{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			},
-			ChunkMetadata: llamastackgoclient.ChunkChunkMetadataParam{
-				ChunkEmbeddingDimension: llamastackgoclient.Int(0),
-				ChunkEmbeddingModel:     llamastackgoclient.String("chunk_embedding_model"),
-				ChunkID:                 llamastackgoclient.String("chunk_id"),
-				ChunkTokenizer:          llamastackgoclient.String("chunk_tokenizer"),
-				ChunkWindow:             llamastackgoclient.String("chunk_window"),
-				ContentTokenCount:       llamastackgoclient.Int(0),
-				CreatedTimestamp:        llamastackgoclient.Int(0),
-				DocumentID:              llamastackgoclient.String("document_id"),
-				MetadataTokenCount:      llamastackgoclient.Int(0),
-				Source:                  llamastackgoclient.String("source"),
-				UpdatedTimestamp:        llamastackgoclient.Int(0),
+			ChunkMetadata: llamastackclient.ChunkChunkMetadataParam{
+				ChunkEmbeddingDimension: llamastackclient.Int(0),
+				ChunkEmbeddingModel:     llamastackclient.String("chunk_embedding_model"),
+				ChunkID:                 llamastackclient.String("chunk_id"),
+				ChunkTokenizer:          llamastackclient.String("chunk_tokenizer"),
+				ChunkWindow:             llamastackclient.String("chunk_window"),
+				ContentTokenCount:       llamastackclient.Int(0),
+				CreatedTimestamp:        llamastackclient.Int(0),
+				DocumentID:              llamastackclient.String("document_id"),
+				MetadataTokenCount:      llamastackclient.Int(0),
+				Source:                  llamastackclient.String("source"),
+				UpdatedTimestamp:        llamastackclient.Int(0),
 			},
 			Embedding:     []float64{0},
-			StoredChunkID: llamastackgoclient.String("stored_chunk_id"),
+			StoredChunkID: llamastackclient.String("stored_chunk_id"),
 		}},
 		VectorDBID: "vector_db_id",
-		TtlSeconds: llamastackgoclient.Int(0),
+		TtlSeconds: llamastackclient.Int(0),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -73,23 +73,23 @@ func TestVectorIoQueryWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.VectorIo.Query(context.TODO(), llamastackgoclient.VectorIoQueryParams{
-		Query: llamastackgoclient.InterleavedContentUnionParam{
-			OfString: llamastackgoclient.String("string"),
+	_, err := client.VectorIo.Query(context.TODO(), llamastackclient.VectorIoQueryParams{
+		Query: llamastackclient.InterleavedContentUnionParam{
+			OfString: llamastackclient.String("string"),
 		},
 		VectorDBID: "vector_db_id",
-		Params: map[string]llamastackgoclient.VectorIoQueryParamsParamUnion{
+		Params: map[string]llamastackclient.VectorIoQueryParamsParamUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

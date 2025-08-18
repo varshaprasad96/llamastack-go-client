@@ -3,7 +3,7 @@
 package constant
 
 import (
-	shimjson "github.com/stainless-sdks/llamastack-go-client-go/internal/encoding/json"
+	shimjson "github.com/varshaprasad96/llamastack-go-client/internal/encoding/json"
 )
 
 type Constant[T any] interface {

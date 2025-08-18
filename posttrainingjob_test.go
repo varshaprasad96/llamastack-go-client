@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestPostTrainingJobCancel(t *testing.T) {
@@ -22,15 +22,15 @@ func TestPostTrainingJobCancel(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.PostTraining.Job.Cancel(context.TODO(), llamastackgoclient.PostTrainingJobCancelParams{
+	err := client.PostTraining.Job.Cancel(context.TODO(), llamastackclient.PostTrainingJobCancelParams{
 		JobUuid: "job_uuid",
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -47,15 +47,15 @@ func TestPostTrainingJobGetArtifacts(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PostTraining.Job.GetArtifacts(context.TODO(), llamastackgoclient.PostTrainingJobGetArtifactsParams{
+	_, err := client.PostTraining.Job.GetArtifacts(context.TODO(), llamastackclient.PostTrainingJobGetArtifactsParams{
 		JobUuid: "job_uuid",
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -72,15 +72,15 @@ func TestPostTrainingJobGetStatus(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.PostTraining.Job.GetStatus(context.TODO(), llamastackgoclient.PostTrainingJobGetStatusParams{
+	_, err := client.PostTraining.Job.GetStatus(context.TODO(), llamastackclient.PostTrainingJobGetStatusParams{
 		JobUuid: "job_uuid",
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

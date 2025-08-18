@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestScoringFunctionNewWithOptionalParams(t *testing.T) {
@@ -22,30 +22,30 @@ func TestScoringFunctionNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.ScoringFunctions.New(context.TODO(), llamastackgoclient.ScoringFunctionNewParams{
+	err := client.ScoringFunctions.New(context.TODO(), llamastackclient.ScoringFunctionNewParams{
 		Description: "description",
-		ReturnType: llamastackgoclient.ParamTypeUnion{
-			OfString: &llamastackgoclient.ParamTypeString{},
+		ReturnType: llamastackclient.ParamTypeUnion{
+			OfString: &llamastackclient.ParamTypeString{},
 		},
 		ScoringFnID: "scoring_fn_id",
-		Params: llamastackgoclient.ScoringFnParamsUnion{
-			OfLlmAsJudgeScoringFns: &llamastackgoclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
-				AggregationFunctions: []llamastackgoclient.AggregationFunctionType{llamastackgoclient.AggregationFunctionTypeAverage},
+		Params: llamastackclient.ScoringFnParamsUnion{
+			OfLlmAsJudgeScoringFns: &llamastackclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
+				AggregationFunctions: []llamastackclient.AggregationFunctionType{llamastackclient.AggregationFunctionTypeAverage},
 				JudgeModel:           "judge_model",
 				JudgeScoreRegexes:    []string{"string"},
-				Type:                 llamastackgoclient.ScoringFnParamsTypeLlmAsJudge,
-				PromptTemplate:       llamastackgoclient.String("prompt_template"),
+				Type:                 llamastackclient.ScoringFnParamsTypeLlmAsJudge,
+				PromptTemplate:       llamastackclient.String("prompt_template"),
 			},
 		},
-		ProviderID:          llamastackgoclient.String("provider_id"),
-		ProviderScoringFnID: llamastackgoclient.String("provider_scoring_fn_id"),
+		ProviderID:          llamastackclient.String("provider_id"),
+		ProviderScoringFnID: llamastackclient.String("provider_scoring_fn_id"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -62,13 +62,13 @@ func TestScoringFunctionGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ScoringFunctions.Get(context.TODO(), "scoring_fn_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -85,13 +85,13 @@ func TestScoringFunctionList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ScoringFunctions.List(context.TODO())
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

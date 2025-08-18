@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestOpenAIV1ResponseNewWithOptionalParams(t *testing.T) {
@@ -22,44 +22,44 @@ func TestOpenAIV1ResponseNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Responses.New(context.TODO(), llamastackgoclient.OpenAIV1ResponseNewParams{
-		Input: llamastackgoclient.OpenAIV1ResponseNewParamsInputUnion{
-			OfString: llamastackgoclient.String("string"),
+	_, err := client.OpenAI.V1.Responses.New(context.TODO(), llamastackclient.OpenAIV1ResponseNewParams{
+		Input: llamastackclient.OpenAIV1ResponseNewParamsInputUnion{
+			OfString: llamastackclient.String("string"),
 		},
 		Model:              "model",
 		Include:            []string{"string"},
-		Instructions:       llamastackgoclient.String("instructions"),
-		MaxInferIters:      llamastackgoclient.Int(0),
-		PreviousResponseID: llamastackgoclient.String("previous_response_id"),
-		Store:              llamastackgoclient.Bool(true),
-		Stream:             llamastackgoclient.Bool(true),
-		Temperature:        llamastackgoclient.Float(0),
-		Text: llamastackgoclient.ResponseTextParam{
-			Format: llamastackgoclient.ResponseTextFormatParam{
-				Type:        llamastackgoclient.ResponseTextFormatTypeText,
-				Description: llamastackgoclient.String("description"),
-				Name:        llamastackgoclient.String("name"),
-				Schema: map[string]llamastackgoclient.ResponseTextFormatSchemaUnionParam{
+		Instructions:       llamastackclient.String("instructions"),
+		MaxInferIters:      llamastackclient.Int(0),
+		PreviousResponseID: llamastackclient.String("previous_response_id"),
+		Store:              llamastackclient.Bool(true),
+		Stream:             llamastackclient.Bool(true),
+		Temperature:        llamastackclient.Float(0),
+		Text: llamastackclient.ResponseTextParam{
+			Format: llamastackclient.ResponseTextFormatParam{
+				Type:        llamastackclient.ResponseTextFormatTypeText,
+				Description: llamastackclient.String("description"),
+				Name:        llamastackclient.String("name"),
+				Schema: map[string]llamastackclient.ResponseTextFormatSchemaUnionParam{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				},
-				Strict: llamastackgoclient.Bool(true),
+				Strict: llamastackclient.Bool(true),
 			},
 		},
-		Tools: []llamastackgoclient.OpenAIV1ResponseNewParamsToolUnion{{
-			OfOpenAIResponseInputToolWebSearch: &llamastackgoclient.OpenAIV1ResponseNewParamsToolOpenAIResponseInputToolWebSearch{
-				Type:              llamastackgoclient.OpenAIV1ResponseNewParamsToolOpenAIResponseInputToolWebSearchTypeWebSearch,
-				SearchContextSize: llamastackgoclient.String("search_context_size"),
+		Tools: []llamastackclient.OpenAIV1ResponseNewParamsToolUnion{{
+			OfOpenAIResponseInputToolWebSearch: &llamastackclient.OpenAIV1ResponseNewParamsToolOpenAIResponseInputToolWebSearch{
+				Type:              llamastackclient.OpenAIV1ResponseNewParamsToolOpenAIResponseInputToolWebSearchTypeWebSearch,
+				SearchContextSize: llamastackclient.String("search_context_size"),
 			},
 		}},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -76,13 +76,13 @@ func TestOpenAIV1ResponseGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Responses.Get(context.TODO(), "response_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -99,18 +99,18 @@ func TestOpenAIV1ResponseListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.Responses.List(context.TODO(), llamastackgoclient.OpenAIV1ResponseListParams{
-		After: llamastackgoclient.String("after"),
-		Limit: llamastackgoclient.Int(0),
-		Model: llamastackgoclient.String("model"),
-		Order: llamastackgoclient.OrderAsc,
+	_, err := client.OpenAI.V1.Responses.List(context.TODO(), llamastackclient.OpenAIV1ResponseListParams{
+		After: llamastackclient.String("after"),
+		Limit: llamastackclient.Int(0),
+		Model: llamastackclient.String("model"),
+		Order: llamastackclient.OrderAsc,
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -127,13 +127,13 @@ func TestOpenAIV1ResponseDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Responses.Delete(context.TODO(), "response_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -150,23 +150,23 @@ func TestOpenAIV1ResponseGetInputItemsWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.Responses.GetInputItems(
 		context.TODO(),
 		"response_id",
-		llamastackgoclient.OpenAIV1ResponseGetInputItemsParams{
-			After:   llamastackgoclient.String("after"),
-			Before:  llamastackgoclient.String("before"),
+		llamastackclient.OpenAIV1ResponseGetInputItemsParams{
+			After:   llamastackclient.String("after"),
+			Before:  llamastackclient.String("before"),
 			Include: []string{"string"},
-			Limit:   llamastackgoclient.Int(0),
-			Order:   llamastackgoclient.OrderAsc,
+			Limit:   llamastackclient.Int(0),
+			Order:   llamastackclient.OrderAsc,
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

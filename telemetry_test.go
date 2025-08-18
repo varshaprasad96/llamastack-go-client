@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestTelemetryLogEventWithOptionalParams(t *testing.T) {
@@ -23,22 +23,22 @@ func TestTelemetryLogEventWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Telemetry.LogEvent(context.TODO(), llamastackgoclient.TelemetryLogEventParams{
-		Event: llamastackgoclient.TelemetryLogEventParamsEventUnion{
-			OfUnstructuredLogEvent: &llamastackgoclient.TelemetryLogEventParamsEventUnstructuredLogEvent{
+	err := client.Telemetry.LogEvent(context.TODO(), llamastackclient.TelemetryLogEventParams{
+		Event: llamastackclient.TelemetryLogEventParamsEventUnion{
+			OfUnstructuredLogEvent: &llamastackclient.TelemetryLogEventParamsEventUnstructuredLogEvent{
 				Message:   "message",
 				Severity:  "verbose",
 				SpanID:    "span_id",
 				Timestamp: time.Now(),
 				TraceID:   "trace_id",
-				Type:      llamastackgoclient.EventTypeUnstructuredLog,
-				Attributes: map[string]llamastackgoclient.TelemetryLogEventParamsEventUnstructuredLogEventAttributeUnion{
+				Type:      llamastackclient.EventTypeUnstructuredLog,
+				Attributes: map[string]llamastackclient.TelemetryLogEventParamsEventUnstructuredLogEventAttributeUnion{
 					"foo": {
-						OfString: llamastackgoclient.String("string"),
+						OfString: llamastackclient.String("string"),
 					},
 				},
 			},
@@ -46,7 +46,7 @@ func TestTelemetryLogEventWithOptionalParams(t *testing.T) {
 		TtlSeconds: 0,
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -63,19 +63,19 @@ func TestTelemetryQueryMetricWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Telemetry.QueryMetric(
 		context.TODO(),
 		"metric_name",
-		llamastackgoclient.TelemetryQueryMetricParams{
-			QueryType:   llamastackgoclient.TelemetryQueryMetricParamsQueryTypeRange,
+		llamastackclient.TelemetryQueryMetricParams{
+			QueryType:   llamastackclient.TelemetryQueryMetricParamsQueryTypeRange,
 			StartTime:   0,
-			EndTime:     llamastackgoclient.Int(0),
-			Granularity: llamastackgoclient.String("granularity"),
-			LabelMatchers: []llamastackgoclient.TelemetryQueryMetricParamsLabelMatcher{{
+			EndTime:     llamastackclient.Int(0),
+			Granularity: llamastackclient.String("granularity"),
+			LabelMatchers: []llamastackclient.TelemetryQueryMetricParamsLabelMatcher{{
 				Name:     "name",
 				Operator: "=",
 				Value:    "value",
@@ -83,7 +83,7 @@ func TestTelemetryQueryMetricWithOptionalParams(t *testing.T) {
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

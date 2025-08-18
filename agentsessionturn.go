@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
-	"github.com/stainless-sdks/llamastack-go-client-go/shared/constant"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // AgentSessionTurnService contains methods and other services that help with
@@ -772,10 +772,10 @@ func (MemoryRetrievalStep) implTurnStepUnion() {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := TurnStepUnion.AsAny().(type) {
-//	case llamastackgoclient.InferenceStep:
-//	case llamastackgoclient.ToolExecutionStep:
-//	case llamastackgoclient.ShieldCallStep:
-//	case llamastackgoclient.MemoryRetrievalStep:
+//	case llamastackclient.InferenceStep:
+//	case llamastackclient.ToolExecutionStep:
+//	case llamastackclient.ShieldCallStep:
+//	case llamastackclient.MemoryRetrievalStep:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}

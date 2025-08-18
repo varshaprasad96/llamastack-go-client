@@ -14,7 +14,7 @@ import (
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/encoding/json/shims"
+	"github.com/varshaprasad96/llamastack-go-client/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"

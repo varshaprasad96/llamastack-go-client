@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apiquery"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
-	"github.com/stainless-sdks/llamastack-go-client-go/shared/constant"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // OpenAIV1ChatCompletionService contains methods and other services that help with
@@ -310,11 +310,11 @@ func (MessageParamDeveloperResp) implMessageParamUnionResp() {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := MessageParamUnionResp.AsAny().(type) {
-//	case llamastackgoclient.MessageParamUserResp:
-//	case llamastackgoclient.MessageParamSystemResp:
-//	case llamastackgoclient.MessageParamAssistantResp:
-//	case llamastackgoclient.MessageParamToolResp:
-//	case llamastackgoclient.MessageParamDeveloperResp:
+//	case llamastackclient.MessageParamUserResp:
+//	case llamastackclient.MessageParamSystemResp:
+//	case llamastackclient.MessageParamAssistantResp:
+//	case llamastackclient.MessageParamToolResp:
+//	case llamastackclient.MessageParamDeveloperResp:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -507,9 +507,9 @@ func (MessageParamUserContentArrayItemFileResp) implMessageParamUserContentArray
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := MessageParamUserContentArrayItemUnionResp.AsAny().(type) {
-//	case llamastackgoclient.ContentPartTextParamResp:
-//	case llamastackgoclient.MessageParamUserContentArrayItemImageURLResp:
-//	case llamastackgoclient.MessageParamUserContentArrayItemFileResp:
+//	case llamastackclient.ContentPartTextParamResp:
+//	case llamastackclient.MessageParamUserContentArrayItemImageURLResp:
+//	case llamastackclient.MessageParamUserContentArrayItemFileResp:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -1033,8 +1033,8 @@ type messageParamUnionContent struct{ any }
 //
 //	switch u.AsAny().(type) {
 //	case *string:
-//	case *[]llamastackgoclient.MessageParamUserContentArrayItemUnion:
-//	case *[]llamastackgoclient.ContentPartTextParam:
+//	case *[]llamastackclient.MessageParamUserContentArrayItemUnion:
+//	case *[]llamastackclient.ContentPartTextParam:
 //	default:
 //	    fmt.Errorf("not present")
 //	}

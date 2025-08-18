@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
-	"github.com/stainless-sdks/llamastack-go-client-go/shared/constant"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // ScoringFunctionService contains methods and other services that help with
@@ -115,16 +115,16 @@ func (ParamTypeAgentTurnInputResp) implParamTypeUnionResp()      {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := ParamTypeUnionResp.AsAny().(type) {
-//	case llamastackgoclient.ParamTypeStringResp:
-//	case llamastackgoclient.ParamTypeNumberResp:
-//	case llamastackgoclient.ParamTypeBooleanResp:
-//	case llamastackgoclient.ParamTypeArrayResp:
-//	case llamastackgoclient.ParamTypeObjectResp:
-//	case llamastackgoclient.ParamTypeJsonResp:
-//	case llamastackgoclient.ParamTypeUnionResp:
-//	case llamastackgoclient.ParamTypeChatCompletionInputResp:
-//	case llamastackgoclient.ParamTypeCompletionInputResp:
-//	case llamastackgoclient.ParamTypeAgentTurnInputResp:
+//	case llamastackclient.ParamTypeStringResp:
+//	case llamastackclient.ParamTypeNumberResp:
+//	case llamastackclient.ParamTypeBooleanResp:
+//	case llamastackclient.ParamTypeArrayResp:
+//	case llamastackclient.ParamTypeObjectResp:
+//	case llamastackclient.ParamTypeJsonResp:
+//	case llamastackclient.ParamTypeUnionResp:
+//	case llamastackclient.ParamTypeChatCompletionInputResp:
+//	case llamastackclient.ParamTypeCompletionInputResp:
+//	case llamastackclient.ParamTypeAgentTurnInputResp:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}

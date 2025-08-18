@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 type closureTransport struct {
@@ -25,7 +25,7 @@ func (t *closureTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 func TestUserAgentHeader(t *testing.T) {
 	var userAgent string
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -41,10 +41,10 @@ func TestUserAgentHeader(t *testing.T) {
 	client.Datasetio.AppendRows(
 		context.Background(),
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -56,7 +56,7 @@ func TestUserAgentHeader(t *testing.T) {
 
 func TestRetryAfter(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -75,10 +75,10 @@ func TestRetryAfter(t *testing.T) {
 	err := client.Datasetio.AppendRows(
 		context.Background(),
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -100,7 +100,7 @@ func TestRetryAfter(t *testing.T) {
 
 func TestDeleteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -120,10 +120,10 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 	err := client.Datasetio.AppendRows(
 		context.Background(),
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -140,7 +140,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 
 func TestOverwriteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -160,10 +160,10 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 	err := client.Datasetio.AppendRows(
 		context.Background(),
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -180,7 +180,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 
 func TestRetryAfterMs(t *testing.T) {
 	attempts := 0
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -199,10 +199,10 @@ func TestRetryAfterMs(t *testing.T) {
 	err := client.Datasetio.AppendRows(
 		context.Background(),
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -216,7 +216,7 @@ func TestRetryAfterMs(t *testing.T) {
 }
 
 func TestContextCancel(t *testing.T) {
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -232,10 +232,10 @@ func TestContextCancel(t *testing.T) {
 	err := client.Datasetio.AppendRows(
 		cancelCtx,
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -246,7 +246,7 @@ func TestContextCancel(t *testing.T) {
 }
 
 func TestContextCancelDelay(t *testing.T) {
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -262,10 +262,10 @@ func TestContextCancelDelay(t *testing.T) {
 	err := client.Datasetio.AppendRows(
 		cancelCtx,
 		"REPLACE_ME",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
@@ -284,7 +284,7 @@ func TestContextDeadline(t *testing.T) {
 	defer cancel()
 
 	go func() {
-		client := llamastackgoclient.NewClient(
+		client := llamastackclient.NewClient(
 			option.WithAPIKey("My API Key"),
 			option.WithHTTPClient(&http.Client{
 				Transport: &closureTransport{
@@ -298,10 +298,10 @@ func TestContextDeadline(t *testing.T) {
 		err := client.Datasetio.AppendRows(
 			deadlineCtx,
 			"REPLACE_ME",
-			llamastackgoclient.DatasetioAppendRowsParams{
-				Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+			llamastackclient.DatasetioAppendRowsParams{
+				Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 					"foo": {
-						OfBool: llamastackgoclient.Bool(true),
+						OfBool: llamastackclient.Bool(true),
 					},
 				}},
 			},

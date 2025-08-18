@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apijson"
-	rj "github.com/stainless-sdks/llamastack-go-client-go/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
+	rj "github.com/varshaprasad96/llamastack-go-client/packages/respjson"
 	"reflect"
 	"testing"
 )

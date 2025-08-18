@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestScoringScore(t *testing.T) {
@@ -22,30 +22,30 @@ func TestScoringScore(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Scoring.Score(context.TODO(), llamastackgoclient.ScoringScoreParams{
-		InputRows: []map[string]llamastackgoclient.ScoringScoreParamsInputRowUnion{{
+	_, err := client.Scoring.Score(context.TODO(), llamastackclient.ScoringScoreParams{
+		InputRows: []map[string]llamastackclient.ScoringScoreParamsInputRowUnion{{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		}},
-		ScoringFunctions: map[string]llamastackgoclient.ScoringFnParamsUnion{
+		ScoringFunctions: map[string]llamastackclient.ScoringFnParamsUnion{
 			"foo": {
-				OfLlmAsJudgeScoringFns: &llamastackgoclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
-					AggregationFunctions: []llamastackgoclient.AggregationFunctionType{llamastackgoclient.AggregationFunctionTypeAverage},
+				OfLlmAsJudgeScoringFns: &llamastackclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
+					AggregationFunctions: []llamastackclient.AggregationFunctionType{llamastackclient.AggregationFunctionTypeAverage},
 					JudgeModel:           "judge_model",
 					JudgeScoreRegexes:    []string{"string"},
-					Type:                 llamastackgoclient.ScoringFnParamsTypeLlmAsJudge,
-					PromptTemplate:       llamastackgoclient.String("prompt_template"),
+					Type:                 llamastackclient.ScoringFnParamsTypeLlmAsJudge,
+					PromptTemplate:       llamastackclient.String("prompt_template"),
 				},
 			},
 		},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -62,27 +62,27 @@ func TestScoringScoreBatch(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Scoring.ScoreBatch(context.TODO(), llamastackgoclient.ScoringScoreBatchParams{
+	_, err := client.Scoring.ScoreBatch(context.TODO(), llamastackclient.ScoringScoreBatchParams{
 		DatasetID:          "dataset_id",
 		SaveResultsDataset: true,
-		ScoringFunctions: map[string]llamastackgoclient.ScoringFnParamsUnion{
+		ScoringFunctions: map[string]llamastackclient.ScoringFnParamsUnion{
 			"foo": {
-				OfLlmAsJudgeScoringFns: &llamastackgoclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
-					AggregationFunctions: []llamastackgoclient.AggregationFunctionType{llamastackgoclient.AggregationFunctionTypeAverage},
+				OfLlmAsJudgeScoringFns: &llamastackclient.ScoringFnParamsLlmAsJudgeScoringFnParams{
+					AggregationFunctions: []llamastackclient.AggregationFunctionType{llamastackclient.AggregationFunctionTypeAverage},
 					JudgeModel:           "judge_model",
 					JudgeScoreRegexes:    []string{"string"},
-					Type:                 llamastackgoclient.ScoringFnParamsTypeLlmAsJudge,
-					PromptTemplate:       llamastackgoclient.String("prompt_template"),
+					Type:                 llamastackclient.ScoringFnParamsTypeLlmAsJudge,
+					PromptTemplate:       llamastackclient.String("prompt_template"),
 				},
 			},
 		},
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestOpenAIV1VectorStoreNewWithOptionalParams(t *testing.T) {
@@ -22,34 +22,34 @@ func TestOpenAIV1VectorStoreNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.VectorStores.New(context.TODO(), llamastackgoclient.OpenAIV1VectorStoreNewParams{
-		ChunkingStrategy: map[string]llamastackgoclient.OpenAIV1VectorStoreNewParamsChunkingStrategyUnion{
+	_, err := client.OpenAI.V1.VectorStores.New(context.TODO(), llamastackclient.OpenAIV1VectorStoreNewParams{
+		ChunkingStrategy: map[string]llamastackclient.OpenAIV1VectorStoreNewParamsChunkingStrategyUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
-		EmbeddingDimension: llamastackgoclient.Int(0),
-		EmbeddingModel:     llamastackgoclient.String("embedding_model"),
-		ExpiresAfter: map[string]llamastackgoclient.OpenAIV1VectorStoreNewParamsExpiresAfterUnion{
+		EmbeddingDimension: llamastackclient.Int(0),
+		EmbeddingModel:     llamastackclient.String("embedding_model"),
+		ExpiresAfter: map[string]llamastackclient.OpenAIV1VectorStoreNewParamsExpiresAfterUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
 		FileIDs: []string{"string"},
-		Metadata: map[string]llamastackgoclient.OpenAIV1VectorStoreNewParamsMetadataUnion{
+		Metadata: map[string]llamastackclient.OpenAIV1VectorStoreNewParamsMetadataUnion{
 			"foo": {
-				OfBool: llamastackgoclient.Bool(true),
+				OfBool: llamastackclient.Bool(true),
 			},
 		},
-		Name:       llamastackgoclient.String("name"),
-		ProviderID: llamastackgoclient.String("provider_id"),
+		Name:       llamastackclient.String("name"),
+		ProviderID: llamastackclient.String("provider_id"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -66,13 +66,13 @@ func TestOpenAIV1VectorStoreGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Get(context.TODO(), "vector_store_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -89,29 +89,29 @@ func TestOpenAIV1VectorStoreUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Update(
 		context.TODO(),
 		"vector_store_id",
-		llamastackgoclient.OpenAIV1VectorStoreUpdateParams{
-			ExpiresAfter: map[string]llamastackgoclient.OpenAIV1VectorStoreUpdateParamsExpiresAfterUnion{
+		llamastackclient.OpenAIV1VectorStoreUpdateParams{
+			ExpiresAfter: map[string]llamastackclient.OpenAIV1VectorStoreUpdateParamsExpiresAfterUnion{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			},
-			Metadata: map[string]llamastackgoclient.OpenAIV1VectorStoreUpdateParamsMetadataUnion{
+			Metadata: map[string]llamastackclient.OpenAIV1VectorStoreUpdateParamsMetadataUnion{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			},
-			Name: llamastackgoclient.String("name"),
+			Name: llamastackclient.String("name"),
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -128,18 +128,18 @@ func TestOpenAIV1VectorStoreListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.OpenAI.V1.VectorStores.List(context.TODO(), llamastackgoclient.OpenAIV1VectorStoreListParams{
-		After:  llamastackgoclient.String("after"),
-		Before: llamastackgoclient.String("before"),
-		Limit:  llamastackgoclient.Int(0),
-		Order:  llamastackgoclient.String("order"),
+	_, err := client.OpenAI.V1.VectorStores.List(context.TODO(), llamastackclient.OpenAIV1VectorStoreListParams{
+		After:  llamastackclient.String("after"),
+		Before: llamastackclient.String("before"),
+		Limit:  llamastackclient.Int(0),
+		Order:  llamastackclient.String("order"),
 	})
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -156,13 +156,13 @@ func TestOpenAIV1VectorStoreDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Delete(context.TODO(), "vector_store_id")
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -179,33 +179,33 @@ func TestOpenAIV1VectorStoreSearchWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.OpenAI.V1.VectorStores.Search(
 		context.TODO(),
 		"vector_store_id",
-		llamastackgoclient.OpenAIV1VectorStoreSearchParams{
-			Query: llamastackgoclient.OpenAIV1VectorStoreSearchParamsQueryUnion{
-				OfString: llamastackgoclient.String("string"),
+		llamastackclient.OpenAIV1VectorStoreSearchParams{
+			Query: llamastackclient.OpenAIV1VectorStoreSearchParamsQueryUnion{
+				OfString: llamastackclient.String("string"),
 			},
-			Filters: map[string]llamastackgoclient.OpenAIV1VectorStoreSearchParamsFilterUnion{
+			Filters: map[string]llamastackclient.OpenAIV1VectorStoreSearchParamsFilterUnion{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			},
-			MaxNumResults: llamastackgoclient.Int(0),
-			RankingOptions: llamastackgoclient.OpenAIV1VectorStoreSearchParamsRankingOptions{
-				Ranker:         llamastackgoclient.String("ranker"),
-				ScoreThreshold: llamastackgoclient.Float(0),
+			MaxNumResults: llamastackclient.Int(0),
+			RankingOptions: llamastackclient.OpenAIV1VectorStoreSearchParamsRankingOptions{
+				Ranker:         llamastackclient.String("ranker"),
+				ScoreThreshold: llamastackclient.Float(0),
 			},
-			RewriteQuery: llamastackgoclient.Bool(true),
-			SearchMode:   llamastackgoclient.String("search_mode"),
+			RewriteQuery: llamastackclient.Bool(true),
+			SearchMode:   llamastackclient.String("search_mode"),
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

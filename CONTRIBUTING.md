@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/llamastack-go-client-go=/path/to/llamastack-go-client-go
+$ go mod edit -replace github.com/varshaprasad96/llamastack-go-client=/path/to/llamastack-go-client
 ```
 
 ## Running tests

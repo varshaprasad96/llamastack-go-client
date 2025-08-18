@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/apierror"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/internal/apierror"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding

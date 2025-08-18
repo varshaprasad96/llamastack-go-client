@@ -2,7 +2,7 @@ package apiform
 
 import (
 	"bytes"
-	"github.com/stainless-sdks/llamastack-go-client-go/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"io"
 	"mime/multipart"
 	"strings"

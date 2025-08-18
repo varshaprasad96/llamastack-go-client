@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient_test
+package llamastackclient_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/llamastack-go-client-go"
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/testutil"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client"
+	"github.com/varshaprasad96/llamastack-go-client/internal/testutil"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 func TestDatasetioAppendRows(t *testing.T) {
@@ -22,23 +22,23 @@ func TestDatasetioAppendRows(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Datasetio.AppendRows(
 		context.TODO(),
 		"dataset_id",
-		llamastackgoclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackgoclient.DatasetioAppendRowsParamsRowUnion{{
+		llamastackclient.DatasetioAppendRowsParams{
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
 				"foo": {
-					OfBool: llamastackgoclient.Bool(true),
+					OfBool: llamastackclient.Bool(true),
 				},
 			}},
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -55,20 +55,20 @@ func TestDatasetioIterateRowsWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := llamastackgoclient.NewClient(
+	client := llamastackclient.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Datasetio.IterateRows(
 		context.TODO(),
 		"dataset_id",
-		llamastackgoclient.DatasetioIterateRowsParams{
-			Limit:      llamastackgoclient.Int(0),
-			StartIndex: llamastackgoclient.Int(0),
+		llamastackclient.DatasetioIterateRowsParams{
+			Limit:      llamastackclient.Int(0),
+			StartIndex: llamastackclient.Int(0),
 		},
 	)
 	if err != nil {
-		var apierr *llamastackgoclient.Error
+		var apierr *llamastackclient.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

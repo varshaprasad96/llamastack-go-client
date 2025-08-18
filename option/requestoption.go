@@ -11,15 +11,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
 	"github.com/tidwall/sjson"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
 )
 
 // RequestOption is an option for the requests made by the llamastack-go-client API Client
 // which can be supplied to clients, services, and methods. You can read more about this functional
 // options pattern in our [README].
 //
-// [README]: https://pkg.go.dev/github.com/stainless-sdks/llamastack-go-client-go#readme-requestoptions
+// [README]: https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#readme-requestoptions
 type RequestOption = requestconfig.RequestOption
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.

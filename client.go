@@ -1,14 +1,14 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package llamastackgoclient
+package llamastackclient
 
 import (
 	"context"
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/llamastack-go-client-go/internal/requestconfig"
-	"github.com/stainless-sdks/llamastack-go-client-go/option"
+	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
+	"github.com/varshaprasad96/llamastack-go-client/option"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -16,6 +16,7 @@ import (
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options                 []option.RequestOption
+	Shared                  SharedService
 	Datasetio               DatasetioService
 	Inference               InferenceService
 	PostTraining            PostTrainingService
@@ -63,6 +64,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.Shared = NewSharedService(opts...)
 	r.Datasetio = NewDatasetioService(opts...)
 	r.Inference = NewInferenceService(opts...)
 	r.PostTraining = NewPostTrainingService(opts...)
