@@ -28,7 +28,7 @@ func TestInferenceBatchChatCompletionWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Inference.BatchChatCompletion(context.TODO(), llamastackclient.InferenceBatchChatCompletionParams{
 		MessagesBatch: [][]llamastackclient.MessageUnionParam{{{
-			OfUser: &llamastackclient.UserMessageParam{
+			OfUser: &llamastackclient.MessageUserParam{
 				Content: llamastackclient.InterleavedContentUnionParam{
 					OfString: llamastackclient.String("string"),
 				},
@@ -150,7 +150,7 @@ func TestInferenceChatCompletionWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Inference.ChatCompletion(context.TODO(), llamastackclient.InferenceChatCompletionParams{
 		Messages: []llamastackclient.MessageUnionParam{{
-			OfUser: &llamastackclient.UserMessageParam{
+			OfUser: &llamastackclient.MessageUserParam{
 				Content: llamastackclient.InterleavedContentUnionParam{
 					OfString: llamastackclient.String("string"),
 				},
