@@ -2,12 +2,14 @@
 
 Params Types:
 
+- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OpenAIMessageParamUnion">OpenAIMessageParamUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnion">ParamTypeUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDefParam">ToolDefParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#CompletionResponse">CompletionResponse</a>
+- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OpenAIMessageParamUnionResp">OpenAIMessageParamUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ParamTypeUnionResp">ParamTypeUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TokenLogProbs">TokenLogProbs</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ToolDef">ToolDef</a>
@@ -220,7 +222,6 @@ Params Types:
 
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ChatCompletionToolCallParam">ChatCompletionToolCallParam</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ContentPartTextParam">ContentPartTextParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#MessageParamUnion">MessageParamUnion</a>
 
 Response Types:
 
@@ -228,7 +229,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#Choice">Choice</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ChoiceLogprobs">ChoiceLogprobs</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#ContentPartTextParamResp">ContentPartTextParamResp</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#MessageParamUnionResp">MessageParamUnionResp</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#TokenLogProb">TokenLogProb</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OpenAiv1ChatCompletionNewResponseUnion">OpenAiv1ChatCompletionNewResponseUnion</a>
 - <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client">llamastackclient</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client#OpenAiv1ChatCompletionGetResponse">OpenAiv1ChatCompletionGetResponse</a>
