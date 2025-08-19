@@ -15,6 +15,7 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // AgentSessionTurnService contains methods and other services that help with
@@ -300,9 +301,7 @@ type InferenceStep struct {
 	// The ID of the step.
 	StepID string `json:"step_id,required"`
 	// Type of the step in an agent turn.
-	//
-	// Any of "inference", "tool_execution", "shield_call", "memory_retrieval".
-	StepType InferenceStepStepType `json:"step_type,required"`
+	StepType constant.Inference `json:"step_type,required"`
 	// The ID of the turn.
 	TurnID string `json:"turn_id,required"`
 	// The time the step completed.
@@ -328,16 +327,6 @@ func (r *InferenceStep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of the step in an agent turn.
-type InferenceStepStepType string
-
-const (
-	InferenceStepStepTypeInference       InferenceStepStepType = "inference"
-	InferenceStepStepTypeToolExecution   InferenceStepStepType = "tool_execution"
-	InferenceStepStepTypeShieldCall      InferenceStepStepType = "shield_call"
-	InferenceStepStepTypeMemoryRetrieval InferenceStepStepType = "memory_retrieval"
-)
-
 // A memory retrieval step in an agent turn.
 type MemoryRetrievalStep struct {
 	// The context retrieved from the vector databases.
@@ -345,9 +334,7 @@ type MemoryRetrievalStep struct {
 	// The ID of the step.
 	StepID string `json:"step_id,required"`
 	// Type of the step in an agent turn.
-	//
-	// Any of "inference", "tool_execution", "shield_call", "memory_retrieval".
-	StepType MemoryRetrievalStepStepType `json:"step_type,required"`
+	StepType constant.MemoryRetrieval `json:"step_type,required"`
 	// The ID of the turn.
 	TurnID string `json:"turn_id,required"`
 	// The IDs of the vector databases to retrieve context from.
@@ -376,24 +363,12 @@ func (r *MemoryRetrievalStep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of the step in an agent turn.
-type MemoryRetrievalStepStepType string
-
-const (
-	MemoryRetrievalStepStepTypeInference       MemoryRetrievalStepStepType = "inference"
-	MemoryRetrievalStepStepTypeToolExecution   MemoryRetrievalStepStepType = "tool_execution"
-	MemoryRetrievalStepStepTypeShieldCall      MemoryRetrievalStepStepType = "shield_call"
-	MemoryRetrievalStepStepTypeMemoryRetrieval MemoryRetrievalStepStepType = "memory_retrieval"
-)
-
 // A shield call step in an agent turn.
 type ShieldCallStep struct {
 	// The ID of the step.
 	StepID string `json:"step_id,required"`
 	// Type of the step in an agent turn.
-	//
-	// Any of "inference", "tool_execution", "shield_call", "memory_retrieval".
-	StepType ShieldCallStepStepType `json:"step_type,required"`
+	StepType constant.ShieldCall `json:"step_type,required"`
 	// The ID of the turn.
 	TurnID string `json:"turn_id,required"`
 	// The time the step completed.
@@ -421,24 +396,12 @@ func (r *ShieldCallStep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of the step in an agent turn.
-type ShieldCallStepStepType string
-
-const (
-	ShieldCallStepStepTypeInference       ShieldCallStepStepType = "inference"
-	ShieldCallStepStepTypeToolExecution   ShieldCallStepStepType = "tool_execution"
-	ShieldCallStepStepTypeShieldCall      ShieldCallStepStepType = "shield_call"
-	ShieldCallStepStepTypeMemoryRetrieval ShieldCallStepStepType = "memory_retrieval"
-)
-
 // A tool execution step in an agent turn.
 type ToolExecutionStep struct {
 	// The ID of the step.
 	StepID string `json:"step_id,required"`
 	// Type of the step in an agent turn.
-	//
-	// Any of "inference", "tool_execution", "shield_call", "memory_retrieval".
-	StepType ToolExecutionStepStepType `json:"step_type,required"`
+	StepType constant.ToolExecution `json:"step_type,required"`
 	// The tool calls to execute.
 	ToolCalls []ToolCall `json:"tool_calls,required"`
 	// The tool responses from the tool calls.
@@ -468,16 +431,6 @@ func (r ToolExecutionStep) RawJSON() string { return r.JSON.raw }
 func (r *ToolExecutionStep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Type of the step in an agent turn.
-type ToolExecutionStepStepType string
-
-const (
-	ToolExecutionStepStepTypeInference       ToolExecutionStepStepType = "inference"
-	ToolExecutionStepStepTypeToolExecution   ToolExecutionStepStepType = "tool_execution"
-	ToolExecutionStepStepTypeShieldCall      ToolExecutionStepStepType = "shield_call"
-	ToolExecutionStepStepTypeMemoryRetrieval ToolExecutionStepStepType = "memory_retrieval"
-)
 
 type ToolResponse struct {
 	CallID string `json:"call_id,required"`
@@ -769,7 +722,7 @@ type TurnStepUnion struct {
 	// This field is from variant [InferenceStep].
 	ModelResponse CompletionMessage `json:"model_response"`
 	StepID        string            `json:"step_id"`
-	// Any of nil, nil, nil, nil.
+	// Any of "inference", "tool_execution", "shield_call", "memory_retrieval".
 	StepType    string    `json:"step_type"`
 	TurnID      string    `json:"turn_id"`
 	CompletedAt time.Time `json:"completed_at"`
@@ -800,22 +753,57 @@ type TurnStepUnion struct {
 	} `json:"-"`
 }
 
-func (u TurnStepUnion) AsInferenceStep() (v InferenceStep) {
+// anyTurnStep is implemented by each variant of [TurnStepUnion] to add type safety
+// for the return type of [TurnStepUnion.AsAny]
+type anyTurnStep interface {
+	implTurnStepUnion()
+}
+
+func (InferenceStep) implTurnStepUnion()       {}
+func (ToolExecutionStep) implTurnStepUnion()   {}
+func (ShieldCallStep) implTurnStepUnion()      {}
+func (MemoryRetrievalStep) implTurnStepUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := TurnStepUnion.AsAny().(type) {
+//	case llamastackclient.InferenceStep:
+//	case llamastackclient.ToolExecutionStep:
+//	case llamastackclient.ShieldCallStep:
+//	case llamastackclient.MemoryRetrievalStep:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u TurnStepUnion) AsAny() anyTurnStep {
+	switch u.StepType {
+	case "inference":
+		return u.AsInference()
+	case "tool_execution":
+		return u.AsToolExecution()
+	case "shield_call":
+		return u.AsShieldCall()
+	case "memory_retrieval":
+		return u.AsMemoryRetrieval()
+	}
+	return nil
+}
+
+func (u TurnStepUnion) AsInference() (v InferenceStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u TurnStepUnion) AsToolExecutionStep() (v ToolExecutionStep) {
+func (u TurnStepUnion) AsToolExecution() (v ToolExecutionStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u TurnStepUnion) AsShieldCallStep() (v ShieldCallStep) {
+func (u TurnStepUnion) AsShieldCall() (v ShieldCallStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u TurnStepUnion) AsMemoryRetrievalStep() (v MemoryRetrievalStep) {
+func (u TurnStepUnion) AsMemoryRetrieval() (v MemoryRetrievalStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

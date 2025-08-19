@@ -88,7 +88,7 @@ type AgentSessionTurnStepGetResponseStepUnion struct {
 	// This field is from variant [InferenceStep].
 	ModelResponse CompletionMessage `json:"model_response"`
 	StepID        string            `json:"step_id"`
-	// Any of nil, nil, nil, nil.
+	// Any of "inference", "tool_execution", "shield_call", "memory_retrieval".
 	StepType    string    `json:"step_type"`
 	TurnID      string    `json:"turn_id"`
 	CompletedAt time.Time `json:"completed_at"`
@@ -119,22 +119,58 @@ type AgentSessionTurnStepGetResponseStepUnion struct {
 	} `json:"-"`
 }
 
-func (u AgentSessionTurnStepGetResponseStepUnion) AsInferenceStep() (v InferenceStep) {
+// anyAgentSessionTurnStepGetResponseStep is implemented by each variant of
+// [AgentSessionTurnStepGetResponseStepUnion] to add type safety for the return
+// type of [AgentSessionTurnStepGetResponseStepUnion.AsAny]
+type anyAgentSessionTurnStepGetResponseStep interface {
+	implAgentSessionTurnStepGetResponseStepUnion()
+}
+
+func (InferenceStep) implAgentSessionTurnStepGetResponseStepUnion()       {}
+func (ToolExecutionStep) implAgentSessionTurnStepGetResponseStepUnion()   {}
+func (ShieldCallStep) implAgentSessionTurnStepGetResponseStepUnion()      {}
+func (MemoryRetrievalStep) implAgentSessionTurnStepGetResponseStepUnion() {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AgentSessionTurnStepGetResponseStepUnion.AsAny().(type) {
+//	case llamastackclient.InferenceStep:
+//	case llamastackclient.ToolExecutionStep:
+//	case llamastackclient.ShieldCallStep:
+//	case llamastackclient.MemoryRetrievalStep:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AgentSessionTurnStepGetResponseStepUnion) AsAny() anyAgentSessionTurnStepGetResponseStep {
+	switch u.StepType {
+	case "inference":
+		return u.AsInference()
+	case "tool_execution":
+		return u.AsToolExecution()
+	case "shield_call":
+		return u.AsShieldCall()
+	case "memory_retrieval":
+		return u.AsMemoryRetrieval()
+	}
+	return nil
+}
+
+func (u AgentSessionTurnStepGetResponseStepUnion) AsInference() (v InferenceStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AgentSessionTurnStepGetResponseStepUnion) AsToolExecutionStep() (v ToolExecutionStep) {
+func (u AgentSessionTurnStepGetResponseStepUnion) AsToolExecution() (v ToolExecutionStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AgentSessionTurnStepGetResponseStepUnion) AsShieldCallStep() (v ShieldCallStep) {
+func (u AgentSessionTurnStepGetResponseStepUnion) AsShieldCall() (v ShieldCallStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AgentSessionTurnStepGetResponseStepUnion) AsMemoryRetrievalStep() (v MemoryRetrievalStep) {
+func (u AgentSessionTurnStepGetResponseStepUnion) AsMemoryRetrieval() (v MemoryRetrievalStep) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }

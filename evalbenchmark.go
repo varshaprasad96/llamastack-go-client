@@ -99,15 +99,13 @@ func (r *AgentCandidateParam) UnmarshalJSON(data []byte) error {
 }
 
 type Benchmark struct {
-	DatasetID        string                            `json:"dataset_id,required"`
-	Identifier       string                            `json:"identifier,required"`
-	Metadata         map[string]BenchmarkMetadataUnion `json:"metadata,required"`
-	ProviderID       string                            `json:"provider_id,required"`
-	ScoringFunctions []string                          `json:"scoring_functions,required"`
-	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
-	// "benchmark", "tool", "tool_group".
-	Type               BenchmarkType `json:"type,required"`
-	ProviderResourceID string        `json:"provider_resource_id"`
+	DatasetID          string                            `json:"dataset_id,required"`
+	Identifier         string                            `json:"identifier,required"`
+	Metadata           map[string]BenchmarkMetadataUnion `json:"metadata,required"`
+	ProviderID         string                            `json:"provider_id,required"`
+	ScoringFunctions   []string                          `json:"scoring_functions,required"`
+	Type               constant.Benchmark                `json:"type,required"`
+	ProviderResourceID string                            `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DatasetID          respjson.Field
@@ -179,19 +177,6 @@ func (u BenchmarkMetadataUnion) RawJSON() string { return u.JSON.raw }
 func (r *BenchmarkMetadataUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type BenchmarkType string
-
-const (
-	BenchmarkTypeModel           BenchmarkType = "model"
-	BenchmarkTypeShield          BenchmarkType = "shield"
-	BenchmarkTypeVectorDB        BenchmarkType = "vector_db"
-	BenchmarkTypeDataset         BenchmarkType = "dataset"
-	BenchmarkTypeScoringFunction BenchmarkType = "scoring_function"
-	BenchmarkTypeBenchmark       BenchmarkType = "benchmark"
-	BenchmarkTypeTool            BenchmarkType = "tool"
-	BenchmarkTypeToolGroup       BenchmarkType = "tool_group"
-)
 
 // A benchmark configuration for evaluation.
 //

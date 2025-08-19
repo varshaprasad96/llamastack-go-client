@@ -16,6 +16,7 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // ToolService contains methods and other services that help with interacting with
@@ -58,14 +59,12 @@ func (r *ToolService) List(ctx context.Context, query ToolListParams, opts ...op
 }
 
 type Tool struct {
-	Description string              `json:"description,required"`
-	Identifier  string              `json:"identifier,required"`
-	Parameters  []ToolParameterResp `json:"parameters,required"`
-	ProviderID  string              `json:"provider_id,required"`
-	ToolgroupID string              `json:"toolgroup_id,required"`
-	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
-	// "benchmark", "tool", "tool_group".
-	Type               ToolType                     `json:"type,required"`
+	Description        string                       `json:"description,required"`
+	Identifier         string                       `json:"identifier,required"`
+	Parameters         []ToolParameterResp          `json:"parameters,required"`
+	ProviderID         string                       `json:"provider_id,required"`
+	ToolgroupID        string                       `json:"toolgroup_id,required"`
+	Type               constant.Tool                `json:"type,required"`
 	Metadata           map[string]ToolMetadataUnion `json:"metadata"`
 	ProviderResourceID string                       `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -88,19 +87,6 @@ func (r Tool) RawJSON() string { return r.JSON.raw }
 func (r *Tool) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ToolType string
-
-const (
-	ToolTypeModel           ToolType = "model"
-	ToolTypeShield          ToolType = "shield"
-	ToolTypeVectorDB        ToolType = "vector_db"
-	ToolTypeDataset         ToolType = "dataset"
-	ToolTypeScoringFunction ToolType = "scoring_function"
-	ToolTypeBenchmark       ToolType = "benchmark"
-	ToolTypeTool            ToolType = "tool"
-	ToolTypeToolGroup       ToolType = "tool_group"
-)
 
 // ToolMetadataUnion contains all possible properties and values from [bool],
 // [float64], [string], [[]any].

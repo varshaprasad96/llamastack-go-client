@@ -28,11 +28,10 @@ func TestOpenAIV1ChatCompletionNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.OpenAI.V1.Chat.Completions.New(context.TODO(), llamastackclient.OpenAIV1ChatCompletionNewParams{
 		Messages: []llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUnion{{
-			OfOpenAIUserMessage: &llamastackclient.OpenAIUserMessageParam{
+			OfUser: &llamastackclient.OpenAIUserMessageParam{
 				Content: llamastackclient.OpenAIUserMessageParamContentUnion{
 					OfString: llamastackclient.String("string"),
 				},
-				Role: "role",
 				Name: llamastackclient.String("name"),
 			},
 		}},
@@ -56,9 +55,7 @@ func TestOpenAIV1ChatCompletionNewWithOptionalParams(t *testing.T) {
 		ParallelToolCalls:   llamastackclient.Bool(true),
 		PresencePenalty:     llamastackclient.Float(0),
 		ResponseFormat: llamastackclient.OpenAIV1ChatCompletionNewParamsResponseFormatUnion{
-			OfOpenAIResponseFormatText: &llamastackclient.OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText{
-				Type: "type",
-			},
+			OfText: &llamastackclient.OpenAIV1ChatCompletionNewParamsResponseFormatText{},
 		},
 		Seed: llamastackclient.Int(0),
 		Stop: llamastackclient.OpenAIV1ChatCompletionNewParamsStopUnion{
