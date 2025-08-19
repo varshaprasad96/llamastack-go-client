@@ -68,7 +68,7 @@ func (r *OpenAIV1ChatCompletionService) List(ctx context.Context, query OpenAIV1
 }
 
 type ChatCompletionToolCall struct {
-	Type     constant.Function              `json:"type,required"`
+	Type     string                         `json:"type,required"`
 	ID       string                         `json:"id"`
 	Function ChatCompletionToolCallFunction `json:"function"`
 	Index    int64                          `json:"index"`
@@ -118,11 +118,10 @@ func (r *ChatCompletionToolCallFunction) UnmarshalJSON(data []byte) error {
 
 // The property Type is required.
 type ChatCompletionToolCallParam struct {
+	Type     string                              `json:"type,required"`
 	ID       param.Opt[string]                   `json:"id,omitzero"`
 	Index    param.Opt[int64]                    `json:"index,omitzero"`
 	Function ChatCompletionToolCallFunctionParam `json:"function,omitzero"`
-	// This field can be elided, and will marshal its zero value as "function".
-	Type constant.Function `json:"type,required"`
 	paramObj
 }
 
@@ -190,7 +189,7 @@ type ChoiceMessageUnion struct {
 	// [OpenAIToolMessageParamContentUnionResp],
 	// [OpenAIDeveloperMessageParamContentUnionResp]
 	Content ChoiceMessageUnionContent `json:"content"`
-	// Any of "user", "system", "assistant", "tool", "developer".
+	// Any of nil, nil, nil, nil, nil.
 	Role string `json:"role"`
 	Name string `json:"name"`
 	// This field is from variant [OpenAIAssistantMessageParamResp].
@@ -207,66 +206,27 @@ type ChoiceMessageUnion struct {
 	} `json:"-"`
 }
 
-// anyChoiceMessage is implemented by each variant of [ChoiceMessageUnion] to add
-// type safety for the return type of [ChoiceMessageUnion.AsAny]
-type anyChoiceMessage interface {
-	implChoiceMessageUnion()
-}
-
-func (OpenAIUserMessageParamResp) implChoiceMessageUnion()      {}
-func (OpenAISystemMessageParamResp) implChoiceMessageUnion()    {}
-func (OpenAIAssistantMessageParamResp) implChoiceMessageUnion() {}
-func (OpenAIToolMessageParamResp) implChoiceMessageUnion()      {}
-func (OpenAIDeveloperMessageParamResp) implChoiceMessageUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := ChoiceMessageUnion.AsAny().(type) {
-//	case llamastackclient.OpenAIUserMessageParamResp:
-//	case llamastackclient.OpenAISystemMessageParamResp:
-//	case llamastackclient.OpenAIAssistantMessageParamResp:
-//	case llamastackclient.OpenAIToolMessageParamResp:
-//	case llamastackclient.OpenAIDeveloperMessageParamResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u ChoiceMessageUnion) AsAny() anyChoiceMessage {
-	switch u.Role {
-	case "user":
-		return u.AsUser()
-	case "system":
-		return u.AsSystem()
-	case "assistant":
-		return u.AsAssistant()
-	case "tool":
-		return u.AsTool()
-	case "developer":
-		return u.AsDeveloper()
-	}
-	return nil
-}
-
-func (u ChoiceMessageUnion) AsUser() (v OpenAIUserMessageParamResp) {
+func (u ChoiceMessageUnion) AsOpenAIUserMessageParam() (v OpenAIUserMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ChoiceMessageUnion) AsSystem() (v OpenAISystemMessageParamResp) {
+func (u ChoiceMessageUnion) AsOpenAISystemMessageParam() (v OpenAISystemMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ChoiceMessageUnion) AsAssistant() (v OpenAIAssistantMessageParamResp) {
+func (u ChoiceMessageUnion) AsOpenAIAssistantMessageParam() (v OpenAIAssistantMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ChoiceMessageUnion) AsTool() (v OpenAIToolMessageParamResp) {
+func (u ChoiceMessageUnion) AsOpenAIToolMessageParam() (v OpenAIToolMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ChoiceMessageUnion) AsDeveloper() (v OpenAIDeveloperMessageParamResp) {
+func (u ChoiceMessageUnion) AsOpenAIDeveloperMessageParam() (v OpenAIDeveloperMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -345,8 +305,8 @@ func (r *ChoiceLogprobs) UnmarshalJSON(data []byte) error {
 }
 
 type ContentPartTextParamResp struct {
-	Text string        `json:"text,required"`
-	Type constant.Text `json:"type,required"`
+	Text string `json:"text,required"`
+	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Text        respjson.Field
@@ -374,8 +334,7 @@ func (r ContentPartTextParamResp) ToParam() ContentPartTextParam {
 // The properties Text, Type are required.
 type ContentPartTextParam struct {
 	Text string `json:"text,required"`
-	// This field can be elided, and will marshal its zero value as "text".
-	Type constant.Text `json:"type,required"`
+	Type string `json:"type,required"`
 	paramObj
 }
 
@@ -391,7 +350,7 @@ func (r *ContentPartTextParam) UnmarshalJSON(data []byte) error {
 // chat completion request.
 type OpenAIAssistantMessageParamResp struct {
 	// Must be "assistant" to identify this as the model's response
-	Role constant.Assistant `json:"role,required"`
+	Role string `json:"role,required"`
 	// The content of the model's response
 	Content OpenAIAssistantMessageParamContentUnionResp `json:"content"`
 	// (Optional) The name of the assistant message participant.
@@ -464,7 +423,7 @@ func (r *OpenAIAssistantMessageParamContentUnionResp) UnmarshalJSON(data []byte)
 
 // OpenAIAssistantMessageParamContentArrayItemUnionResp contains all possible
 // properties and values from [ContentPartTextParamResp],
-// [OpenAIAssistantMessageParamContentArrayItemImageURLResp].
+// [OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
 //
 // Use the [OpenAIAssistantMessageParamContentArrayItemUnionResp.AsAny] method to
 // switch on the variant.
@@ -473,11 +432,11 @@ func (r *OpenAIAssistantMessageParamContentUnionResp) UnmarshalJSON(data []byte)
 type OpenAIAssistantMessageParamContentArrayItemUnionResp struct {
 	// This field is from variant [ContentPartTextParamResp].
 	Text string `json:"text"`
-	// Any of "text", "image_url".
+	// Any of nil, nil.
 	Type string `json:"type"`
 	// This field is from variant
-	// [OpenAIAssistantMessageParamContentArrayItemImageURLResp].
-	ImageURL OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp `json:"image_url"`
+	// [OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
+	ImageURL OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url"`
 	JSON     struct {
 		Text     respjson.Field
 		Type     respjson.Field
@@ -486,42 +445,12 @@ type OpenAIAssistantMessageParamContentArrayItemUnionResp struct {
 	} `json:"-"`
 }
 
-// anyOpenAIAssistantMessageParamContentArrayItemResp is implemented by each
-// variant of [OpenAIAssistantMessageParamContentArrayItemUnionResp] to add type
-// safety for the return type of
-// [OpenAIAssistantMessageParamContentArrayItemUnionResp.AsAny]
-type anyOpenAIAssistantMessageParamContentArrayItemResp interface {
-	implOpenAIAssistantMessageParamContentArrayItemUnionResp()
-}
-
-func (ContentPartTextParamResp) implOpenAIAssistantMessageParamContentArrayItemUnionResp() {}
-func (OpenAIAssistantMessageParamContentArrayItemImageURLResp) implOpenAIAssistantMessageParamContentArrayItemUnionResp() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAIAssistantMessageParamContentArrayItemUnionResp.AsAny().(type) {
-//	case llamastackclient.ContentPartTextParamResp:
-//	case llamastackclient.OpenAIAssistantMessageParamContentArrayItemImageURLResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAIAssistantMessageParamContentArrayItemUnionResp) AsAny() anyOpenAIAssistantMessageParamContentArrayItemResp {
-	switch u.Type {
-	case "text":
-		return u.AsText()
-	case "image_url":
-		return u.AsImageURL()
-	}
-	return nil
-}
-
-func (u OpenAIAssistantMessageParamContentArrayItemUnionResp) AsText() (v ContentPartTextParamResp) {
+func (u OpenAIAssistantMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartTextParam() (v ContentPartTextParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAIAssistantMessageParamContentArrayItemUnionResp) AsImageURL() (v OpenAIAssistantMessageParamContentArrayItemImageURLResp) {
+func (u OpenAIAssistantMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartImageParam() (v OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -533,9 +462,9 @@ func (r *OpenAIAssistantMessageParamContentArrayItemUnionResp) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIAssistantMessageParamContentArrayItemImageURLResp struct {
-	ImageURL OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp `json:"image_url,required"`
-	Type     constant.ImageURL                                               `json:"type,required"`
+type OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp struct {
+	ImageURL OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url,required"`
+	Type     string                                                                                           `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ImageURL    respjson.Field
@@ -546,12 +475,14 @@ type OpenAIAssistantMessageParamContentArrayItemImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIAssistantMessageParamContentArrayItemImageURLResp) RawJSON() string { return r.JSON.raw }
-func (r *OpenAIAssistantMessageParamContentArrayItemImageURLResp) UnmarshalJSON(data []byte) error {
+func (r OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp struct {
+type OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp struct {
 	URL    string `json:"url,required"`
 	Detail string `json:"detail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -564,10 +495,10 @@ type OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp) RawJSON() string {
+func (r OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJSON(data []byte) error {
+func (r *OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -576,16 +507,14 @@ func (r *OpenAIAssistantMessageParamContentArrayItemImageURLImageURLResp) Unmars
 //
 // The property Role is required.
 type OpenAIAssistantMessageParam struct {
+	// Must be "assistant" to identify this as the model's response
+	Role string `json:"role,required"`
 	// (Optional) The name of the assistant message participant.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The content of the model's response
 	Content OpenAIAssistantMessageParamContentUnion `json:"content,omitzero"`
 	// List of tool calls. Each tool call is an OpenAIChatCompletionToolCall object.
 	ToolCalls []ChatCompletionToolCallParam `json:"tool_calls,omitzero"`
-	// Must be "assistant" to identify this as the model's response
-	//
-	// This field can be elided, and will marshal its zero value as "assistant".
-	Role constant.Assistant `json:"role,required"`
 	paramObj
 }
 
@@ -626,38 +555,38 @@ func (u *OpenAIAssistantMessageParamContentUnion) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAIAssistantMessageParamContentArrayItemUnion struct {
-	OfText     *ContentPartTextParam                                `json:",omitzero,inline"`
-	OfImageURL *OpenAIAssistantMessageParamContentArrayItemImageURL `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartText  *ContentPartTextParam                                                                 `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartImage *OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAIAssistantMessageParamContentArrayItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfImageURL)
+	return param.MarshalUnion(u, u.OfOpenAIChatCompletionContentPartText, u.OfOpenAIChatCompletionContentPartImage)
 }
 func (u *OpenAIAssistantMessageParamContentArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAIAssistantMessageParamContentArrayItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfText) {
-		return u.OfText
-	} else if !param.IsOmitted(u.OfImageURL) {
-		return u.OfImageURL
+	if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartText) {
+		return u.OfOpenAIChatCompletionContentPartText
+	} else if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartImage) {
+		return u.OfOpenAIChatCompletionContentPartImage
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIAssistantMessageParamContentArrayItemUnion) GetText() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return &vt.Text
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OpenAIAssistantMessageParamContentArrayItemUnion) GetImageURL() *OpenAIAssistantMessageParamContentArrayItemImageURLImageURL {
-	if vt := u.OfImageURL; vt != nil {
+func (u OpenAIAssistantMessageParamContentArrayItemUnion) GetImageURL() *OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL {
+	if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return &vt.ImageURL
 	}
 	return nil
@@ -665,9 +594,9 @@ func (u OpenAIAssistantMessageParamContentArrayItemUnion) GetImageURL() *OpenAIA
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIAssistantMessageParamContentArrayItemUnion) GetType() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImageURL; vt != nil {
+	} else if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -676,39 +605,38 @@ func (u OpenAIAssistantMessageParamContentArrayItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[OpenAIAssistantMessageParamContentArrayItemUnion](
 		"type",
-		apijson.Discriminator[ContentPartTextParam]("text"),
-		apijson.Discriminator[OpenAIAssistantMessageParamContentArrayItemImageURL]("image_url"),
+		apijson.Discriminator[ContentPartTextParam](undefined),
+		apijson.Discriminator[OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam](undefined),
 	)
 }
 
 // The properties ImageURL, Type are required.
-type OpenAIAssistantMessageParamContentArrayItemImageURL struct {
-	ImageURL OpenAIAssistantMessageParamContentArrayItemImageURLImageURL `json:"image_url,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "image_url".
-	Type constant.ImageURL `json:"type,required"`
+type OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam struct {
+	ImageURL OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL `json:"image_url,omitzero,required"`
+	Type     string                                                                                       `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIAssistantMessageParamContentArrayItemImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIAssistantMessageParamContentArrayItemImageURL
+func (r OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIAssistantMessageParamContentArrayItemImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property URL is required.
-type OpenAIAssistantMessageParamContentArrayItemImageURLImageURL struct {
+type OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL struct {
 	URL    string            `json:"url,required"`
 	Detail param.Opt[string] `json:"detail,omitzero"`
 	paramObj
 }
 
-func (r OpenAIAssistantMessageParamContentArrayItemImageURLImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIAssistantMessageParamContentArrayItemImageURLImageURL
+func (r OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIAssistantMessageParamContentArrayItemImageURLImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIAssistantMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -717,7 +645,7 @@ type OpenAIDeveloperMessageParamResp struct {
 	// The content of the developer message
 	Content OpenAIDeveloperMessageParamContentUnionResp `json:"content,required"`
 	// Must be "developer" to identify this as a developer message
-	Role constant.Developer `json:"role,required"`
+	Role string `json:"role,required"`
 	// (Optional) The name of the developer message participant.
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -785,7 +713,7 @@ func (r *OpenAIDeveloperMessageParamContentUnionResp) UnmarshalJSON(data []byte)
 
 // OpenAIDeveloperMessageParamContentArrayItemUnionResp contains all possible
 // properties and values from [ContentPartTextParamResp],
-// [OpenAIDeveloperMessageParamContentArrayItemImageURLResp].
+// [OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
 //
 // Use the [OpenAIDeveloperMessageParamContentArrayItemUnionResp.AsAny] method to
 // switch on the variant.
@@ -794,11 +722,11 @@ func (r *OpenAIDeveloperMessageParamContentUnionResp) UnmarshalJSON(data []byte)
 type OpenAIDeveloperMessageParamContentArrayItemUnionResp struct {
 	// This field is from variant [ContentPartTextParamResp].
 	Text string `json:"text"`
-	// Any of "text", "image_url".
+	// Any of nil, nil.
 	Type string `json:"type"`
 	// This field is from variant
-	// [OpenAIDeveloperMessageParamContentArrayItemImageURLResp].
-	ImageURL OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp `json:"image_url"`
+	// [OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
+	ImageURL OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url"`
 	JSON     struct {
 		Text     respjson.Field
 		Type     respjson.Field
@@ -807,42 +735,12 @@ type OpenAIDeveloperMessageParamContentArrayItemUnionResp struct {
 	} `json:"-"`
 }
 
-// anyOpenAIDeveloperMessageParamContentArrayItemResp is implemented by each
-// variant of [OpenAIDeveloperMessageParamContentArrayItemUnionResp] to add type
-// safety for the return type of
-// [OpenAIDeveloperMessageParamContentArrayItemUnionResp.AsAny]
-type anyOpenAIDeveloperMessageParamContentArrayItemResp interface {
-	implOpenAIDeveloperMessageParamContentArrayItemUnionResp()
-}
-
-func (ContentPartTextParamResp) implOpenAIDeveloperMessageParamContentArrayItemUnionResp() {}
-func (OpenAIDeveloperMessageParamContentArrayItemImageURLResp) implOpenAIDeveloperMessageParamContentArrayItemUnionResp() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAIDeveloperMessageParamContentArrayItemUnionResp.AsAny().(type) {
-//	case llamastackclient.ContentPartTextParamResp:
-//	case llamastackclient.OpenAIDeveloperMessageParamContentArrayItemImageURLResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAIDeveloperMessageParamContentArrayItemUnionResp) AsAny() anyOpenAIDeveloperMessageParamContentArrayItemResp {
-	switch u.Type {
-	case "text":
-		return u.AsText()
-	case "image_url":
-		return u.AsImageURL()
-	}
-	return nil
-}
-
-func (u OpenAIDeveloperMessageParamContentArrayItemUnionResp) AsText() (v ContentPartTextParamResp) {
+func (u OpenAIDeveloperMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartTextParam() (v ContentPartTextParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAIDeveloperMessageParamContentArrayItemUnionResp) AsImageURL() (v OpenAIDeveloperMessageParamContentArrayItemImageURLResp) {
+func (u OpenAIDeveloperMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartImageParam() (v OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -854,9 +752,9 @@ func (r *OpenAIDeveloperMessageParamContentArrayItemUnionResp) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIDeveloperMessageParamContentArrayItemImageURLResp struct {
-	ImageURL OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp `json:"image_url,required"`
-	Type     constant.ImageURL                                               `json:"type,required"`
+type OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp struct {
+	ImageURL OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url,required"`
+	Type     string                                                                                           `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ImageURL    respjson.Field
@@ -867,12 +765,14 @@ type OpenAIDeveloperMessageParamContentArrayItemImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIDeveloperMessageParamContentArrayItemImageURLResp) RawJSON() string { return r.JSON.raw }
-func (r *OpenAIDeveloperMessageParamContentArrayItemImageURLResp) UnmarshalJSON(data []byte) error {
+func (r OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp struct {
+type OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp struct {
 	URL    string `json:"url,required"`
 	Detail string `json:"detail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -885,10 +785,10 @@ type OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp) RawJSON() string {
+func (r OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJSON(data []byte) error {
+func (r *OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -898,12 +798,10 @@ func (r *OpenAIDeveloperMessageParamContentArrayItemImageURLImageURLResp) Unmars
 type OpenAIDeveloperMessageParam struct {
 	// The content of the developer message
 	Content OpenAIDeveloperMessageParamContentUnion `json:"content,omitzero,required"`
+	// Must be "developer" to identify this as a developer message
+	Role string `json:"role,required"`
 	// (Optional) The name of the developer message participant.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Must be "developer" to identify this as a developer message
-	//
-	// This field can be elided, and will marshal its zero value as "developer".
-	Role constant.Developer `json:"role,required"`
 	paramObj
 }
 
@@ -944,38 +842,38 @@ func (u *OpenAIDeveloperMessageParamContentUnion) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAIDeveloperMessageParamContentArrayItemUnion struct {
-	OfText     *ContentPartTextParam                                `json:",omitzero,inline"`
-	OfImageURL *OpenAIDeveloperMessageParamContentArrayItemImageURL `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartText  *ContentPartTextParam                                                                 `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartImage *OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAIDeveloperMessageParamContentArrayItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfImageURL)
+	return param.MarshalUnion(u, u.OfOpenAIChatCompletionContentPartText, u.OfOpenAIChatCompletionContentPartImage)
 }
 func (u *OpenAIDeveloperMessageParamContentArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAIDeveloperMessageParamContentArrayItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfText) {
-		return u.OfText
-	} else if !param.IsOmitted(u.OfImageURL) {
-		return u.OfImageURL
+	if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartText) {
+		return u.OfOpenAIChatCompletionContentPartText
+	} else if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartImage) {
+		return u.OfOpenAIChatCompletionContentPartImage
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIDeveloperMessageParamContentArrayItemUnion) GetText() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return &vt.Text
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OpenAIDeveloperMessageParamContentArrayItemUnion) GetImageURL() *OpenAIDeveloperMessageParamContentArrayItemImageURLImageURL {
-	if vt := u.OfImageURL; vt != nil {
+func (u OpenAIDeveloperMessageParamContentArrayItemUnion) GetImageURL() *OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL {
+	if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return &vt.ImageURL
 	}
 	return nil
@@ -983,9 +881,9 @@ func (u OpenAIDeveloperMessageParamContentArrayItemUnion) GetImageURL() *OpenAID
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIDeveloperMessageParamContentArrayItemUnion) GetType() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImageURL; vt != nil {
+	} else if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -994,39 +892,38 @@ func (u OpenAIDeveloperMessageParamContentArrayItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[OpenAIDeveloperMessageParamContentArrayItemUnion](
 		"type",
-		apijson.Discriminator[ContentPartTextParam]("text"),
-		apijson.Discriminator[OpenAIDeveloperMessageParamContentArrayItemImageURL]("image_url"),
+		apijson.Discriminator[ContentPartTextParam](undefined),
+		apijson.Discriminator[OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam](undefined),
 	)
 }
 
 // The properties ImageURL, Type are required.
-type OpenAIDeveloperMessageParamContentArrayItemImageURL struct {
-	ImageURL OpenAIDeveloperMessageParamContentArrayItemImageURLImageURL `json:"image_url,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "image_url".
-	Type constant.ImageURL `json:"type,required"`
+type OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam struct {
+	ImageURL OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL `json:"image_url,omitzero,required"`
+	Type     string                                                                                       `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIDeveloperMessageParamContentArrayItemImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIDeveloperMessageParamContentArrayItemImageURL
+func (r OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIDeveloperMessageParamContentArrayItemImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property URL is required.
-type OpenAIDeveloperMessageParamContentArrayItemImageURLImageURL struct {
+type OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL struct {
 	URL    string            `json:"url,required"`
 	Detail param.Opt[string] `json:"detail,omitzero"`
 	paramObj
 }
 
-func (r OpenAIDeveloperMessageParamContentArrayItemImageURLImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIDeveloperMessageParamContentArrayItemImageURLImageURL
+func (r OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIDeveloperMessageParamContentArrayItemImageURLImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIDeveloperMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1037,7 +934,7 @@ type OpenAISystemMessageParamResp struct {
 	// messages (for example, for formatting tool definitions).
 	Content OpenAISystemMessageParamContentUnionResp `json:"content,required"`
 	// Must be "system" to identify this as a system message
-	Role constant.System `json:"role,required"`
+	Role string `json:"role,required"`
 	// (Optional) The name of the system message participant.
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1105,7 +1002,7 @@ func (r *OpenAISystemMessageParamContentUnionResp) UnmarshalJSON(data []byte) er
 
 // OpenAISystemMessageParamContentArrayItemUnionResp contains all possible
 // properties and values from [ContentPartTextParamResp],
-// [OpenAISystemMessageParamContentArrayItemImageURLResp].
+// [OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
 //
 // Use the [OpenAISystemMessageParamContentArrayItemUnionResp.AsAny] method to
 // switch on the variant.
@@ -1114,11 +1011,11 @@ func (r *OpenAISystemMessageParamContentUnionResp) UnmarshalJSON(data []byte) er
 type OpenAISystemMessageParamContentArrayItemUnionResp struct {
 	// This field is from variant [ContentPartTextParamResp].
 	Text string `json:"text"`
-	// Any of "text", "image_url".
+	// Any of nil, nil.
 	Type string `json:"type"`
 	// This field is from variant
-	// [OpenAISystemMessageParamContentArrayItemImageURLResp].
-	ImageURL OpenAISystemMessageParamContentArrayItemImageURLImageURLResp `json:"image_url"`
+	// [OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
+	ImageURL OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url"`
 	JSON     struct {
 		Text     respjson.Field
 		Type     respjson.Field
@@ -1127,41 +1024,12 @@ type OpenAISystemMessageParamContentArrayItemUnionResp struct {
 	} `json:"-"`
 }
 
-// anyOpenAISystemMessageParamContentArrayItemResp is implemented by each variant
-// of [OpenAISystemMessageParamContentArrayItemUnionResp] to add type safety for
-// the return type of [OpenAISystemMessageParamContentArrayItemUnionResp.AsAny]
-type anyOpenAISystemMessageParamContentArrayItemResp interface {
-	implOpenAISystemMessageParamContentArrayItemUnionResp()
-}
-
-func (ContentPartTextParamResp) implOpenAISystemMessageParamContentArrayItemUnionResp() {}
-func (OpenAISystemMessageParamContentArrayItemImageURLResp) implOpenAISystemMessageParamContentArrayItemUnionResp() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAISystemMessageParamContentArrayItemUnionResp.AsAny().(type) {
-//	case llamastackclient.ContentPartTextParamResp:
-//	case llamastackclient.OpenAISystemMessageParamContentArrayItemImageURLResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAISystemMessageParamContentArrayItemUnionResp) AsAny() anyOpenAISystemMessageParamContentArrayItemResp {
-	switch u.Type {
-	case "text":
-		return u.AsText()
-	case "image_url":
-		return u.AsImageURL()
-	}
-	return nil
-}
-
-func (u OpenAISystemMessageParamContentArrayItemUnionResp) AsText() (v ContentPartTextParamResp) {
+func (u OpenAISystemMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartTextParam() (v ContentPartTextParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAISystemMessageParamContentArrayItemUnionResp) AsImageURL() (v OpenAISystemMessageParamContentArrayItemImageURLResp) {
+func (u OpenAISystemMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartImageParam() (v OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1173,9 +1041,9 @@ func (r *OpenAISystemMessageParamContentArrayItemUnionResp) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAISystemMessageParamContentArrayItemImageURLResp struct {
-	ImageURL OpenAISystemMessageParamContentArrayItemImageURLImageURLResp `json:"image_url,required"`
-	Type     constant.ImageURL                                            `json:"type,required"`
+type OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp struct {
+	ImageURL OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url,required"`
+	Type     string                                                                                        `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ImageURL    respjson.Field
@@ -1186,12 +1054,14 @@ type OpenAISystemMessageParamContentArrayItemImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAISystemMessageParamContentArrayItemImageURLResp) RawJSON() string { return r.JSON.raw }
-func (r *OpenAISystemMessageParamContentArrayItemImageURLResp) UnmarshalJSON(data []byte) error {
+func (r OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAISystemMessageParamContentArrayItemImageURLImageURLResp struct {
+type OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp struct {
 	URL    string `json:"url,required"`
 	Detail string `json:"detail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1204,10 +1074,10 @@ type OpenAISystemMessageParamContentArrayItemImageURLImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAISystemMessageParamContentArrayItemImageURLImageURLResp) RawJSON() string {
+func (r OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *OpenAISystemMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJSON(data []byte) error {
+func (r *OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1219,12 +1089,10 @@ type OpenAISystemMessageParam struct {
 	// they are concatenated. The underlying Llama Stack code may also add other system
 	// messages (for example, for formatting tool definitions).
 	Content OpenAISystemMessageParamContentUnion `json:"content,omitzero,required"`
+	// Must be "system" to identify this as a system message
+	Role string `json:"role,required"`
 	// (Optional) The name of the system message participant.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Must be "system" to identify this as a system message
-	//
-	// This field can be elided, and will marshal its zero value as "system".
-	Role constant.System `json:"role,required"`
 	paramObj
 }
 
@@ -1265,38 +1133,38 @@ func (u *OpenAISystemMessageParamContentUnion) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAISystemMessageParamContentArrayItemUnion struct {
-	OfText     *ContentPartTextParam                             `json:",omitzero,inline"`
-	OfImageURL *OpenAISystemMessageParamContentArrayItemImageURL `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartText  *ContentPartTextParam                                                              `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartImage *OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAISystemMessageParamContentArrayItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfImageURL)
+	return param.MarshalUnion(u, u.OfOpenAIChatCompletionContentPartText, u.OfOpenAIChatCompletionContentPartImage)
 }
 func (u *OpenAISystemMessageParamContentArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAISystemMessageParamContentArrayItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfText) {
-		return u.OfText
-	} else if !param.IsOmitted(u.OfImageURL) {
-		return u.OfImageURL
+	if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartText) {
+		return u.OfOpenAIChatCompletionContentPartText
+	} else if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartImage) {
+		return u.OfOpenAIChatCompletionContentPartImage
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAISystemMessageParamContentArrayItemUnion) GetText() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return &vt.Text
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OpenAISystemMessageParamContentArrayItemUnion) GetImageURL() *OpenAISystemMessageParamContentArrayItemImageURLImageURL {
-	if vt := u.OfImageURL; vt != nil {
+func (u OpenAISystemMessageParamContentArrayItemUnion) GetImageURL() *OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL {
+	if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return &vt.ImageURL
 	}
 	return nil
@@ -1304,9 +1172,9 @@ func (u OpenAISystemMessageParamContentArrayItemUnion) GetImageURL() *OpenAISyst
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAISystemMessageParamContentArrayItemUnion) GetType() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImageURL; vt != nil {
+	} else if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1315,39 +1183,38 @@ func (u OpenAISystemMessageParamContentArrayItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[OpenAISystemMessageParamContentArrayItemUnion](
 		"type",
-		apijson.Discriminator[ContentPartTextParam]("text"),
-		apijson.Discriminator[OpenAISystemMessageParamContentArrayItemImageURL]("image_url"),
+		apijson.Discriminator[ContentPartTextParam](undefined),
+		apijson.Discriminator[OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam](undefined),
 	)
 }
 
 // The properties ImageURL, Type are required.
-type OpenAISystemMessageParamContentArrayItemImageURL struct {
-	ImageURL OpenAISystemMessageParamContentArrayItemImageURLImageURL `json:"image_url,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "image_url".
-	Type constant.ImageURL `json:"type,required"`
+type OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam struct {
+	ImageURL OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL `json:"image_url,omitzero,required"`
+	Type     string                                                                                    `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAISystemMessageParamContentArrayItemImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAISystemMessageParamContentArrayItemImageURL
+func (r OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAISystemMessageParamContentArrayItemImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property URL is required.
-type OpenAISystemMessageParamContentArrayItemImageURLImageURL struct {
+type OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL struct {
 	URL    string            `json:"url,required"`
 	Detail param.Opt[string] `json:"detail,omitzero"`
 	paramObj
 }
 
-func (r OpenAISystemMessageParamContentArrayItemImageURLImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAISystemMessageParamContentArrayItemImageURLImageURL
+func (r OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAISystemMessageParamContentArrayItemImageURLImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAISystemMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1357,7 +1224,7 @@ type OpenAIToolMessageParamResp struct {
 	// The response content from the tool
 	Content OpenAIToolMessageParamContentUnionResp `json:"content,required"`
 	// Must be "tool" to identify this as a tool response
-	Role constant.Tool `json:"role,required"`
+	Role string `json:"role,required"`
 	// Unique identifier for the tool call this response is for
 	ToolCallID string `json:"tool_call_id,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1424,7 +1291,7 @@ func (r *OpenAIToolMessageParamContentUnionResp) UnmarshalJSON(data []byte) erro
 
 // OpenAIToolMessageParamContentArrayItemUnionResp contains all possible properties
 // and values from [ContentPartTextParamResp],
-// [OpenAIToolMessageParamContentArrayItemImageURLResp].
+// [OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
 //
 // Use the [OpenAIToolMessageParamContentArrayItemUnionResp.AsAny] method to switch
 // on the variant.
@@ -1433,10 +1300,11 @@ func (r *OpenAIToolMessageParamContentUnionResp) UnmarshalJSON(data []byte) erro
 type OpenAIToolMessageParamContentArrayItemUnionResp struct {
 	// This field is from variant [ContentPartTextParamResp].
 	Text string `json:"text"`
-	// Any of "text", "image_url".
+	// Any of nil, nil.
 	Type string `json:"type"`
-	// This field is from variant [OpenAIToolMessageParamContentArrayItemImageURLResp].
-	ImageURL OpenAIToolMessageParamContentArrayItemImageURLImageURLResp `json:"image_url"`
+	// This field is from variant
+	// [OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
+	ImageURL OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url"`
 	JSON     struct {
 		Text     respjson.Field
 		Type     respjson.Field
@@ -1445,41 +1313,12 @@ type OpenAIToolMessageParamContentArrayItemUnionResp struct {
 	} `json:"-"`
 }
 
-// anyOpenAIToolMessageParamContentArrayItemResp is implemented by each variant of
-// [OpenAIToolMessageParamContentArrayItemUnionResp] to add type safety for the
-// return type of [OpenAIToolMessageParamContentArrayItemUnionResp.AsAny]
-type anyOpenAIToolMessageParamContentArrayItemResp interface {
-	implOpenAIToolMessageParamContentArrayItemUnionResp()
-}
-
-func (ContentPartTextParamResp) implOpenAIToolMessageParamContentArrayItemUnionResp() {}
-func (OpenAIToolMessageParamContentArrayItemImageURLResp) implOpenAIToolMessageParamContentArrayItemUnionResp() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAIToolMessageParamContentArrayItemUnionResp.AsAny().(type) {
-//	case llamastackclient.ContentPartTextParamResp:
-//	case llamastackclient.OpenAIToolMessageParamContentArrayItemImageURLResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAIToolMessageParamContentArrayItemUnionResp) AsAny() anyOpenAIToolMessageParamContentArrayItemResp {
-	switch u.Type {
-	case "text":
-		return u.AsText()
-	case "image_url":
-		return u.AsImageURL()
-	}
-	return nil
-}
-
-func (u OpenAIToolMessageParamContentArrayItemUnionResp) AsText() (v ContentPartTextParamResp) {
+func (u OpenAIToolMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartTextParam() (v ContentPartTextParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAIToolMessageParamContentArrayItemUnionResp) AsImageURL() (v OpenAIToolMessageParamContentArrayItemImageURLResp) {
+func (u OpenAIToolMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartImageParam() (v OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1491,9 +1330,9 @@ func (r *OpenAIToolMessageParamContentArrayItemUnionResp) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIToolMessageParamContentArrayItemImageURLResp struct {
-	ImageURL OpenAIToolMessageParamContentArrayItemImageURLImageURLResp `json:"image_url,required"`
-	Type     constant.ImageURL                                          `json:"type,required"`
+type OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp struct {
+	ImageURL OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url,required"`
+	Type     string                                                                                      `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ImageURL    respjson.Field
@@ -1504,12 +1343,14 @@ type OpenAIToolMessageParamContentArrayItemImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIToolMessageParamContentArrayItemImageURLResp) RawJSON() string { return r.JSON.raw }
-func (r *OpenAIToolMessageParamContentArrayItemImageURLResp) UnmarshalJSON(data []byte) error {
+func (r OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIToolMessageParamContentArrayItemImageURLImageURLResp struct {
+type OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp struct {
 	URL    string `json:"url,required"`
 	Detail string `json:"detail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1522,10 +1363,10 @@ type OpenAIToolMessageParamContentArrayItemImageURLImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIToolMessageParamContentArrayItemImageURLImageURLResp) RawJSON() string {
+func (r OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *OpenAIToolMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJSON(data []byte) error {
+func (r *OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1536,12 +1377,10 @@ func (r *OpenAIToolMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJS
 type OpenAIToolMessageParam struct {
 	// The response content from the tool
 	Content OpenAIToolMessageParamContentUnion `json:"content,omitzero,required"`
+	// Must be "tool" to identify this as a tool response
+	Role string `json:"role,required"`
 	// Unique identifier for the tool call this response is for
 	ToolCallID string `json:"tool_call_id,required"`
-	// Must be "tool" to identify this as a tool response
-	//
-	// This field can be elided, and will marshal its zero value as "tool".
-	Role constant.Tool `json:"role,required"`
 	paramObj
 }
 
@@ -1582,38 +1421,38 @@ func (u *OpenAIToolMessageParamContentUnion) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAIToolMessageParamContentArrayItemUnion struct {
-	OfText     *ContentPartTextParam                           `json:",omitzero,inline"`
-	OfImageURL *OpenAIToolMessageParamContentArrayItemImageURL `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartText  *ContentPartTextParam                                                            `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartImage *OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAIToolMessageParamContentArrayItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfImageURL)
+	return param.MarshalUnion(u, u.OfOpenAIChatCompletionContentPartText, u.OfOpenAIChatCompletionContentPartImage)
 }
 func (u *OpenAIToolMessageParamContentArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAIToolMessageParamContentArrayItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfText) {
-		return u.OfText
-	} else if !param.IsOmitted(u.OfImageURL) {
-		return u.OfImageURL
+	if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartText) {
+		return u.OfOpenAIChatCompletionContentPartText
+	} else if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartImage) {
+		return u.OfOpenAIChatCompletionContentPartImage
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIToolMessageParamContentArrayItemUnion) GetText() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return &vt.Text
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OpenAIToolMessageParamContentArrayItemUnion) GetImageURL() *OpenAIToolMessageParamContentArrayItemImageURLImageURL {
-	if vt := u.OfImageURL; vt != nil {
+func (u OpenAIToolMessageParamContentArrayItemUnion) GetImageURL() *OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL {
+	if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return &vt.ImageURL
 	}
 	return nil
@@ -1621,9 +1460,9 @@ func (u OpenAIToolMessageParamContentArrayItemUnion) GetImageURL() *OpenAIToolMe
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIToolMessageParamContentArrayItemUnion) GetType() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImageURL; vt != nil {
+	} else if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1632,39 +1471,38 @@ func (u OpenAIToolMessageParamContentArrayItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[OpenAIToolMessageParamContentArrayItemUnion](
 		"type",
-		apijson.Discriminator[ContentPartTextParam]("text"),
-		apijson.Discriminator[OpenAIToolMessageParamContentArrayItemImageURL]("image_url"),
+		apijson.Discriminator[ContentPartTextParam](undefined),
+		apijson.Discriminator[OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam](undefined),
 	)
 }
 
 // The properties ImageURL, Type are required.
-type OpenAIToolMessageParamContentArrayItemImageURL struct {
-	ImageURL OpenAIToolMessageParamContentArrayItemImageURLImageURL `json:"image_url,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "image_url".
-	Type constant.ImageURL `json:"type,required"`
+type OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam struct {
+	ImageURL OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL `json:"image_url,omitzero,required"`
+	Type     string                                                                                  `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIToolMessageParamContentArrayItemImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIToolMessageParamContentArrayItemImageURL
+func (r OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIToolMessageParamContentArrayItemImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property URL is required.
-type OpenAIToolMessageParamContentArrayItemImageURLImageURL struct {
+type OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL struct {
 	URL    string            `json:"url,required"`
 	Detail param.Opt[string] `json:"detail,omitzero"`
 	paramObj
 }
 
-func (r OpenAIToolMessageParamContentArrayItemImageURLImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIToolMessageParamContentArrayItemImageURLImageURL
+func (r OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIToolMessageParamContentArrayItemImageURLImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIToolMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1673,7 +1511,7 @@ type OpenAIUserMessageParamResp struct {
 	// The content of the message, which can include text and other media
 	Content OpenAIUserMessageParamContentUnionResp `json:"content,required"`
 	// Must be "user" to identify this as a user message
-	Role constant.User `json:"role,required"`
+	Role string `json:"role,required"`
 	// (Optional) The name of the user message participant.
 	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1740,7 +1578,7 @@ func (r *OpenAIUserMessageParamContentUnionResp) UnmarshalJSON(data []byte) erro
 
 // OpenAIUserMessageParamContentArrayItemUnionResp contains all possible properties
 // and values from [ContentPartTextParamResp],
-// [OpenAIUserMessageParamContentArrayItemImageURLResp].
+// [OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
 //
 // Use the [OpenAIUserMessageParamContentArrayItemUnionResp.AsAny] method to switch
 // on the variant.
@@ -1749,10 +1587,11 @@ func (r *OpenAIUserMessageParamContentUnionResp) UnmarshalJSON(data []byte) erro
 type OpenAIUserMessageParamContentArrayItemUnionResp struct {
 	// This field is from variant [ContentPartTextParamResp].
 	Text string `json:"text"`
-	// Any of "text", "image_url".
+	// Any of nil, nil.
 	Type string `json:"type"`
-	// This field is from variant [OpenAIUserMessageParamContentArrayItemImageURLResp].
-	ImageURL OpenAIUserMessageParamContentArrayItemImageURLImageURLResp `json:"image_url"`
+	// This field is from variant
+	// [OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp].
+	ImageURL OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url"`
 	JSON     struct {
 		Text     respjson.Field
 		Type     respjson.Field
@@ -1761,41 +1600,12 @@ type OpenAIUserMessageParamContentArrayItemUnionResp struct {
 	} `json:"-"`
 }
 
-// anyOpenAIUserMessageParamContentArrayItemResp is implemented by each variant of
-// [OpenAIUserMessageParamContentArrayItemUnionResp] to add type safety for the
-// return type of [OpenAIUserMessageParamContentArrayItemUnionResp.AsAny]
-type anyOpenAIUserMessageParamContentArrayItemResp interface {
-	implOpenAIUserMessageParamContentArrayItemUnionResp()
-}
-
-func (ContentPartTextParamResp) implOpenAIUserMessageParamContentArrayItemUnionResp() {}
-func (OpenAIUserMessageParamContentArrayItemImageURLResp) implOpenAIUserMessageParamContentArrayItemUnionResp() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAIUserMessageParamContentArrayItemUnionResp.AsAny().(type) {
-//	case llamastackclient.ContentPartTextParamResp:
-//	case llamastackclient.OpenAIUserMessageParamContentArrayItemImageURLResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAIUserMessageParamContentArrayItemUnionResp) AsAny() anyOpenAIUserMessageParamContentArrayItemResp {
-	switch u.Type {
-	case "text":
-		return u.AsText()
-	case "image_url":
-		return u.AsImageURL()
-	}
-	return nil
-}
-
-func (u OpenAIUserMessageParamContentArrayItemUnionResp) AsText() (v ContentPartTextParamResp) {
+func (u OpenAIUserMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartTextParam() (v ContentPartTextParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAIUserMessageParamContentArrayItemUnionResp) AsImageURL() (v OpenAIUserMessageParamContentArrayItemImageURLResp) {
+func (u OpenAIUserMessageParamContentArrayItemUnionResp) AsOpenAIChatCompletionContentPartImageParam() (v OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1807,9 +1617,9 @@ func (r *OpenAIUserMessageParamContentArrayItemUnionResp) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIUserMessageParamContentArrayItemImageURLResp struct {
-	ImageURL OpenAIUserMessageParamContentArrayItemImageURLImageURLResp `json:"image_url,required"`
-	Type     constant.ImageURL                                          `json:"type,required"`
+type OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp struct {
+	ImageURL OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp `json:"image_url,required"`
+	Type     string                                                                                      `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ImageURL    respjson.Field
@@ -1820,12 +1630,14 @@ type OpenAIUserMessageParamContentArrayItemImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIUserMessageParamContentArrayItemImageURLResp) RawJSON() string { return r.JSON.raw }
-func (r *OpenAIUserMessageParamContentArrayItemImageURLResp) UnmarshalJSON(data []byte) error {
+func (r OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type OpenAIUserMessageParamContentArrayItemImageURLImageURLResp struct {
+type OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp struct {
 	URL    string `json:"url,required"`
 	Detail string `json:"detail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1838,10 +1650,10 @@ type OpenAIUserMessageParamContentArrayItemImageURLImageURLResp struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r OpenAIUserMessageParamContentArrayItemImageURLImageURLResp) RawJSON() string {
+func (r OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *OpenAIUserMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJSON(data []byte) error {
+func (r *OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURLResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1851,12 +1663,10 @@ func (r *OpenAIUserMessageParamContentArrayItemImageURLImageURLResp) UnmarshalJS
 type OpenAIUserMessageParam struct {
 	// The content of the message, which can include text and other media
 	Content OpenAIUserMessageParamContentUnion `json:"content,omitzero,required"`
+	// Must be "user" to identify this as a user message
+	Role string `json:"role,required"`
 	// (Optional) The name of the user message participant.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Must be "user" to identify this as a user message
-	//
-	// This field can be elided, and will marshal its zero value as "user".
-	Role constant.User `json:"role,required"`
 	paramObj
 }
 
@@ -1897,38 +1707,38 @@ func (u *OpenAIUserMessageParamContentUnion) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAIUserMessageParamContentArrayItemUnion struct {
-	OfText     *ContentPartTextParam                           `json:",omitzero,inline"`
-	OfImageURL *OpenAIUserMessageParamContentArrayItemImageURL `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartText  *ContentPartTextParam                                                            `json:",omitzero,inline"`
+	OfOpenAIChatCompletionContentPartImage *OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAIUserMessageParamContentArrayItemUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfImageURL)
+	return param.MarshalUnion(u, u.OfOpenAIChatCompletionContentPartText, u.OfOpenAIChatCompletionContentPartImage)
 }
 func (u *OpenAIUserMessageParamContentArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAIUserMessageParamContentArrayItemUnion) asAny() any {
-	if !param.IsOmitted(u.OfText) {
-		return u.OfText
-	} else if !param.IsOmitted(u.OfImageURL) {
-		return u.OfImageURL
+	if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartText) {
+		return u.OfOpenAIChatCompletionContentPartText
+	} else if !param.IsOmitted(u.OfOpenAIChatCompletionContentPartImage) {
+		return u.OfOpenAIChatCompletionContentPartImage
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIUserMessageParamContentArrayItemUnion) GetText() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return &vt.Text
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OpenAIUserMessageParamContentArrayItemUnion) GetImageURL() *OpenAIUserMessageParamContentArrayItemImageURLImageURL {
-	if vt := u.OfImageURL; vt != nil {
+func (u OpenAIUserMessageParamContentArrayItemUnion) GetImageURL() *OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL {
+	if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return &vt.ImageURL
 	}
 	return nil
@@ -1936,9 +1746,9 @@ func (u OpenAIUserMessageParamContentArrayItemUnion) GetImageURL() *OpenAIUserMe
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIUserMessageParamContentArrayItemUnion) GetType() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIChatCompletionContentPartText; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImageURL; vt != nil {
+	} else if vt := u.OfOpenAIChatCompletionContentPartImage; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1947,39 +1757,38 @@ func (u OpenAIUserMessageParamContentArrayItemUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[OpenAIUserMessageParamContentArrayItemUnion](
 		"type",
-		apijson.Discriminator[ContentPartTextParam]("text"),
-		apijson.Discriminator[OpenAIUserMessageParamContentArrayItemImageURL]("image_url"),
+		apijson.Discriminator[ContentPartTextParam](undefined),
+		apijson.Discriminator[OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam](undefined),
 	)
 }
 
 // The properties ImageURL, Type are required.
-type OpenAIUserMessageParamContentArrayItemImageURL struct {
-	ImageURL OpenAIUserMessageParamContentArrayItemImageURLImageURL `json:"image_url,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "image_url".
-	Type constant.ImageURL `json:"type,required"`
+type OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam struct {
+	ImageURL OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL `json:"image_url,omitzero,required"`
+	Type     string                                                                                  `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIUserMessageParamContentArrayItemImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIUserMessageParamContentArrayItemImageURL
+func (r OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIUserMessageParamContentArrayItemImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property URL is required.
-type OpenAIUserMessageParamContentArrayItemImageURLImageURL struct {
+type OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL struct {
 	URL    string            `json:"url,required"`
 	Detail param.Opt[string] `json:"detail,omitzero"`
 	paramObj
 }
 
-func (r OpenAIUserMessageParamContentArrayItemImageURLImageURL) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIUserMessageParamContentArrayItemImageURLImageURL
+func (r OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIUserMessageParamContentArrayItemImageURLImageURL) UnmarshalJSON(data []byte) error {
+func (r *OpenAIUserMessageParamContentArrayItemOpenAIChatCompletionContentPartImageParamImageURL) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2229,7 +2038,7 @@ type OpenAiv1ChatCompletionGetResponse struct {
 	// The model that was used to generate the chat completion
 	Model string `json:"model,required"`
 	// The object type, which will be "chat.completion"
-	Object constant.ChatCompletion `json:"object,required"`
+	Object string `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -2265,7 +2074,7 @@ type OpenAiv1ChatCompletionGetResponseInputMessageUnion struct {
 	// [OpenAIToolMessageParamContentUnionResp],
 	// [OpenAIDeveloperMessageParamContentUnionResp]
 	Content OpenAiv1ChatCompletionGetResponseInputMessageUnionContent `json:"content"`
-	// Any of "user", "system", "assistant", "tool", "developer".
+	// Any of nil, nil, nil, nil, nil.
 	Role string `json:"role"`
 	Name string `json:"name"`
 	// This field is from variant [OpenAIAssistantMessageParamResp].
@@ -2282,67 +2091,27 @@ type OpenAiv1ChatCompletionGetResponseInputMessageUnion struct {
 	} `json:"-"`
 }
 
-// anyOpenAiv1ChatCompletionGetResponseInputMessage is implemented by each variant
-// of [OpenAiv1ChatCompletionGetResponseInputMessageUnion] to add type safety for
-// the return type of [OpenAiv1ChatCompletionGetResponseInputMessageUnion.AsAny]
-type anyOpenAiv1ChatCompletionGetResponseInputMessage interface {
-	implOpenAiv1ChatCompletionGetResponseInputMessageUnion()
-}
-
-func (OpenAIUserMessageParamResp) implOpenAiv1ChatCompletionGetResponseInputMessageUnion()      {}
-func (OpenAISystemMessageParamResp) implOpenAiv1ChatCompletionGetResponseInputMessageUnion()    {}
-func (OpenAIAssistantMessageParamResp) implOpenAiv1ChatCompletionGetResponseInputMessageUnion() {}
-func (OpenAIToolMessageParamResp) implOpenAiv1ChatCompletionGetResponseInputMessageUnion()      {}
-func (OpenAIDeveloperMessageParamResp) implOpenAiv1ChatCompletionGetResponseInputMessageUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAiv1ChatCompletionGetResponseInputMessageUnion.AsAny().(type) {
-//	case llamastackclient.OpenAIUserMessageParamResp:
-//	case llamastackclient.OpenAISystemMessageParamResp:
-//	case llamastackclient.OpenAIAssistantMessageParamResp:
-//	case llamastackclient.OpenAIToolMessageParamResp:
-//	case llamastackclient.OpenAIDeveloperMessageParamResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsAny() anyOpenAiv1ChatCompletionGetResponseInputMessage {
-	switch u.Role {
-	case "user":
-		return u.AsUser()
-	case "system":
-		return u.AsSystem()
-	case "assistant":
-		return u.AsAssistant()
-	case "tool":
-		return u.AsTool()
-	case "developer":
-		return u.AsDeveloper()
-	}
-	return nil
-}
-
-func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsUser() (v OpenAIUserMessageParamResp) {
+func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsOpenAIUserMessageParam() (v OpenAIUserMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsSystem() (v OpenAISystemMessageParamResp) {
+func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsOpenAISystemMessageParam() (v OpenAISystemMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsAssistant() (v OpenAIAssistantMessageParamResp) {
+func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsOpenAIAssistantMessageParam() (v OpenAIAssistantMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsTool() (v OpenAIToolMessageParamResp) {
+func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsOpenAIToolMessageParam() (v OpenAIToolMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsDeveloper() (v OpenAIDeveloperMessageParamResp) {
+func (u OpenAiv1ChatCompletionGetResponseInputMessageUnion) AsOpenAIDeveloperMessageParam() (v OpenAIDeveloperMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2470,7 +2239,7 @@ type OpenAiv1ChatCompletionListResponseDataInputMessageUnion struct {
 	// [OpenAIToolMessageParamContentUnionResp],
 	// [OpenAIDeveloperMessageParamContentUnionResp]
 	Content OpenAiv1ChatCompletionListResponseDataInputMessageUnionContent `json:"content"`
-	// Any of "user", "system", "assistant", "tool", "developer".
+	// Any of nil, nil, nil, nil, nil.
 	Role string `json:"role"`
 	Name string `json:"name"`
 	// This field is from variant [OpenAIAssistantMessageParamResp].
@@ -2487,70 +2256,27 @@ type OpenAiv1ChatCompletionListResponseDataInputMessageUnion struct {
 	} `json:"-"`
 }
 
-// anyOpenAiv1ChatCompletionListResponseDataInputMessage is implemented by each
-// variant of [OpenAiv1ChatCompletionListResponseDataInputMessageUnion] to add type
-// safety for the return type of
-// [OpenAiv1ChatCompletionListResponseDataInputMessageUnion.AsAny]
-type anyOpenAiv1ChatCompletionListResponseDataInputMessage interface {
-	implOpenAiv1ChatCompletionListResponseDataInputMessageUnion()
-}
-
-func (OpenAIUserMessageParamResp) implOpenAiv1ChatCompletionListResponseDataInputMessageUnion()   {}
-func (OpenAISystemMessageParamResp) implOpenAiv1ChatCompletionListResponseDataInputMessageUnion() {}
-func (OpenAIAssistantMessageParamResp) implOpenAiv1ChatCompletionListResponseDataInputMessageUnion() {
-}
-func (OpenAIToolMessageParamResp) implOpenAiv1ChatCompletionListResponseDataInputMessageUnion() {}
-func (OpenAIDeveloperMessageParamResp) implOpenAiv1ChatCompletionListResponseDataInputMessageUnion() {
-}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OpenAiv1ChatCompletionListResponseDataInputMessageUnion.AsAny().(type) {
-//	case llamastackclient.OpenAIUserMessageParamResp:
-//	case llamastackclient.OpenAISystemMessageParamResp:
-//	case llamastackclient.OpenAIAssistantMessageParamResp:
-//	case llamastackclient.OpenAIToolMessageParamResp:
-//	case llamastackclient.OpenAIDeveloperMessageParamResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsAny() anyOpenAiv1ChatCompletionListResponseDataInputMessage {
-	switch u.Role {
-	case "user":
-		return u.AsUser()
-	case "system":
-		return u.AsSystem()
-	case "assistant":
-		return u.AsAssistant()
-	case "tool":
-		return u.AsTool()
-	case "developer":
-		return u.AsDeveloper()
-	}
-	return nil
-}
-
-func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsUser() (v OpenAIUserMessageParamResp) {
+func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsOpenAIUserMessageParam() (v OpenAIUserMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsSystem() (v OpenAISystemMessageParamResp) {
+func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsOpenAISystemMessageParam() (v OpenAISystemMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsAssistant() (v OpenAIAssistantMessageParamResp) {
+func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsOpenAIAssistantMessageParam() (v OpenAIAssistantMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsTool() (v OpenAIToolMessageParamResp) {
+func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsOpenAIToolMessageParam() (v OpenAIToolMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsDeveloper() (v OpenAIDeveloperMessageParamResp) {
+func (u OpenAiv1ChatCompletionListResponseDataInputMessageUnion) AsOpenAIDeveloperMessageParam() (v OpenAIDeveloperMessageParamResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2670,43 +2396,43 @@ func (r *OpenAIV1ChatCompletionNewParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAIV1ChatCompletionNewParamsMessageUnion struct {
-	OfUser      *OpenAIUserMessageParam      `json:",omitzero,inline"`
-	OfSystem    *OpenAISystemMessageParam    `json:",omitzero,inline"`
-	OfAssistant *OpenAIAssistantMessageParam `json:",omitzero,inline"`
-	OfTool      *OpenAIToolMessageParam      `json:",omitzero,inline"`
-	OfDeveloper *OpenAIDeveloperMessageParam `json:",omitzero,inline"`
+	OfOpenAIUserMessage      *OpenAIUserMessageParam      `json:",omitzero,inline"`
+	OfOpenAISystemMessage    *OpenAISystemMessageParam    `json:",omitzero,inline"`
+	OfOpenAIAssistantMessage *OpenAIAssistantMessageParam `json:",omitzero,inline"`
+	OfOpenAIToolMessage      *OpenAIToolMessageParam      `json:",omitzero,inline"`
+	OfOpenAIDeveloperMessage *OpenAIDeveloperMessageParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAIV1ChatCompletionNewParamsMessageUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfUser,
-		u.OfSystem,
-		u.OfAssistant,
-		u.OfTool,
-		u.OfDeveloper)
+	return param.MarshalUnion(u, u.OfOpenAIUserMessage,
+		u.OfOpenAISystemMessage,
+		u.OfOpenAIAssistantMessage,
+		u.OfOpenAIToolMessage,
+		u.OfOpenAIDeveloperMessage)
 }
 func (u *OpenAIV1ChatCompletionNewParamsMessageUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAIV1ChatCompletionNewParamsMessageUnion) asAny() any {
-	if !param.IsOmitted(u.OfUser) {
-		return u.OfUser
-	} else if !param.IsOmitted(u.OfSystem) {
-		return u.OfSystem
-	} else if !param.IsOmitted(u.OfAssistant) {
-		return u.OfAssistant
-	} else if !param.IsOmitted(u.OfTool) {
-		return u.OfTool
-	} else if !param.IsOmitted(u.OfDeveloper) {
-		return u.OfDeveloper
+	if !param.IsOmitted(u.OfOpenAIUserMessage) {
+		return u.OfOpenAIUserMessage
+	} else if !param.IsOmitted(u.OfOpenAISystemMessage) {
+		return u.OfOpenAISystemMessage
+	} else if !param.IsOmitted(u.OfOpenAIAssistantMessage) {
+		return u.OfOpenAIAssistantMessage
+	} else if !param.IsOmitted(u.OfOpenAIToolMessage) {
+		return u.OfOpenAIToolMessage
+	} else if !param.IsOmitted(u.OfOpenAIDeveloperMessage) {
+		return u.OfOpenAIDeveloperMessage
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetToolCalls() []ChatCompletionToolCallParam {
-	if vt := u.OfAssistant; vt != nil {
+	if vt := u.OfOpenAIAssistantMessage; vt != nil {
 		return vt.ToolCalls
 	}
 	return nil
@@ -2714,7 +2440,7 @@ func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetToolCalls() []ChatComple
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetToolCallID() *string {
-	if vt := u.OfTool; vt != nil {
+	if vt := u.OfOpenAIToolMessage; vt != nil {
 		return &vt.ToolCallID
 	}
 	return nil
@@ -2722,15 +2448,15 @@ func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetToolCallID() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetRole() *string {
-	if vt := u.OfUser; vt != nil {
+	if vt := u.OfOpenAIUserMessage; vt != nil {
 		return (*string)(&vt.Role)
-	} else if vt := u.OfSystem; vt != nil {
+	} else if vt := u.OfOpenAISystemMessage; vt != nil {
 		return (*string)(&vt.Role)
-	} else if vt := u.OfAssistant; vt != nil {
+	} else if vt := u.OfOpenAIAssistantMessage; vt != nil {
 		return (*string)(&vt.Role)
-	} else if vt := u.OfTool; vt != nil {
+	} else if vt := u.OfOpenAIToolMessage; vt != nil {
 		return (*string)(&vt.Role)
-	} else if vt := u.OfDeveloper; vt != nil {
+	} else if vt := u.OfOpenAIDeveloperMessage; vt != nil {
 		return (*string)(&vt.Role)
 	}
 	return nil
@@ -2738,13 +2464,13 @@ func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetRole() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetName() *string {
-	if vt := u.OfUser; vt != nil && vt.Name.Valid() {
+	if vt := u.OfOpenAIUserMessage; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
-	} else if vt := u.OfSystem; vt != nil && vt.Name.Valid() {
+	} else if vt := u.OfOpenAISystemMessage; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
-	} else if vt := u.OfAssistant; vt != nil && vt.Name.Valid() {
+	} else if vt := u.OfOpenAIAssistantMessage; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
-	} else if vt := u.OfDeveloper; vt != nil && vt.Name.Valid() {
+	} else if vt := u.OfOpenAIDeveloperMessage; vt != nil && vt.Name.Valid() {
 		return &vt.Name.Value
 	}
 	return nil
@@ -2754,15 +2480,15 @@ func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetName() *string {
 //
 // Or use AsAny() to get the underlying value
 func (u OpenAIV1ChatCompletionNewParamsMessageUnion) GetContent() (res openAiv1ChatCompletionNewParamsMessageUnionContent) {
-	if vt := u.OfUser; vt != nil {
+	if vt := u.OfOpenAIUserMessage; vt != nil {
 		res.any = vt.Content.asAny()
-	} else if vt := u.OfSystem; vt != nil {
+	} else if vt := u.OfOpenAISystemMessage; vt != nil {
 		res.any = vt.Content.asAny()
-	} else if vt := u.OfAssistant; vt != nil {
+	} else if vt := u.OfOpenAIAssistantMessage; vt != nil {
 		res.any = vt.Content.asAny()
-	} else if vt := u.OfTool; vt != nil {
+	} else if vt := u.OfOpenAIToolMessage; vt != nil {
 		res.any = vt.Content.asAny()
-	} else if vt := u.OfDeveloper; vt != nil {
+	} else if vt := u.OfOpenAIDeveloperMessage; vt != nil {
 		res.any = vt.Content.asAny()
 	}
 	return
@@ -2793,11 +2519,11 @@ func (u openAiv1ChatCompletionNewParamsMessageUnionContent) AsAny() any { return
 func init() {
 	apijson.RegisterUnion[OpenAIV1ChatCompletionNewParamsMessageUnion](
 		"role",
-		apijson.Discriminator[OpenAIUserMessageParam]("user"),
-		apijson.Discriminator[OpenAISystemMessageParam]("system"),
-		apijson.Discriminator[OpenAIAssistantMessageParam]("assistant"),
-		apijson.Discriminator[OpenAIToolMessageParam]("tool"),
-		apijson.Discriminator[OpenAIDeveloperMessageParam]("developer"),
+		apijson.Discriminator[OpenAIUserMessageParam](undefined),
+		apijson.Discriminator[OpenAISystemMessageParam](undefined),
+		apijson.Discriminator[OpenAIAssistantMessageParam](undefined),
+		apijson.Discriminator[OpenAIToolMessageParam](undefined),
+		apijson.Discriminator[OpenAIDeveloperMessageParam](undefined),
 	)
 }
 
@@ -2892,33 +2618,33 @@ func (u *OpenAIV1ChatCompletionNewParamsFunctionUnion) asAny() any {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type OpenAIV1ChatCompletionNewParamsResponseFormatUnion struct {
-	OfText       *OpenAIV1ChatCompletionNewParamsResponseFormatText       `json:",omitzero,inline"`
-	OfJsonSchema *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchema `json:",omitzero,inline"`
-	OfJsonObject *OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject `json:",omitzero,inline"`
+	OfOpenAIResponseFormatText       *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText       `json:",omitzero,inline"`
+	OfOpenAIResponseFormatJsonSchema *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchema `json:",omitzero,inline"`
+	OfOpenAIResponseFormatJsonObject *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonObject `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u OpenAIV1ChatCompletionNewParamsResponseFormatUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfJsonSchema, u.OfJsonObject)
+	return param.MarshalUnion(u, u.OfOpenAIResponseFormatText, u.OfOpenAIResponseFormatJsonSchema, u.OfOpenAIResponseFormatJsonObject)
 }
 func (u *OpenAIV1ChatCompletionNewParamsResponseFormatUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *OpenAIV1ChatCompletionNewParamsResponseFormatUnion) asAny() any {
-	if !param.IsOmitted(u.OfText) {
-		return u.OfText
-	} else if !param.IsOmitted(u.OfJsonSchema) {
-		return u.OfJsonSchema
-	} else if !param.IsOmitted(u.OfJsonObject) {
-		return u.OfJsonObject
+	if !param.IsOmitted(u.OfOpenAIResponseFormatText) {
+		return u.OfOpenAIResponseFormatText
+	} else if !param.IsOmitted(u.OfOpenAIResponseFormatJsonSchema) {
+		return u.OfOpenAIResponseFormatJsonSchema
+	} else if !param.IsOmitted(u.OfOpenAIResponseFormatJsonObject) {
+		return u.OfOpenAIResponseFormatJsonObject
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u OpenAIV1ChatCompletionNewParamsResponseFormatUnion) GetJsonSchema() *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchema {
-	if vt := u.OfJsonSchema; vt != nil {
+func (u OpenAIV1ChatCompletionNewParamsResponseFormatUnion) GetJsonSchema() *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchema {
+	if vt := u.OfOpenAIResponseFormatJsonSchema; vt != nil {
 		return &vt.JsonSchema
 	}
 	return nil
@@ -2926,11 +2652,11 @@ func (u OpenAIV1ChatCompletionNewParamsResponseFormatUnion) GetJsonSchema() *Ope
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u OpenAIV1ChatCompletionNewParamsResponseFormatUnion) GetType() *string {
-	if vt := u.OfText; vt != nil {
+	if vt := u.OfOpenAIResponseFormatText; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfJsonSchema; vt != nil {
+	} else if vt := u.OfOpenAIResponseFormatJsonSchema; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfJsonObject; vt != nil {
+	} else if vt := u.OfOpenAIResponseFormatJsonObject; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -2939,70 +2665,62 @@ func (u OpenAIV1ChatCompletionNewParamsResponseFormatUnion) GetType() *string {
 func init() {
 	apijson.RegisterUnion[OpenAIV1ChatCompletionNewParamsResponseFormatUnion](
 		"type",
-		apijson.Discriminator[OpenAIV1ChatCompletionNewParamsResponseFormatText]("text"),
-		apijson.Discriminator[OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchema]("json_schema"),
-		apijson.Discriminator[OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject]("json_object"),
+		apijson.Discriminator[OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText](undefined),
+		apijson.Discriminator[OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchema](undefined),
+		apijson.Discriminator[OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonObject](undefined),
 	)
 }
 
-func NewOpenAIV1ChatCompletionNewParamsResponseFormatText() OpenAIV1ChatCompletionNewParamsResponseFormatText {
-	return OpenAIV1ChatCompletionNewParamsResponseFormatText{
-		Type: "text",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewOpenAIV1ChatCompletionNewParamsResponseFormatText].
-type OpenAIV1ChatCompletionNewParamsResponseFormatText struct {
-	Type constant.Text `json:"type,required"`
+// The property Type is required.
+type OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText struct {
+	Type string `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIV1ChatCompletionNewParamsResponseFormatText) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatText
+func (r OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIV1ChatCompletionNewParamsResponseFormatText) UnmarshalJSON(data []byte) error {
+func (r *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatText) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties JsonSchema, Type are required.
-type OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchema struct {
-	JsonSchema OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchema `json:"json_schema,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "json_schema".
-	Type constant.JsonSchema `json:"type,required"`
+type OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchema struct {
+	JsonSchema OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchema `json:"json_schema,omitzero,required"`
+	Type       string                                                                                `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchema) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchema
+func (r OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchema) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchema) UnmarshalJSON(data []byte) error {
+func (r *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchema) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Name is required.
-type OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchema struct {
-	Name        string                                                                                  `json:"name,required"`
-	Description param.Opt[string]                                                                       `json:"description,omitzero"`
-	Strict      param.Opt[bool]                                                                         `json:"strict,omitzero"`
-	Schema      map[string]OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchemaUnion `json:"schema,omitzero"`
+type OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchema struct {
+	Name        string                                                                                                      `json:"name,required"`
+	Description param.Opt[string]                                                                                           `json:"description,omitzero"`
+	Strict      param.Opt[bool]                                                                                             `json:"strict,omitzero"`
+	Schema      map[string]OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchemaSchemaUnion `json:"schema,omitzero"`
 	paramObj
 }
 
-func (r OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchema) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchema
+func (r OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchema) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchema
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchema) UnmarshalJSON(data []byte) error {
+func (r *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchema) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchemaUnion struct {
+type OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchemaSchemaUnion struct {
 	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
 	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
 	OfString   param.Opt[string]  `json:",omitzero,inline"`
@@ -3010,14 +2728,14 @@ type OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchemaUnio
 	paramUnion
 }
 
-func (u OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchemaUnion) MarshalJSON() ([]byte, error) {
+func (u OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchemaSchemaUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
 }
-func (u *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchemaUnion) UnmarshalJSON(data []byte) error {
+func (u *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchemaSchemaUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchemaUnion) asAny() any {
+func (u *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonSchemaJsonSchemaSchemaUnion) asAny() any {
 	if !param.IsOmitted(u.OfBool) {
 		return &u.OfBool.Value
 	} else if !param.IsOmitted(u.OfFloat) {
@@ -3030,24 +2748,17 @@ func (u *OpenAIV1ChatCompletionNewParamsResponseFormatJsonSchemaJsonSchemaSchema
 	return nil
 }
 
-func NewOpenAIV1ChatCompletionNewParamsResponseFormatJsonObject() OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject {
-	return OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject{
-		Type: "json_object",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewOpenAIV1ChatCompletionNewParamsResponseFormatJsonObject].
-type OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject struct {
-	Type constant.JsonObject `json:"type,required"`
+// The property Type is required.
+type OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonObject struct {
+	Type string `json:"type,required"`
 	paramObj
 }
 
-func (r OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject) MarshalJSON() (data []byte, err error) {
-	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject
+func (r OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonObject) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonObject
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *OpenAIV1ChatCompletionNewParamsResponseFormatJsonObject) UnmarshalJSON(data []byte) error {
+func (r *OpenAIV1ChatCompletionNewParamsResponseFormatOpenAIResponseFormatJsonObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -157,7 +157,7 @@ type OpenAiv1FileListResponse struct {
 	HasMore bool         `json:"has_more,required"`
 	LastID  string       `json:"last_id,required"`
 	// The object type, which is always "list"
-	Object constant.List `json:"object,required"`
+	Object string `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

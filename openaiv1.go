@@ -133,7 +133,7 @@ type OpenAiv1EmbeddingsResponse struct {
 	// The model that was used to generate the embeddings
 	Model string `json:"model,required"`
 	// The object type, which will be "list"
-	Object constant.List `json:"object,required"`
+	Object string `json:"object,required"`
 	// Usage information
 	Usage OpenAiv1EmbeddingsResponseUsage `json:"usage,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -161,7 +161,7 @@ type OpenAiv1EmbeddingsResponseData struct {
 	// The index of the embedding in the input list
 	Index int64 `json:"index,required"`
 	// The object type, which will be "embedding"
-	Object constant.Embedding `json:"object,required"`
+	Object string `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Embedding   respjson.Field
