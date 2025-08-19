@@ -37,9 +37,7 @@ func TestOpenAIV1VectorStoreFileNewWithOptionalParams(t *testing.T) {
 				},
 			},
 			ChunkingStrategy: llamastackclient.ChunkingStrategyUnionParam{
-				OfVectorStoreChunkingStrategyAuto: &llamastackclient.ChunkingStrategyVectorStoreChunkingStrategyAutoParam{
-					Type: "type",
-				},
+				OfAuto: &llamastackclient.ChunkingStrategyAutoParam{},
 			},
 		},
 	)

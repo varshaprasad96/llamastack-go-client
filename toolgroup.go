@@ -14,6 +14,7 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // ToolgroupService contains methods and other services that help with interacting
@@ -78,11 +79,9 @@ func (r *ToolgroupService) Delete(ctx context.Context, toolgroupID string, opts 
 }
 
 type ToolGroup struct {
-	Identifier string `json:"identifier,required"`
-	ProviderID string `json:"provider_id,required"`
-	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
-	// "benchmark", "tool", "tool_group".
-	Type               ToolGroupType                `json:"type,required"`
+	Identifier         string                       `json:"identifier,required"`
+	ProviderID         string                       `json:"provider_id,required"`
+	Type               constant.ToolGroup           `json:"type,required"`
 	Args               map[string]ToolGroupArgUnion `json:"args"`
 	McpEndpoint        URL                          `json:"mcp_endpoint"`
 	ProviderResourceID string                       `json:"provider_resource_id"`
@@ -104,19 +103,6 @@ func (r ToolGroup) RawJSON() string { return r.JSON.raw }
 func (r *ToolGroup) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ToolGroupType string
-
-const (
-	ToolGroupTypeModel           ToolGroupType = "model"
-	ToolGroupTypeShield          ToolGroupType = "shield"
-	ToolGroupTypeVectorDB        ToolGroupType = "vector_db"
-	ToolGroupTypeDataset         ToolGroupType = "dataset"
-	ToolGroupTypeScoringFunction ToolGroupType = "scoring_function"
-	ToolGroupTypeBenchmark       ToolGroupType = "benchmark"
-	ToolGroupTypeTool            ToolGroupType = "tool"
-	ToolGroupTypeToolGroup       ToolGroupType = "tool_group"
-)
 
 // ToolGroupArgUnion contains all possible properties and values from [bool],
 // [float64], [string], [[]any].

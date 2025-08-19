@@ -14,6 +14,7 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // ModelService contains methods and other services that help with interacting with
@@ -80,12 +81,10 @@ type Model struct {
 	Identifier string                        `json:"identifier,required"`
 	Metadata   map[string]ModelMetadataUnion `json:"metadata,required"`
 	// Any of "llm", "embedding".
-	ModelType  ModelType `json:"model_type,required"`
-	ProviderID string    `json:"provider_id,required"`
-	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
-	// "benchmark", "tool", "tool_group".
-	Type               ModelType `json:"type,required"`
-	ProviderResourceID string    `json:"provider_resource_id"`
+	ModelType          ModelType      `json:"model_type,required"`
+	ProviderID         string         `json:"provider_id,required"`
+	Type               constant.Model `json:"type,required"`
+	ProviderResourceID string         `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Identifier         respjson.Field
@@ -160,14 +159,8 @@ func (r *ModelMetadataUnion) UnmarshalJSON(data []byte) error {
 type ModelType string
 
 const (
-	ModelTypeModel           ModelType = "model"
-	ModelTypeShield          ModelType = "shield"
-	ModelTypeVectorDB        ModelType = "vector_db"
-	ModelTypeDataset         ModelType = "dataset"
-	ModelTypeScoringFunction ModelType = "scoring_function"
-	ModelTypeBenchmark       ModelType = "benchmark"
-	ModelTypeTool            ModelType = "tool"
-	ModelTypeToolGroup       ModelType = "tool_group"
+	ModelTypeLlm       ModelType = "llm"
+	ModelTypeEmbedding ModelType = "embedding"
 )
 
 type ModelListResponse struct {
