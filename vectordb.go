@@ -13,7 +13,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // VectorDBService contains methods and other services that help with interacting
@@ -77,12 +76,14 @@ func (r *VectorDBService) Delete(ctx context.Context, vectorDBID string, opts ..
 }
 
 type VectorDB struct {
-	EmbeddingDimension int64             `json:"embedding_dimension,required"`
-	EmbeddingModel     string            `json:"embedding_model,required"`
-	Identifier         string            `json:"identifier,required"`
-	ProviderID         string            `json:"provider_id,required"`
-	Type               constant.VectorDB `json:"type,required"`
-	ProviderResourceID string            `json:"provider_resource_id"`
+	EmbeddingDimension int64  `json:"embedding_dimension,required"`
+	EmbeddingModel     string `json:"embedding_model,required"`
+	Identifier         string `json:"identifier,required"`
+	ProviderID         string `json:"provider_id,required"`
+	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
+	// "benchmark", "tool", "tool_group".
+	Type               VectorDBType `json:"type,required"`
+	ProviderResourceID string       `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EmbeddingDimension respjson.Field
@@ -101,6 +102,19 @@ func (r VectorDB) RawJSON() string { return r.JSON.raw }
 func (r *VectorDB) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type VectorDBType string
+
+const (
+	VectorDBTypeModel           VectorDBType = "model"
+	VectorDBTypeShield          VectorDBType = "shield"
+	VectorDBTypeVectorDB        VectorDBType = "vector_db"
+	VectorDBTypeDataset         VectorDBType = "dataset"
+	VectorDBTypeScoringFunction VectorDBType = "scoring_function"
+	VectorDBTypeBenchmark       VectorDBType = "benchmark"
+	VectorDBTypeTool            VectorDBType = "tool"
+	VectorDBTypeToolGroup       VectorDBType = "tool_group"
+)
 
 type VectorDBListResponse struct {
 	Data []VectorDB `json:"data,required"`

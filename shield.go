@@ -14,7 +14,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // ShieldService contains methods and other services that help with interacting
@@ -79,9 +78,11 @@ func (r *ShieldService) Delete(ctx context.Context, identifier string, opts ...o
 
 // A safety shield resource that can be used to check content
 type Shield struct {
-	Identifier         string                      `json:"identifier,required"`
-	ProviderID         string                      `json:"provider_id,required"`
-	Type               constant.Shield             `json:"type,required"`
+	Identifier string `json:"identifier,required"`
+	ProviderID string `json:"provider_id,required"`
+	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
+	// "benchmark", "tool", "tool_group".
+	Type               ShieldType                  `json:"type,required"`
 	Params             map[string]ShieldParamUnion `json:"params"`
 	ProviderResourceID string                      `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -101,6 +102,19 @@ func (r Shield) RawJSON() string { return r.JSON.raw }
 func (r *Shield) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ShieldType string
+
+const (
+	ShieldTypeModel           ShieldType = "model"
+	ShieldTypeShield          ShieldType = "shield"
+	ShieldTypeVectorDB        ShieldType = "vector_db"
+	ShieldTypeDataset         ShieldType = "dataset"
+	ShieldTypeScoringFunction ShieldType = "scoring_function"
+	ShieldTypeBenchmark       ShieldType = "benchmark"
+	ShieldTypeTool            ShieldType = "tool"
+	ShieldTypeToolGroup       ShieldType = "tool_group"
+)
 
 // ShieldParamUnion contains all possible properties and values from [bool],
 // [float64], [string], [[]any].

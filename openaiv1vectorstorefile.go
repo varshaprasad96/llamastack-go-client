@@ -127,16 +127,17 @@ func (r *OpenAIV1VectorStoreFileService) GetContent(ctx context.Context, fileID 
 }
 
 // ChunkingStrategyUnion contains all possible properties and values from
-// [ChunkingStrategyAuto], [ChunkingStrategyStatic].
+// [ChunkingStrategyVectorStoreChunkingStrategyAuto],
+// [ChunkingStrategyVectorStoreChunkingStrategyStatic].
 //
 // Use the [ChunkingStrategyUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ChunkingStrategyUnion struct {
-	// Any of "auto", "static".
+	// Any of nil, nil.
 	Type string `json:"type"`
-	// This field is from variant [ChunkingStrategyStatic].
-	Static ChunkingStrategyStaticStatic `json:"static"`
+	// This field is from variant [ChunkingStrategyVectorStoreChunkingStrategyStatic].
+	Static ChunkingStrategyVectorStoreChunkingStrategyStaticStatic `json:"static"`
 	JSON   struct {
 		Type   respjson.Field
 		Static respjson.Field
@@ -144,39 +145,12 @@ type ChunkingStrategyUnion struct {
 	} `json:"-"`
 }
 
-// anyChunkingStrategy is implemented by each variant of [ChunkingStrategyUnion] to
-// add type safety for the return type of [ChunkingStrategyUnion.AsAny]
-type anyChunkingStrategy interface {
-	implChunkingStrategyUnion()
-}
-
-func (ChunkingStrategyAuto) implChunkingStrategyUnion()   {}
-func (ChunkingStrategyStatic) implChunkingStrategyUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := ChunkingStrategyUnion.AsAny().(type) {
-//	case llamastackclient.ChunkingStrategyAuto:
-//	case llamastackclient.ChunkingStrategyStatic:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u ChunkingStrategyUnion) AsAny() anyChunkingStrategy {
-	switch u.Type {
-	case "auto":
-		return u.AsAuto()
-	case "static":
-		return u.AsStatic()
-	}
-	return nil
-}
-
-func (u ChunkingStrategyUnion) AsAuto() (v ChunkingStrategyAuto) {
+func (u ChunkingStrategyUnion) AsVectorStoreChunkingStrategyAuto() (v ChunkingStrategyVectorStoreChunkingStrategyAuto) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ChunkingStrategyUnion) AsStatic() (v ChunkingStrategyStatic) {
+func (u ChunkingStrategyUnion) AsVectorStoreChunkingStrategyStatic() (v ChunkingStrategyVectorStoreChunkingStrategyStatic) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -197,8 +171,8 @@ func (r ChunkingStrategyUnion) ToParam() ChunkingStrategyUnionParam {
 	return param.Override[ChunkingStrategyUnionParam](json.RawMessage(r.RawJSON()))
 }
 
-type ChunkingStrategyAuto struct {
-	Type constant.Auto `json:"type,required"`
+type ChunkingStrategyVectorStoreChunkingStrategyAuto struct {
+	Type string `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -208,14 +182,14 @@ type ChunkingStrategyAuto struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChunkingStrategyAuto) RawJSON() string { return r.JSON.raw }
-func (r *ChunkingStrategyAuto) UnmarshalJSON(data []byte) error {
+func (r ChunkingStrategyVectorStoreChunkingStrategyAuto) RawJSON() string { return r.JSON.raw }
+func (r *ChunkingStrategyVectorStoreChunkingStrategyAuto) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChunkingStrategyStatic struct {
-	Static ChunkingStrategyStaticStatic `json:"static,required"`
-	Type   constant.Static              `json:"type,required"`
+type ChunkingStrategyVectorStoreChunkingStrategyStatic struct {
+	Static ChunkingStrategyVectorStoreChunkingStrategyStaticStatic `json:"static,required"`
+	Type   string                                                  `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Static      respjson.Field
@@ -226,12 +200,12 @@ type ChunkingStrategyStatic struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChunkingStrategyStatic) RawJSON() string { return r.JSON.raw }
-func (r *ChunkingStrategyStatic) UnmarshalJSON(data []byte) error {
+func (r ChunkingStrategyVectorStoreChunkingStrategyStatic) RawJSON() string { return r.JSON.raw }
+func (r *ChunkingStrategyVectorStoreChunkingStrategyStatic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChunkingStrategyStaticStatic struct {
+type ChunkingStrategyVectorStoreChunkingStrategyStaticStatic struct {
 	ChunkOverlapTokens int64 `json:"chunk_overlap_tokens,required"`
 	MaxChunkSizeTokens int64 `json:"max_chunk_size_tokens,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -244,45 +218,52 @@ type ChunkingStrategyStaticStatic struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChunkingStrategyStaticStatic) RawJSON() string { return r.JSON.raw }
-func (r *ChunkingStrategyStaticStatic) UnmarshalJSON(data []byte) error {
+func (r ChunkingStrategyVectorStoreChunkingStrategyStaticStatic) RawJSON() string { return r.JSON.raw }
+func (r *ChunkingStrategyVectorStoreChunkingStrategyStaticStatic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func ChunkingStrategyParamOfStatic(static ChunkingStrategyStaticStaticParam) ChunkingStrategyUnionParam {
-	var variant ChunkingStrategyStaticParam
+func ChunkingStrategyParamOfVectorStoreChunkingStrategyAuto(type_ string) ChunkingStrategyUnionParam {
+	var variant ChunkingStrategyVectorStoreChunkingStrategyAutoParam
+	variant.Type = type_
+	return ChunkingStrategyUnionParam{OfVectorStoreChunkingStrategyAuto: &variant}
+}
+
+func ChunkingStrategyParamOfVectorStoreChunkingStrategyStatic(static ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam, type_ string) ChunkingStrategyUnionParam {
+	var variant ChunkingStrategyVectorStoreChunkingStrategyStaticParam
 	variant.Static = static
-	return ChunkingStrategyUnionParam{OfStatic: &variant}
+	variant.Type = type_
+	return ChunkingStrategyUnionParam{OfVectorStoreChunkingStrategyStatic: &variant}
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ChunkingStrategyUnionParam struct {
-	OfAuto   *ChunkingStrategyAutoParam   `json:",omitzero,inline"`
-	OfStatic *ChunkingStrategyStaticParam `json:",omitzero,inline"`
+	OfVectorStoreChunkingStrategyAuto   *ChunkingStrategyVectorStoreChunkingStrategyAutoParam   `json:",omitzero,inline"`
+	OfVectorStoreChunkingStrategyStatic *ChunkingStrategyVectorStoreChunkingStrategyStaticParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ChunkingStrategyUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAuto, u.OfStatic)
+	return param.MarshalUnion(u, u.OfVectorStoreChunkingStrategyAuto, u.OfVectorStoreChunkingStrategyStatic)
 }
 func (u *ChunkingStrategyUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *ChunkingStrategyUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfAuto) {
-		return u.OfAuto
-	} else if !param.IsOmitted(u.OfStatic) {
-		return u.OfStatic
+	if !param.IsOmitted(u.OfVectorStoreChunkingStrategyAuto) {
+		return u.OfVectorStoreChunkingStrategyAuto
+	} else if !param.IsOmitted(u.OfVectorStoreChunkingStrategyStatic) {
+		return u.OfVectorStoreChunkingStrategyStatic
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ChunkingStrategyUnionParam) GetStatic() *ChunkingStrategyStaticStaticParam {
-	if vt := u.OfStatic; vt != nil {
+func (u ChunkingStrategyUnionParam) GetStatic() *ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam {
+	if vt := u.OfVectorStoreChunkingStrategyStatic; vt != nil {
 		return &vt.Static
 	}
 	return nil
@@ -290,9 +271,9 @@ func (u ChunkingStrategyUnionParam) GetStatic() *ChunkingStrategyStaticStaticPar
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u ChunkingStrategyUnionParam) GetType() *string {
-	if vt := u.OfAuto; vt != nil {
+	if vt := u.OfVectorStoreChunkingStrategyAuto; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfStatic; vt != nil {
+	} else if vt := u.OfVectorStoreChunkingStrategyStatic; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -301,60 +282,52 @@ func (u ChunkingStrategyUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[ChunkingStrategyUnionParam](
 		"type",
-		apijson.Discriminator[ChunkingStrategyAutoParam]("auto"),
-		apijson.Discriminator[ChunkingStrategyStaticParam]("static"),
+		apijson.Discriminator[ChunkingStrategyVectorStoreChunkingStrategyAutoParam](undefined),
+		apijson.Discriminator[ChunkingStrategyVectorStoreChunkingStrategyStaticParam](undefined),
 	)
 }
 
-func NewChunkingStrategyAutoParam() ChunkingStrategyAutoParam {
-	return ChunkingStrategyAutoParam{
-		Type: "auto",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewChunkingStrategyAutoParam].
-type ChunkingStrategyAutoParam struct {
-	Type constant.Auto `json:"type,required"`
+// The property Type is required.
+type ChunkingStrategyVectorStoreChunkingStrategyAutoParam struct {
+	Type string `json:"type,required"`
 	paramObj
 }
 
-func (r ChunkingStrategyAutoParam) MarshalJSON() (data []byte, err error) {
-	type shadow ChunkingStrategyAutoParam
+func (r ChunkingStrategyVectorStoreChunkingStrategyAutoParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChunkingStrategyVectorStoreChunkingStrategyAutoParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ChunkingStrategyAutoParam) UnmarshalJSON(data []byte) error {
+func (r *ChunkingStrategyVectorStoreChunkingStrategyAutoParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Static, Type are required.
-type ChunkingStrategyStaticParam struct {
-	Static ChunkingStrategyStaticStaticParam `json:"static,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "static".
-	Type constant.Static `json:"type,required"`
+type ChunkingStrategyVectorStoreChunkingStrategyStaticParam struct {
+	Static ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam `json:"static,omitzero,required"`
+	Type   string                                                       `json:"type,required"`
 	paramObj
 }
 
-func (r ChunkingStrategyStaticParam) MarshalJSON() (data []byte, err error) {
-	type shadow ChunkingStrategyStaticParam
+func (r ChunkingStrategyVectorStoreChunkingStrategyStaticParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChunkingStrategyVectorStoreChunkingStrategyStaticParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ChunkingStrategyStaticParam) UnmarshalJSON(data []byte) error {
+func (r *ChunkingStrategyVectorStoreChunkingStrategyStaticParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties ChunkOverlapTokens, MaxChunkSizeTokens are required.
-type ChunkingStrategyStaticStaticParam struct {
+type ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam struct {
 	ChunkOverlapTokens int64 `json:"chunk_overlap_tokens,required"`
 	MaxChunkSizeTokens int64 `json:"max_chunk_size_tokens,required"`
 	paramObj
 }
 
-func (r ChunkingStrategyStaticStaticParam) MarshalJSON() (data []byte, err error) {
-	type shadow ChunkingStrategyStaticStaticParam
+func (r ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ChunkingStrategyStaticStaticParam) UnmarshalJSON(data []byte) error {
+func (r *ChunkingStrategyVectorStoreChunkingStrategyStaticStaticParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

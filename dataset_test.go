@@ -29,8 +29,9 @@ func TestDatasetNewWithOptionalParams(t *testing.T) {
 	_, err := client.Datasets.New(context.TODO(), llamastackclient.DatasetNewParams{
 		Purpose: llamastackclient.DatasetNewParamsPurposePostTrainingMessages,
 		Source: llamastackclient.DataSourceUnionParam{
-			OfUri: &llamastackclient.DataSourceUriParam{
-				Uri: "uri",
+			OfUriDataSource: &llamastackclient.DataSourceUriDataSourceParam{
+				Type: "type",
+				Uri:  "uri",
 			},
 		},
 		DatasetID: llamastackclient.String("dataset_id"),

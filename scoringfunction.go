@@ -14,7 +14,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // ScoringFunctionService contains methods and other services that help with
@@ -76,14 +75,16 @@ const (
 )
 
 type ScoringFn struct {
-	Identifier         string                            `json:"identifier,required"`
-	Metadata           map[string]ScoringFnMetadataUnion `json:"metadata,required"`
-	ProviderID         string                            `json:"provider_id,required"`
-	ReturnType         ScoringFnReturnType               `json:"return_type,required"`
-	Type               constant.ScoringFunction          `json:"type,required"`
-	Description        string                            `json:"description"`
-	Params             ScoringFnParamsUnionResp          `json:"params"`
-	ProviderResourceID string                            `json:"provider_resource_id"`
+	Identifier string                            `json:"identifier,required"`
+	Metadata   map[string]ScoringFnMetadataUnion `json:"metadata,required"`
+	ProviderID string                            `json:"provider_id,required"`
+	ReturnType ScoringFnReturnType               `json:"return_type,required"`
+	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
+	// "benchmark", "tool", "tool_group".
+	Type               ScoringFnType            `json:"type,required"`
+	Description        string                   `json:"description"`
+	Params             ScoringFnParamsUnionResp `json:"params"`
+	ProviderResourceID string                   `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Identifier         respjson.Field
@@ -174,6 +175,19 @@ func (r ScoringFnReturnType) RawJSON() string { return r.JSON.raw }
 func (r *ScoringFnReturnType) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ScoringFnType string
+
+const (
+	ScoringFnTypeModel           ScoringFnType = "model"
+	ScoringFnTypeShield          ScoringFnType = "shield"
+	ScoringFnTypeVectorDB        ScoringFnType = "vector_db"
+	ScoringFnTypeDataset         ScoringFnType = "dataset"
+	ScoringFnTypeScoringFunction ScoringFnType = "scoring_function"
+	ScoringFnTypeBenchmark       ScoringFnType = "benchmark"
+	ScoringFnTypeTool            ScoringFnType = "tool"
+	ScoringFnTypeToolGroup       ScoringFnType = "tool_group"
+)
 
 // ScoringFnParamsUnionResp contains all possible properties and values from
 // [ScoringFnParamsLlmAsJudgeScoringFnParamsResp],

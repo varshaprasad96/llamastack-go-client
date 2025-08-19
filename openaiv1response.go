@@ -110,8 +110,7 @@ type OutputUnion struct {
 	Content ResponseMessageContentUnion `json:"content"`
 	// This field is from variant [ResponseMessage].
 	Role ResponseMessageRole `json:"role"`
-	// Any of "message", "web_search_call", "file_search_call", "function_call",
-	// "mcp_call", "mcp_list_tools".
+	// Any of nil, "web_search_call", nil, nil, "mcp_call", "mcp_list_tools".
 	Type   string `json:"type"`
 	ID     string `json:"id"`
 	Status string `json:"status"`
@@ -149,50 +148,7 @@ type OutputUnion struct {
 	} `json:"-"`
 }
 
-// anyOutput is implemented by each variant of [OutputUnion] to add type safety for
-// the return type of [OutputUnion.AsAny]
-type anyOutput interface {
-	implOutputUnion()
-}
-
-func (ResponseMessage) implOutputUnion()                 {}
-func (OutputMessageWebSearchToolCall) implOutputUnion()  {}
-func (OutputMessageFileSearchToolCall) implOutputUnion() {}
-func (OutputMessageFunctionToolCall) implOutputUnion()   {}
-func (OutputMcpCall) implOutputUnion()                   {}
-func (OutputMcpListTools) implOutputUnion()              {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := OutputUnion.AsAny().(type) {
-//	case llamastackclient.ResponseMessage:
-//	case llamastackclient.OutputMessageWebSearchToolCall:
-//	case llamastackclient.OutputMessageFileSearchToolCall:
-//	case llamastackclient.OutputMessageFunctionToolCall:
-//	case llamastackclient.OutputMcpCall:
-//	case llamastackclient.OutputMcpListTools:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u OutputUnion) AsAny() anyOutput {
-	switch u.Type {
-	case "message":
-		return u.AsMessage()
-	case "web_search_call":
-		return u.AsWebSearchCall()
-	case "file_search_call":
-		return u.AsFileSearchCall()
-	case "function_call":
-		return u.AsFunctionCall()
-	case "mcp_call":
-		return u.AsMcpCall()
-	case "mcp_list_tools":
-		return u.AsMcpListTools()
-	}
-	return nil
-}
-
-func (u OutputUnion) AsMessage() (v ResponseMessage) {
+func (u OutputUnion) AsOpenAIResponseMessage() (v ResponseMessage) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -202,12 +158,12 @@ func (u OutputUnion) AsWebSearchCall() (v OutputMessageWebSearchToolCall) {
 	return
 }
 
-func (u OutputUnion) AsFileSearchCall() (v OutputMessageFileSearchToolCall) {
+func (u OutputUnion) AsOpenAIResponseOutputMessageFileSearchToolCall() (v OutputMessageFileSearchToolCall) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u OutputUnion) AsFunctionCall() (v OutputMessageFunctionToolCall) {
+func (u OutputUnion) AsOpenAIResponseOutputMessageFunctionToolCall() (v OutputMessageFunctionToolCall) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -364,7 +320,7 @@ type OutputMessageFileSearchToolCall struct {
 	ID      string                                                  `json:"id,required"`
 	Queries []string                                                `json:"queries,required"`
 	Status  string                                                  `json:"status,required"`
-	Type    constant.FileSearchCall                                 `json:"type,required"`
+	Type    string                                                  `json:"type,required"`
 	Results []map[string]OutputMessageFileSearchToolCallResultUnion `json:"results"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -451,9 +407,8 @@ type OutputMessageFileSearchToolCallParam struct {
 	ID      string                                                       `json:"id,required"`
 	Queries []string                                                     `json:"queries,omitzero,required"`
 	Status  string                                                       `json:"status,required"`
+	Type    string                                                       `json:"type,required"`
 	Results []map[string]OutputMessageFileSearchToolCallResultUnionParam `json:"results,omitzero"`
-	// This field can be elided, and will marshal its zero value as "file_search_call".
-	Type constant.FileSearchCall `json:"type,required"`
 	paramObj
 }
 
@@ -497,12 +452,12 @@ func (u *OutputMessageFileSearchToolCallResultUnionParam) asAny() any {
 }
 
 type OutputMessageFunctionToolCall struct {
-	Arguments string                `json:"arguments,required"`
-	CallID    string                `json:"call_id,required"`
-	Name      string                `json:"name,required"`
-	Type      constant.FunctionCall `json:"type,required"`
-	ID        string                `json:"id"`
-	Status    string                `json:"status"`
+	Arguments string `json:"arguments,required"`
+	CallID    string `json:"call_id,required"`
+	Name      string `json:"name,required"`
+	Type      string `json:"type,required"`
+	ID        string `json:"id"`
+	Status    string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Arguments   respjson.Field
@@ -537,10 +492,9 @@ type OutputMessageFunctionToolCallParam struct {
 	Arguments string            `json:"arguments,required"`
 	CallID    string            `json:"call_id,required"`
 	Name      string            `json:"name,required"`
+	Type      string            `json:"type,required"`
 	ID        param.Opt[string] `json:"id,omitzero"`
 	Status    param.Opt[string] `json:"status,omitzero"`
-	// This field can be elided, and will marshal its zero value as "function_call".
-	Type constant.FunctionCall `json:"type,required"`
 	paramObj
 }
 
@@ -742,22 +696,6 @@ func ResponseInputParamOfOpenAIResponseOutputMessageWebSearchToolCall(id string,
 	return ResponseInputUnionParam{OfOpenAIResponseOutputMessageWebSearchToolCall: &variant}
 }
 
-func ResponseInputParamOfOpenAIResponseOutputMessageFileSearchToolCall(id string, queries []string, status string) ResponseInputUnionParam {
-	var variant OutputMessageFileSearchToolCallParam
-	variant.ID = id
-	variant.Queries = queries
-	variant.Status = status
-	return ResponseInputUnionParam{OfOpenAIResponseOutputMessageFileSearchToolCall: &variant}
-}
-
-func ResponseInputParamOfOpenAIResponseOutputMessageFunctionToolCall(arguments string, callID string, name string) ResponseInputUnionParam {
-	var variant OutputMessageFunctionToolCallParam
-	variant.Arguments = arguments
-	variant.CallID = callID
-	variant.Name = name
-	return ResponseInputUnionParam{OfOpenAIResponseOutputMessageFunctionToolCall: &variant}
-}
-
 func ResponseInputParamOfOpenAIResponseInputFunctionToolCallOutput(callID string, output string) ResponseInputUnionParam {
 	var variant ResponseInputOpenAIResponseInputFunctionToolCallOutputParam
 	variant.CallID = callID
@@ -767,7 +705,7 @@ func ResponseInputParamOfOpenAIResponseInputFunctionToolCallOutput(callID string
 
 func ResponseInputParamOfOpenAIResponseMessage[
 	T string | []ResponseMessageContentArrayItemUnionParam | []ResponseMessageContentArrayItemParam,
-](content T, role ResponseMessageRole) ResponseInputUnionParam {
+](content T, role ResponseMessageRole, type_ string) ResponseInputUnionParam {
 	var variant ResponseMessageParam
 	switch v := any(content).(type) {
 	case string:
@@ -778,6 +716,7 @@ func ResponseInputParamOfOpenAIResponseMessage[
 		variant.Content.OfVariant2 = v
 	}
 	variant.Role = role
+	variant.Type = type_
 	return ResponseInputUnionParam{OfOpenAIResponseMessage: &variant}
 }
 
@@ -963,7 +902,7 @@ type ResponseMessage struct {
 	Content ResponseMessageContentUnion `json:"content,required"`
 	// Any of "system", "developer", "user", "assistant".
 	Role   ResponseMessageRole `json:"role,required"`
-	Type   constant.Message    `json:"type,required"`
+	Type   string              `json:"type,required"`
 	ID     string              `json:"id"`
 	Status string              `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1169,7 +1108,7 @@ const (
 type ResponseMessageContentArrayItem struct {
 	Annotations []ResponseMessageContentArrayItemAnnotationUnion `json:"annotations,required"`
 	Text        string                                           `json:"text,required"`
-	Type        constant.OutputText                              `json:"type,required"`
+	Type        string                                           `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Annotations respjson.Field
@@ -1406,10 +1345,9 @@ type ResponseMessageParam struct {
 	Content ResponseMessageContentUnionParam `json:"content,omitzero,required"`
 	// Any of "system", "developer", "user", "assistant".
 	Role   ResponseMessageRole `json:"role,omitzero,required"`
+	Type   string              `json:"type,required"`
 	ID     param.Opt[string]   `json:"id,omitzero"`
 	Status param.Opt[string]   `json:"status,omitzero"`
-	// This field can be elided, and will marshal its zero value as "message".
-	Type constant.Message `json:"type,required"`
 	paramObj
 }
 
@@ -1554,8 +1492,7 @@ func (r *ResponseMessageContentArrayItemInputImageParam) UnmarshalJSON(data []by
 type ResponseMessageContentArrayItemParam struct {
 	Annotations []ResponseMessageContentArrayItemAnnotationUnionParam `json:"annotations,omitzero,required"`
 	Text        string                                                `json:"text,required"`
-	// This field can be elided, and will marshal its zero value as "output_text".
-	Type constant.OutputText `json:"type,required"`
+	Type        string                                                `json:"type,required"`
 	paramObj
 }
 

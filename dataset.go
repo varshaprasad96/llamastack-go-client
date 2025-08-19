@@ -14,7 +14,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
 // DatasetService contains methods and other services that help with interacting
@@ -78,18 +77,18 @@ func (r *DatasetService) Delete(ctx context.Context, datasetID string, opts ...o
 }
 
 // DataSourceUnion contains all possible properties and values from
-// [DataSourceUri], [DataSourceRows].
+// [DataSourceUriDataSource], [DataSourceRowsDataSource].
 //
 // Use the [DataSourceUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type DataSourceUnion struct {
-	// Any of "uri", "rows".
+	// Any of nil, nil.
 	Type string `json:"type"`
-	// This field is from variant [DataSourceUri].
+	// This field is from variant [DataSourceUriDataSource].
 	Uri string `json:"uri"`
-	// This field is from variant [DataSourceRows].
-	Rows []map[string]DataSourceRowsRowUnion `json:"rows"`
+	// This field is from variant [DataSourceRowsDataSource].
+	Rows []map[string]DataSourceRowsDataSourceRowUnion `json:"rows"`
 	JSON struct {
 		Type respjson.Field
 		Uri  respjson.Field
@@ -98,39 +97,12 @@ type DataSourceUnion struct {
 	} `json:"-"`
 }
 
-// anyDataSource is implemented by each variant of [DataSourceUnion] to add type
-// safety for the return type of [DataSourceUnion.AsAny]
-type anyDataSource interface {
-	implDataSourceUnion()
-}
-
-func (DataSourceUri) implDataSourceUnion()  {}
-func (DataSourceRows) implDataSourceUnion() {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := DataSourceUnion.AsAny().(type) {
-//	case llamastackclient.DataSourceUri:
-//	case llamastackclient.DataSourceRows:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u DataSourceUnion) AsAny() anyDataSource {
-	switch u.Type {
-	case "uri":
-		return u.AsUri()
-	case "rows":
-		return u.AsRows()
-	}
-	return nil
-}
-
-func (u DataSourceUnion) AsUri() (v DataSourceUri) {
+func (u DataSourceUnion) AsUriDataSource() (v DataSourceUriDataSource) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DataSourceUnion) AsRows() (v DataSourceRows) {
+func (u DataSourceUnion) AsRowsDataSource() (v DataSourceRowsDataSource) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -152,8 +124,8 @@ func (r DataSourceUnion) ToParam() DataSourceUnionParam {
 }
 
 // A dataset that can be obtained from a URI.
-type DataSourceUri struct {
-	Type constant.Uri `json:"type,required"`
+type DataSourceUriDataSource struct {
+	Type string `json:"type,required"`
 	// The dataset can be obtained from a URI. E.g. -
 	// "https://mywebsite.com/mydata.jsonl" - "lsfs://mydata.jsonl" -
 	// "data:csv;base64,{base64_content}"
@@ -168,18 +140,18 @@ type DataSourceUri struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DataSourceUri) RawJSON() string { return r.JSON.raw }
-func (r *DataSourceUri) UnmarshalJSON(data []byte) error {
+func (r DataSourceUriDataSource) RawJSON() string { return r.JSON.raw }
+func (r *DataSourceUriDataSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // A dataset stored in rows.
-type DataSourceRows struct {
+type DataSourceRowsDataSource struct {
 	// The dataset is stored in rows. E.g. - [ {"messages": [{"role": "user",
 	// "content": "Hello, world!"}, {"role": "assistant", "content": "Hello, world!"}]}
 	// ]
-	Rows []map[string]DataSourceRowsRowUnion `json:"rows,required"`
-	Type constant.Rows                       `json:"type,required"`
+	Rows []map[string]DataSourceRowsDataSourceRowUnion `json:"rows,required"`
+	Type string                                        `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Rows        respjson.Field
@@ -190,19 +162,19 @@ type DataSourceRows struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r DataSourceRows) RawJSON() string { return r.JSON.raw }
-func (r *DataSourceRows) UnmarshalJSON(data []byte) error {
+func (r DataSourceRowsDataSource) RawJSON() string { return r.JSON.raw }
+func (r *DataSourceRowsDataSource) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// DataSourceRowsRowUnion contains all possible properties and values from [bool],
-// [float64], [string], [[]any].
+// DataSourceRowsDataSourceRowUnion contains all possible properties and values
+// from [bool], [float64], [string], [[]any].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfBool OfFloat OfString OfAnyArray]
-type DataSourceRowsRowUnion struct {
+type DataSourceRowsDataSourceRowUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -220,81 +192,83 @@ type DataSourceRowsRowUnion struct {
 	} `json:"-"`
 }
 
-func (u DataSourceRowsRowUnion) AsBool() (v bool) {
+func (u DataSourceRowsDataSourceRowUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DataSourceRowsRowUnion) AsFloat() (v float64) {
+func (u DataSourceRowsDataSourceRowUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DataSourceRowsRowUnion) AsString() (v string) {
+func (u DataSourceRowsDataSourceRowUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u DataSourceRowsRowUnion) AsAnyArray() (v []any) {
+func (u DataSourceRowsDataSourceRowUnion) AsAnyArray() (v []any) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u DataSourceRowsRowUnion) RawJSON() string { return u.JSON.raw }
+func (u DataSourceRowsDataSourceRowUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *DataSourceRowsRowUnion) UnmarshalJSON(data []byte) error {
+func (r *DataSourceRowsDataSourceRowUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func DataSourceParamOfUri(uri string) DataSourceUnionParam {
-	var variant DataSourceUriParam
+func DataSourceParamOfUriDataSource(type_ string, uri string) DataSourceUnionParam {
+	var variant DataSourceUriDataSourceParam
+	variant.Type = type_
 	variant.Uri = uri
-	return DataSourceUnionParam{OfUri: &variant}
+	return DataSourceUnionParam{OfUriDataSource: &variant}
 }
 
-func DataSourceParamOfRows(rows []map[string]DataSourceRowsRowUnionParam) DataSourceUnionParam {
-	var variant DataSourceRowsParam
+func DataSourceParamOfRowsDataSource(rows []map[string]DataSourceRowsDataSourceRowUnionParam, type_ string) DataSourceUnionParam {
+	var variant DataSourceRowsDataSourceParam
 	variant.Rows = rows
-	return DataSourceUnionParam{OfRows: &variant}
+	variant.Type = type_
+	return DataSourceUnionParam{OfRowsDataSource: &variant}
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type DataSourceUnionParam struct {
-	OfUri  *DataSourceUriParam  `json:",omitzero,inline"`
-	OfRows *DataSourceRowsParam `json:",omitzero,inline"`
+	OfUriDataSource  *DataSourceUriDataSourceParam  `json:",omitzero,inline"`
+	OfRowsDataSource *DataSourceRowsDataSourceParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u DataSourceUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfUri, u.OfRows)
+	return param.MarshalUnion(u, u.OfUriDataSource, u.OfRowsDataSource)
 }
 func (u *DataSourceUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *DataSourceUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfUri) {
-		return u.OfUri
-	} else if !param.IsOmitted(u.OfRows) {
-		return u.OfRows
+	if !param.IsOmitted(u.OfUriDataSource) {
+		return u.OfUriDataSource
+	} else if !param.IsOmitted(u.OfRowsDataSource) {
+		return u.OfRowsDataSource
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u DataSourceUnionParam) GetUri() *string {
-	if vt := u.OfUri; vt != nil {
+	if vt := u.OfUriDataSource; vt != nil {
 		return &vt.Uri
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u DataSourceUnionParam) GetRows() []map[string]DataSourceRowsRowUnionParam {
-	if vt := u.OfRows; vt != nil {
+func (u DataSourceUnionParam) GetRows() []map[string]DataSourceRowsDataSourceRowUnionParam {
+	if vt := u.OfRowsDataSource; vt != nil {
 		return vt.Rows
 	}
 	return nil
@@ -302,9 +276,9 @@ func (u DataSourceUnionParam) GetRows() []map[string]DataSourceRowsRowUnionParam
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u DataSourceUnionParam) GetType() *string {
-	if vt := u.OfUri; vt != nil {
+	if vt := u.OfUriDataSource; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfRows; vt != nil {
+	} else if vt := u.OfRowsDataSource; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -313,57 +287,55 @@ func (u DataSourceUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[DataSourceUnionParam](
 		"type",
-		apijson.Discriminator[DataSourceUriParam]("uri"),
-		apijson.Discriminator[DataSourceRowsParam]("rows"),
+		apijson.Discriminator[DataSourceUriDataSourceParam](undefined),
+		apijson.Discriminator[DataSourceRowsDataSourceParam](undefined),
 	)
 }
 
 // A dataset that can be obtained from a URI.
 //
 // The properties Type, Uri are required.
-type DataSourceUriParam struct {
+type DataSourceUriDataSourceParam struct {
+	Type string `json:"type,required"`
 	// The dataset can be obtained from a URI. E.g. -
 	// "https://mywebsite.com/mydata.jsonl" - "lsfs://mydata.jsonl" -
 	// "data:csv;base64,{base64_content}"
 	Uri string `json:"uri,required"`
-	// This field can be elided, and will marshal its zero value as "uri".
-	Type constant.Uri `json:"type,required"`
 	paramObj
 }
 
-func (r DataSourceUriParam) MarshalJSON() (data []byte, err error) {
-	type shadow DataSourceUriParam
+func (r DataSourceUriDataSourceParam) MarshalJSON() (data []byte, err error) {
+	type shadow DataSourceUriDataSourceParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DataSourceUriParam) UnmarshalJSON(data []byte) error {
+func (r *DataSourceUriDataSourceParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // A dataset stored in rows.
 //
 // The properties Rows, Type are required.
-type DataSourceRowsParam struct {
+type DataSourceRowsDataSourceParam struct {
 	// The dataset is stored in rows. E.g. - [ {"messages": [{"role": "user",
 	// "content": "Hello, world!"}, {"role": "assistant", "content": "Hello, world!"}]}
 	// ]
-	Rows []map[string]DataSourceRowsRowUnionParam `json:"rows,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "rows".
-	Type constant.Rows `json:"type,required"`
+	Rows []map[string]DataSourceRowsDataSourceRowUnionParam `json:"rows,omitzero,required"`
+	Type string                                             `json:"type,required"`
 	paramObj
 }
 
-func (r DataSourceRowsParam) MarshalJSON() (data []byte, err error) {
-	type shadow DataSourceRowsParam
+func (r DataSourceRowsDataSourceParam) MarshalJSON() (data []byte, err error) {
+	type shadow DataSourceRowsDataSourceParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *DataSourceRowsParam) UnmarshalJSON(data []byte) error {
+func (r *DataSourceRowsDataSourceParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type DataSourceRowsRowUnionParam struct {
+type DataSourceRowsDataSourceRowUnionParam struct {
 	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
 	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
 	OfString   param.Opt[string]  `json:",omitzero,inline"`
@@ -371,14 +343,14 @@ type DataSourceRowsRowUnionParam struct {
 	paramUnion
 }
 
-func (u DataSourceRowsRowUnionParam) MarshalJSON() ([]byte, error) {
+func (u DataSourceRowsDataSourceRowUnionParam) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
 }
-func (u *DataSourceRowsRowUnionParam) UnmarshalJSON(data []byte) error {
+func (u *DataSourceRowsDataSourceRowUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *DataSourceRowsRowUnionParam) asAny() any {
+func (u *DataSourceRowsDataSourceRowUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfBool) {
 		return &u.OfBool.Value
 	} else if !param.IsOmitted(u.OfFloat) {
@@ -400,9 +372,11 @@ type Dataset struct {
 	// Any of "post-training/messages", "eval/question-answer", "eval/messages-answer".
 	Purpose DatasetPurpose `json:"purpose,required"`
 	// A dataset that can be obtained from a URI.
-	Source             DataSourceUnion  `json:"source,required"`
-	Type               constant.Dataset `json:"type,required"`
-	ProviderResourceID string           `json:"provider_resource_id"`
+	Source DataSourceUnion `json:"source,required"`
+	// Any of "model", "shield", "vector_db", "dataset", "scoring_function",
+	// "benchmark", "tool", "tool_group".
+	Type               DatasetType `json:"type,required"`
+	ProviderResourceID string      `json:"provider_resource_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Identifier         respjson.Field
@@ -482,6 +456,19 @@ const (
 	DatasetPurposePostTrainingMessages DatasetPurpose = "post-training/messages"
 	DatasetPurposeEvalQuestionAnswer   DatasetPurpose = "eval/question-answer"
 	DatasetPurposeEvalMessagesAnswer   DatasetPurpose = "eval/messages-answer"
+)
+
+type DatasetType string
+
+const (
+	DatasetTypeModel           DatasetType = "model"
+	DatasetTypeShield          DatasetType = "shield"
+	DatasetTypeVectorDB        DatasetType = "vector_db"
+	DatasetTypeDataset         DatasetType = "dataset"
+	DatasetTypeScoringFunction DatasetType = "scoring_function"
+	DatasetTypeBenchmark       DatasetType = "benchmark"
+	DatasetTypeTool            DatasetType = "tool"
+	DatasetTypeToolGroup       DatasetType = "tool_group"
 )
 
 type DatasetListResponse struct {
