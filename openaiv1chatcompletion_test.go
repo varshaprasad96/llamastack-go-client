@@ -28,8 +28,8 @@ func TestOpenAIV1ChatCompletionNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.OpenAI.V1.Chat.Completions.New(context.TODO(), llamastackclient.OpenAIV1ChatCompletionNewParams{
 		Messages: []llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUnion{{
-			OfUser: &llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUser{
-				Content: llamastackclient.OpenAIV1ChatCompletionNewParamsMessageUserContentUnion{
+			OfUser: &llamastackclient.OpenAIUserMessageParam{
+				Content: llamastackclient.OpenAIUserMessageParamContentUnion{
 					OfString: llamastackclient.String("string"),
 				},
 				Name: llamastackclient.String("name"),

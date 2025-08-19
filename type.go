@@ -31,6 +31,259 @@ func NewTypeService(opts ...option.RequestOption) (r TypeService) {
 	return
 }
 
+// Parameter type for agent turn input.
+type AgentTurnInputType struct {
+	// Discriminator type. Always "agent_turn_input"
+	Type constant.AgentTurnInput `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AgentTurnInputType) RawJSON() string { return r.JSON.raw }
+func (r *AgentTurnInputType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AgentTurnInputType to a AgentTurnInputTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AgentTurnInputTypeParam.Overrides()
+func (r AgentTurnInputType) ToParam() AgentTurnInputTypeParam {
+	return param.Override[AgentTurnInputTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewAgentTurnInputTypeParam() AgentTurnInputTypeParam {
+	return AgentTurnInputTypeParam{
+		Type: "agent_turn_input",
+	}
+}
+
+// Parameter type for agent turn input.
+//
+// This struct has a constant value, construct it with
+// [NewAgentTurnInputTypeParam].
+type AgentTurnInputTypeParam struct {
+	// Discriminator type. Always "agent_turn_input"
+	Type constant.AgentTurnInput `json:"type,required"`
+	paramObj
+}
+
+func (r AgentTurnInputTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentTurnInputTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentTurnInputTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for array values.
+type ArrayType struct {
+	// Discriminator type. Always "array"
+	Type constant.Array `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ArrayType) RawJSON() string { return r.JSON.raw }
+func (r *ArrayType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ArrayType to a ArrayTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ArrayTypeParam.Overrides()
+func (r ArrayType) ToParam() ArrayTypeParam {
+	return param.Override[ArrayTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewArrayTypeParam() ArrayTypeParam {
+	return ArrayTypeParam{
+		Type: "array",
+	}
+}
+
+// Parameter type for array values.
+//
+// This struct has a constant value, construct it with [NewArrayTypeParam].
+type ArrayTypeParam struct {
+	// Discriminator type. Always "array"
+	Type constant.Array `json:"type,required"`
+	paramObj
+}
+
+func (r ArrayTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow ArrayTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ArrayTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for boolean values.
+type BooleanType struct {
+	// Discriminator type. Always "boolean"
+	Type constant.Boolean `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BooleanType) RawJSON() string { return r.JSON.raw }
+func (r *BooleanType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this BooleanType to a BooleanTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// BooleanTypeParam.Overrides()
+func (r BooleanType) ToParam() BooleanTypeParam {
+	return param.Override[BooleanTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewBooleanTypeParam() BooleanTypeParam {
+	return BooleanTypeParam{
+		Type: "boolean",
+	}
+}
+
+// Parameter type for boolean values.
+//
+// This struct has a constant value, construct it with [NewBooleanTypeParam].
+type BooleanTypeParam struct {
+	// Discriminator type. Always "boolean"
+	Type constant.Boolean `json:"type,required"`
+	paramObj
+}
+
+func (r BooleanTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow BooleanTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BooleanTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for chat completion input.
+type ChatCompletionInputType struct {
+	// Discriminator type. Always "chat_completion_input"
+	Type constant.ChatCompletionInput `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatCompletionInputType) RawJSON() string { return r.JSON.raw }
+func (r *ChatCompletionInputType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ChatCompletionInputType to a ChatCompletionInputTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ChatCompletionInputTypeParam.Overrides()
+func (r ChatCompletionInputType) ToParam() ChatCompletionInputTypeParam {
+	return param.Override[ChatCompletionInputTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewChatCompletionInputTypeParam() ChatCompletionInputTypeParam {
+	return ChatCompletionInputTypeParam{
+		Type: "chat_completion_input",
+	}
+}
+
+// Parameter type for chat completion input.
+//
+// This struct has a constant value, construct it with
+// [NewChatCompletionInputTypeParam].
+type ChatCompletionInputTypeParam struct {
+	// Discriminator type. Always "chat_completion_input"
+	Type constant.ChatCompletionInput `json:"type,required"`
+	paramObj
+}
+
+func (r ChatCompletionInputTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow ChatCompletionInputTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ChatCompletionInputTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for completion input.
+type CompletionInputType struct {
+	// Discriminator type. Always "completion_input"
+	Type constant.CompletionInput `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CompletionInputType) RawJSON() string { return r.JSON.raw }
+func (r *CompletionInputType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this CompletionInputType to a CompletionInputTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// CompletionInputTypeParam.Overrides()
+func (r CompletionInputType) ToParam() CompletionInputTypeParam {
+	return param.Override[CompletionInputTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewCompletionInputTypeParam() CompletionInputTypeParam {
+	return CompletionInputTypeParam{
+		Type: "completion_input",
+	}
+}
+
+// Parameter type for completion input.
+//
+// This struct has a constant value, construct it with
+// [NewCompletionInputTypeParam].
+type CompletionInputTypeParam struct {
+	// Discriminator type. Always "completion_input"
+	Type constant.CompletionInput `json:"type,required"`
+	paramObj
+}
+
+func (r CompletionInputTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow CompletionInputTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CompletionInputTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response from a completion request.
 type CompletionResponse struct {
 	// The generated completion text
@@ -69,19 +322,165 @@ const (
 	CompletionResponseStopReasonOutOfTokens  CompletionResponseStopReason = "out_of_tokens"
 )
 
-// ParamTypeUnionResp contains all possible properties and values from
-// [ParamTypeStringResp], [ParamTypeNumberResp], [ParamTypeBooleanResp],
-// [ParamTypeArrayResp], [ParamTypeObjectResp], [ParamTypeJsonResp],
-// [ParamTypeUnionResp], [ParamTypeChatCompletionInputResp],
-// [ParamTypeCompletionInputResp], [ParamTypeAgentTurnInputResp],
-// [ParamTypeParamTypeBaseResp].
+// Parameter type for JSON values.
+type JsonType struct {
+	// Discriminator type. Always "json"
+	Type constant.Json `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JsonType) RawJSON() string { return r.JSON.raw }
+func (r *JsonType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this JsonType to a JsonTypeParam.
 //
-// Use the [ParamTypeUnionResp.AsAny] method to switch on the variant.
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// JsonTypeParam.Overrides()
+func (r JsonType) ToParam() JsonTypeParam {
+	return param.Override[JsonTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewJsonTypeParam() JsonTypeParam {
+	return JsonTypeParam{
+		Type: "json",
+	}
+}
+
+// Parameter type for JSON values.
+//
+// This struct has a constant value, construct it with [NewJsonTypeParam].
+type JsonTypeParam struct {
+	// Discriminator type. Always "json"
+	Type constant.Json `json:"type,required"`
+	paramObj
+}
+
+func (r JsonTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow JsonTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *JsonTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for numeric values.
+type NumberType struct {
+	// Discriminator type. Always "number"
+	Type constant.Number `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NumberType) RawJSON() string { return r.JSON.raw }
+func (r *NumberType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this NumberType to a NumberTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// NumberTypeParam.Overrides()
+func (r NumberType) ToParam() NumberTypeParam {
+	return param.Override[NumberTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewNumberTypeParam() NumberTypeParam {
+	return NumberTypeParam{
+		Type: "number",
+	}
+}
+
+// Parameter type for numeric values.
+//
+// This struct has a constant value, construct it with [NewNumberTypeParam].
+type NumberTypeParam struct {
+	// Discriminator type. Always "number"
+	Type constant.Number `json:"type,required"`
+	paramObj
+}
+
+func (r NumberTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow NumberTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *NumberTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for object values.
+type ObjectType struct {
+	// Discriminator type. Always "object"
+	Type constant.Object `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ObjectType) RawJSON() string { return r.JSON.raw }
+func (r *ObjectType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ObjectType to a ObjectTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ObjectTypeParam.Overrides()
+func (r ObjectType) ToParam() ObjectTypeParam {
+	return param.Override[ObjectTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewObjectTypeParam() ObjectTypeParam {
+	return ObjectTypeParam{
+		Type: "object",
+	}
+}
+
+// Parameter type for object values.
+//
+// This struct has a constant value, construct it with [NewObjectTypeParam].
+type ObjectTypeParam struct {
+	// Discriminator type. Always "object"
+	Type constant.Object `json:"type,required"`
+	paramObj
+}
+
+func (r ObjectTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow ObjectTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ObjectTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ParamTypeUnionResp contains all possible properties and values from
+// [ParamTypeStringTypeResp], [ParamTypeNumberTypeResp],
+// [ParamTypeBooleanTypeResp], [ParamTypeArrayTypeResp], [ParamTypeObjectTypeResp],
+// [ParamTypeJsonTypeResp], [ParamTypeUnionTypeResp],
+// [ParamTypeChatCompletionInputTypeResp], [ParamTypeCompletionInputTypeResp],
+// [ParamTypeAgentTurnInputTypeResp].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ParamTypeUnionResp struct {
-	// Any of "string", "number", "boolean", "array", "object", "json", "union",
-	// "chat_completion_input", "completion_input", "agent_turn_input", nil.
 	Type string `json:"type"`
 	JSON struct {
 		Type respjson.Field
@@ -89,57 +488,52 @@ type ParamTypeUnionResp struct {
 	} `json:"-"`
 }
 
-func (u ParamTypeUnionResp) AsString() (v ParamTypeStringResp) {
+func (u ParamTypeUnionResp) AsStringType() (v ParamTypeStringTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsNumber() (v ParamTypeNumberResp) {
+func (u ParamTypeUnionResp) AsNumberType() (v ParamTypeNumberTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsBoolean() (v ParamTypeBooleanResp) {
+func (u ParamTypeUnionResp) AsBooleanType() (v ParamTypeBooleanTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsArray() (v ParamTypeArrayResp) {
+func (u ParamTypeUnionResp) AsArrayType() (v ParamTypeArrayTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsObject() (v ParamTypeObjectResp) {
+func (u ParamTypeUnionResp) AsObjectType() (v ParamTypeObjectTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsJson() (v ParamTypeJsonResp) {
+func (u ParamTypeUnionResp) AsJsonType() (v ParamTypeJsonTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsUnion() (v ParamTypeUnionResp) {
+func (u ParamTypeUnionResp) AsUnionType() (v ParamTypeUnionTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsChatCompletionInput() (v ParamTypeChatCompletionInputResp) {
+func (u ParamTypeUnionResp) AsChatCompletionInputType() (v ParamTypeChatCompletionInputTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsCompletionInput() (v ParamTypeCompletionInputResp) {
+func (u ParamTypeUnionResp) AsCompletionInputType() (v ParamTypeCompletionInputTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u ParamTypeUnionResp) AsAgentTurnInput() (v ParamTypeAgentTurnInputResp) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u ParamTypeUnionResp) AsParamTypeParamTypeBaseResp() (v ParamTypeParamTypeBaseResp) {
+func (u ParamTypeUnionResp) AsAgentTurnInputType() (v ParamTypeAgentTurnInputTypeResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -161,537 +555,555 @@ func (r ParamTypeUnionResp) ToParam() ParamTypeUnion {
 }
 
 // Parameter type for string values.
-type ParamTypeStringResp struct {
-	// Discriminator type. Always "string"
-	Type constant.String `json:"type,required"`
+type ParamTypeStringTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	StringType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeStringResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeStringResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeStringTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeStringTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for numeric values.
-type ParamTypeNumberResp struct {
-	// Discriminator type. Always "number"
-	Type constant.Number `json:"type,required"`
+type ParamTypeNumberTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	NumberType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeNumberResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeNumberResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeNumberTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeNumberTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for boolean values.
-type ParamTypeBooleanResp struct {
-	// Discriminator type. Always "boolean"
-	Type constant.Boolean `json:"type,required"`
+type ParamTypeBooleanTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	BooleanType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeBooleanResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeBooleanResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeBooleanTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeBooleanTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for array values.
-type ParamTypeArrayResp struct {
-	// Discriminator type. Always "array"
-	Type constant.Array `json:"type,required"`
+type ParamTypeArrayTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	ArrayType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeArrayResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeArrayResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeArrayTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeArrayTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for object values.
-type ParamTypeObjectResp struct {
-	// Discriminator type. Always "object"
-	Type constant.Object `json:"type,required"`
+type ParamTypeObjectTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	ObjectType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeObjectResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeObjectResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeObjectTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeObjectTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for JSON values.
-type ParamTypeJsonResp struct {
-	// Discriminator type. Always "json"
-	Type constant.Json `json:"type,required"`
+type ParamTypeJsonTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	JsonType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeJsonResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeJsonResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeJsonTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeJsonTypeResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for union values.
+type ParamTypeUnionTypeResp struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	ParamTypeBaseResp
+	UnionType
+}
+
+// Returns the unmodified JSON received from the API
+func (r ParamTypeUnionTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeUnionTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for chat completion input.
-type ParamTypeChatCompletionInputResp struct {
-	// Discriminator type. Always "chat_completion_input"
-	Type constant.ChatCompletionInput `json:"type,required"`
+type ParamTypeChatCompletionInputTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	ChatCompletionInputType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeChatCompletionInputResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeChatCompletionInputResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeChatCompletionInputTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeChatCompletionInputTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for completion input.
-type ParamTypeCompletionInputResp struct {
-	// Discriminator type. Always "completion_input"
-	Type constant.CompletionInput `json:"type,required"`
+type ParamTypeCompletionInputTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	CompletionInputType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeCompletionInputResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeCompletionInputResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeCompletionInputTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeCompletionInputTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Parameter type for agent turn input.
-type ParamTypeAgentTurnInputResp struct {
-	// Discriminator type. Always "agent_turn_input"
-	Type constant.AgentTurnInput `json:"type,required"`
+type ParamTypeAgentTurnInputTypeResp struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ParamTypeBaseResp
+	AgentTurnInputType
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParamTypeAgentTurnInputResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeAgentTurnInputResp) UnmarshalJSON(data []byte) error {
+func (r ParamTypeAgentTurnInputTypeResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeAgentTurnInputTypeResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ParamTypeParamTypeBaseResp struct {
-	// Any of "string", "number", "boolean", "array", "object", "json", "union",
-	// "chat_completion_input", "completion_input", "agent_turn_input".
-	Type string `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ParamTypeParamTypeBaseResp) RawJSON() string { return r.JSON.raw }
-func (r *ParamTypeParamTypeBaseResp) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func ParamTypeOfTypeParamTypeBase(type_ string) ParamTypeUnion {
-	var variant ParamTypeParamTypeBase
+func ParamTypeOfStringType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeStringType
 	variant.Type = type_
-	return ParamTypeUnion{OfTypeParamTypeBase: &variant}
+	return ParamTypeUnion{OfStringType: &variant}
+}
+
+func ParamTypeOfNumberType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeNumberType
+	variant.Type = type_
+	return ParamTypeUnion{OfNumberType: &variant}
+}
+
+func ParamTypeOfBooleanType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeBooleanType
+	variant.Type = type_
+	return ParamTypeUnion{OfBooleanType: &variant}
+}
+
+func ParamTypeOfArrayType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeArrayType
+	variant.Type = type_
+	return ParamTypeUnion{OfArrayType: &variant}
+}
+
+func ParamTypeOfObjectType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeObjectType
+	variant.Type = type_
+	return ParamTypeUnion{OfObjectType: &variant}
+}
+
+func ParamTypeOfJsonType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeJsonType
+	variant.Type = type_
+	return ParamTypeUnion{OfJsonType: &variant}
+}
+
+func ParamTypeOfUnionType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeUnionType
+	variant.Type = type_
+	return ParamTypeUnion{OfUnionType: &variant}
+}
+
+func ParamTypeOfChatCompletionInputType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeChatCompletionInputType
+	variant.Type = type_
+	return ParamTypeUnion{OfChatCompletionInputType: &variant}
+}
+
+func ParamTypeOfCompletionInputType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeCompletionInputType
+	variant.Type = type_
+	return ParamTypeUnion{OfCompletionInputType: &variant}
+}
+
+func ParamTypeOfAgentTurnInputType(type_ ParamTypeBaseType) ParamTypeUnion {
+	var variant ParamTypeAgentTurnInputType
+	variant.Type = type_
+	return ParamTypeUnion{OfAgentTurnInputType: &variant}
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ParamTypeUnion struct {
-	OfString              *ParamTypeString              `json:",omitzero,inline"`
-	OfNumber              *ParamTypeNumber              `json:",omitzero,inline"`
-	OfBoolean             *ParamTypeBoolean             `json:",omitzero,inline"`
-	OfArray               *ParamTypeArray               `json:",omitzero,inline"`
-	OfObject              *ParamTypeObject              `json:",omitzero,inline"`
-	OfJson                *ParamTypeJson                `json:",omitzero,inline"`
-	OfUnion               *ParamTypeUnion               `json:",omitzero,inline"`
-	OfChatCompletionInput *ParamTypeChatCompletionInput `json:",omitzero,inline"`
-	OfCompletionInput     *ParamTypeCompletionInput     `json:",omitzero,inline"`
-	OfAgentTurnInput      *ParamTypeAgentTurnInput      `json:",omitzero,inline"`
-	OfTypeParamTypeBase   *ParamTypeParamTypeBase       `json:",omitzero,inline"`
+	OfStringType              *ParamTypeStringType              `json:",omitzero,inline"`
+	OfNumberType              *ParamTypeNumberType              `json:",omitzero,inline"`
+	OfBooleanType             *ParamTypeBooleanType             `json:",omitzero,inline"`
+	OfArrayType               *ParamTypeArrayType               `json:",omitzero,inline"`
+	OfObjectType              *ParamTypeObjectType              `json:",omitzero,inline"`
+	OfJsonType                *ParamTypeJsonType                `json:",omitzero,inline"`
+	OfUnionType               *ParamTypeUnionType               `json:",omitzero,inline"`
+	OfChatCompletionInputType *ParamTypeChatCompletionInputType `json:",omitzero,inline"`
+	OfCompletionInputType     *ParamTypeCompletionInputType     `json:",omitzero,inline"`
+	OfAgentTurnInputType      *ParamTypeAgentTurnInputType      `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ParamTypeUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString,
-		u.OfNumber,
-		u.OfBoolean,
-		u.OfArray,
-		u.OfObject,
-		u.OfJson,
-		u.OfUnion,
-		u.OfChatCompletionInput,
-		u.OfCompletionInput,
-		u.OfAgentTurnInput,
-		u.OfTypeParamTypeBase)
+	return param.MarshalUnion(u, u.OfStringType,
+		u.OfNumberType,
+		u.OfBooleanType,
+		u.OfArrayType,
+		u.OfObjectType,
+		u.OfJsonType,
+		u.OfUnionType,
+		u.OfChatCompletionInputType,
+		u.OfCompletionInputType,
+		u.OfAgentTurnInputType)
 }
 func (u *ParamTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *ParamTypeUnion) asAny() any {
-	if !param.IsOmitted(u.OfString) {
-		return u.OfString
-	} else if !param.IsOmitted(u.OfNumber) {
-		return u.OfNumber
-	} else if !param.IsOmitted(u.OfBoolean) {
-		return u.OfBoolean
-	} else if !param.IsOmitted(u.OfArray) {
-		return u.OfArray
-	} else if !param.IsOmitted(u.OfObject) {
-		return u.OfObject
-	} else if !param.IsOmitted(u.OfJson) {
-		return u.OfJson
-	} else if !param.IsOmitted(u.OfUnion) {
-		return u.OfUnion
-	} else if !param.IsOmitted(u.OfChatCompletionInput) {
-		return u.OfChatCompletionInput
-	} else if !param.IsOmitted(u.OfCompletionInput) {
-		return u.OfCompletionInput
-	} else if !param.IsOmitted(u.OfAgentTurnInput) {
-		return u.OfAgentTurnInput
-	} else if !param.IsOmitted(u.OfTypeParamTypeBase) {
-		return u.OfTypeParamTypeBase
+	if !param.IsOmitted(u.OfStringType) {
+		return u.OfStringType
+	} else if !param.IsOmitted(u.OfNumberType) {
+		return u.OfNumberType
+	} else if !param.IsOmitted(u.OfBooleanType) {
+		return u.OfBooleanType
+	} else if !param.IsOmitted(u.OfArrayType) {
+		return u.OfArrayType
+	} else if !param.IsOmitted(u.OfObjectType) {
+		return u.OfObjectType
+	} else if !param.IsOmitted(u.OfJsonType) {
+		return u.OfJsonType
+	} else if !param.IsOmitted(u.OfUnionType) {
+		return u.OfUnionType
+	} else if !param.IsOmitted(u.OfChatCompletionInputType) {
+		return u.OfChatCompletionInputType
+	} else if !param.IsOmitted(u.OfCompletionInputType) {
+		return u.OfCompletionInputType
+	} else if !param.IsOmitted(u.OfAgentTurnInputType) {
+		return u.OfAgentTurnInputType
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u ParamTypeUnion) GetType() *string {
-	if vt := u.OfString; vt != nil {
+	if vt := u.OfStringType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfNumber; vt != nil {
+	} else if vt := u.OfStringType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfBoolean; vt != nil {
+	} else if vt := u.OfNumberType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfArray; vt != nil {
+	} else if vt := u.OfNumberType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfObject; vt != nil {
+	} else if vt := u.OfBooleanType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfJson; vt != nil {
+	} else if vt := u.OfBooleanType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfUnion; vt != nil {
+	} else if vt := u.OfArrayType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfChatCompletionInput; vt != nil {
+	} else if vt := u.OfArrayType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfCompletionInput; vt != nil {
+	} else if vt := u.OfObjectType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAgentTurnInput; vt != nil {
+	} else if vt := u.OfObjectType; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfTypeParamTypeBase; vt != nil {
+	} else if vt := u.OfJsonType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfJsonType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfUnionType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfUnionType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfChatCompletionInputType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfChatCompletionInputType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfCompletionInputType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfCompletionInputType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAgentTurnInputType; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAgentTurnInputType; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
 }
 
-func init() {
-	apijson.RegisterUnion[ParamTypeUnion](
-		"type",
-		apijson.Discriminator[ParamTypeString]("string"),
-		apijson.Discriminator[ParamTypeNumber]("number"),
-		apijson.Discriminator[ParamTypeBoolean]("boolean"),
-		apijson.Discriminator[ParamTypeArray]("array"),
-		apijson.Discriminator[ParamTypeObject]("object"),
-		apijson.Discriminator[ParamTypeJson]("json"),
-		apijson.Discriminator[ParamTypeUnion]("union"),
-		apijson.Discriminator[ParamTypeChatCompletionInput]("chat_completion_input"),
-		apijson.Discriminator[ParamTypeCompletionInput]("completion_input"),
-		apijson.Discriminator[ParamTypeAgentTurnInput]("agent_turn_input"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("string"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("number"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("boolean"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("array"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("object"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("json"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("union"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("chat_completion_input"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("completion_input"),
-		apijson.Discriminator[ParamTypeParamTypeBase]("agent_turn_input"),
-	)
+// Parameter type for string values.
+type ParamTypeStringType struct {
+	ParamTypeBase
+	StringTypeParam
 }
 
-func NewParamTypeString() ParamTypeString {
-	return ParamTypeString{
+func (r ParamTypeStringType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeStringType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for numeric values.
+type ParamTypeNumberType struct {
+	ParamTypeBase
+	NumberTypeParam
+}
+
+func (r ParamTypeNumberType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeNumberType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for boolean values.
+type ParamTypeBooleanType struct {
+	ParamTypeBase
+	BooleanTypeParam
+}
+
+func (r ParamTypeBooleanType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeBooleanType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for array values.
+type ParamTypeArrayType struct {
+	ParamTypeBase
+	ArrayTypeParam
+}
+
+func (r ParamTypeArrayType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeArrayType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for object values.
+type ParamTypeObjectType struct {
+	ParamTypeBase
+	ObjectTypeParam
+}
+
+func (r ParamTypeObjectType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeObjectType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for JSON values.
+type ParamTypeJsonType struct {
+	ParamTypeBase
+	JsonTypeParam
+}
+
+func (r ParamTypeJsonType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeJsonType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for union values.
+type ParamTypeUnionType struct {
+	ParamTypeBase
+	UnionTypeParam
+}
+
+func (r ParamTypeUnionType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeUnionType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for chat completion input.
+type ParamTypeChatCompletionInputType struct {
+	ParamTypeBase
+	ChatCompletionInputTypeParam
+}
+
+func (r ParamTypeChatCompletionInputType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeChatCompletionInputType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for completion input.
+type ParamTypeCompletionInputType struct {
+	ParamTypeBase
+	CompletionInputTypeParam
+}
+
+func (r ParamTypeCompletionInputType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeCompletionInputType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+// Parameter type for agent turn input.
+type ParamTypeAgentTurnInputType struct {
+	ParamTypeBase
+	AgentTurnInputTypeParam
+}
+
+func (r ParamTypeAgentTurnInputType) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeAgentTurnInputType
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
+type ParamTypeBaseResp struct {
+	// Any of "string", "number", "boolean", "array", "object", "json", "union",
+	// "chat_completion_input", "completion_input", "agent_turn_input".
+	Type ParamTypeBaseType `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ParamTypeBaseResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeBaseResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ParamTypeBaseResp to a ParamTypeBase.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ParamTypeBase.Overrides()
+func (r ParamTypeBaseResp) ToParam() ParamTypeBase {
+	return param.Override[ParamTypeBase](json.RawMessage(r.RawJSON()))
+}
+
+type ParamTypeBaseType string
+
+const (
+	ParamTypeBaseTypeString              ParamTypeBaseType = "string"
+	ParamTypeBaseTypeNumber              ParamTypeBaseType = "number"
+	ParamTypeBaseTypeBoolean             ParamTypeBaseType = "boolean"
+	ParamTypeBaseTypeArray               ParamTypeBaseType = "array"
+	ParamTypeBaseTypeObject              ParamTypeBaseType = "object"
+	ParamTypeBaseTypeJson                ParamTypeBaseType = "json"
+	ParamTypeBaseTypeUnion               ParamTypeBaseType = "union"
+	ParamTypeBaseTypeChatCompletionInput ParamTypeBaseType = "chat_completion_input"
+	ParamTypeBaseTypeCompletionInput     ParamTypeBaseType = "completion_input"
+	ParamTypeBaseTypeAgentTurnInput      ParamTypeBaseType = "agent_turn_input"
+)
+
+// The property Type is required.
+type ParamTypeBase struct {
+	// Any of "string", "number", "boolean", "array", "object", "json", "union",
+	// "chat_completion_input", "completion_input", "agent_turn_input".
+	Type ParamTypeBaseType `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r ParamTypeBase) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeBase
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ParamTypeBase) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameter type for string values.
+type StringType struct {
+	// Discriminator type. Always "string"
+	Type constant.String `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StringType) RawJSON() string { return r.JSON.raw }
+func (r *StringType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this StringType to a StringTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// StringTypeParam.Overrides()
+func (r StringType) ToParam() StringTypeParam {
+	return param.Override[StringTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewStringTypeParam() StringTypeParam {
+	return StringTypeParam{
 		Type: "string",
 	}
 }
 
 // Parameter type for string values.
 //
-// This struct has a constant value, construct it with [NewParamTypeString].
-type ParamTypeString struct {
+// This struct has a constant value, construct it with [NewStringTypeParam].
+type StringTypeParam struct {
 	// Discriminator type. Always "string"
 	Type constant.String `json:"type,required"`
 	paramObj
 }
 
-func (r ParamTypeString) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeString
+func (r StringTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow StringTypeParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ParamTypeString) UnmarshalJSON(data []byte) error {
+func (r *StringTypeParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeNumber() ParamTypeNumber {
-	return ParamTypeNumber{
-		Type: "number",
-	}
-}
-
-// Parameter type for numeric values.
-//
-// This struct has a constant value, construct it with [NewParamTypeNumber].
-type ParamTypeNumber struct {
-	// Discriminator type. Always "number"
-	Type constant.Number `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeNumber) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeNumber
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeNumber) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeBoolean() ParamTypeBoolean {
-	return ParamTypeBoolean{
-		Type: "boolean",
-	}
-}
-
-// Parameter type for boolean values.
-//
-// This struct has a constant value, construct it with [NewParamTypeBoolean].
-type ParamTypeBoolean struct {
-	// Discriminator type. Always "boolean"
-	Type constant.Boolean `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeBoolean) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeBoolean
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeBoolean) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeArray() ParamTypeArray {
-	return ParamTypeArray{
-		Type: "array",
-	}
-}
-
-// Parameter type for array values.
-//
-// This struct has a constant value, construct it with [NewParamTypeArray].
-type ParamTypeArray struct {
-	// Discriminator type. Always "array"
-	Type constant.Array `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeArray) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeArray
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeArray) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeObject() ParamTypeObject {
-	return ParamTypeObject{
-		Type: "object",
-	}
-}
-
-// Parameter type for object values.
-//
-// This struct has a constant value, construct it with [NewParamTypeObject].
-type ParamTypeObject struct {
-	// Discriminator type. Always "object"
-	Type constant.Object `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeObject) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeObject
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeObject) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeJson() ParamTypeJson {
-	return ParamTypeJson{
-		Type: "json",
-	}
-}
-
-// Parameter type for JSON values.
-//
-// This struct has a constant value, construct it with [NewParamTypeJson].
-type ParamTypeJson struct {
-	// Discriminator type. Always "json"
-	Type constant.Json `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeJson) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeJson
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeJson) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeChatCompletionInput() ParamTypeChatCompletionInput {
-	return ParamTypeChatCompletionInput{
-		Type: "chat_completion_input",
-	}
-}
-
-// Parameter type for chat completion input.
-//
-// This struct has a constant value, construct it with
-// [NewParamTypeChatCompletionInput].
-type ParamTypeChatCompletionInput struct {
-	// Discriminator type. Always "chat_completion_input"
-	Type constant.ChatCompletionInput `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeChatCompletionInput) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeChatCompletionInput
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeChatCompletionInput) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeCompletionInput() ParamTypeCompletionInput {
-	return ParamTypeCompletionInput{
-		Type: "completion_input",
-	}
-}
-
-// Parameter type for completion input.
-//
-// This struct has a constant value, construct it with
-// [NewParamTypeCompletionInput].
-type ParamTypeCompletionInput struct {
-	// Discriminator type. Always "completion_input"
-	Type constant.CompletionInput `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeCompletionInput) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeCompletionInput
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeCompletionInput) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewParamTypeAgentTurnInput() ParamTypeAgentTurnInput {
-	return ParamTypeAgentTurnInput{
-		Type: "agent_turn_input",
-	}
-}
-
-// Parameter type for agent turn input.
-//
-// This struct has a constant value, construct it with
-// [NewParamTypeAgentTurnInput].
-type ParamTypeAgentTurnInput struct {
-	// Discriminator type. Always "agent_turn_input"
-	Type constant.AgentTurnInput `json:"type,required"`
-	paramObj
-}
-
-func (r ParamTypeAgentTurnInput) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeAgentTurnInput
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeAgentTurnInput) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Type is required.
-type ParamTypeParamTypeBase struct {
-	// Any of "string", "number", "boolean", "array", "object", "json", "union",
-	// "chat_completion_input", "completion_input", "agent_turn_input".
-	Type string `json:"type,omitzero,required"`
-	paramObj
-}
-
-func (r ParamTypeParamTypeBase) MarshalJSON() (data []byte, err error) {
-	type shadow ParamTypeParamTypeBase
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ParamTypeParamTypeBase) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ParamTypeParamTypeBase](
-		"type", "string", "number", "boolean", "array", "object", "json", "union", "chat_completion_input", "completion_input", "agent_turn_input",
-	)
 }
 
 // Log probabilities for generated tokens.
@@ -852,4 +1264,54 @@ func (u *ToolDefMetadataUnionParam) asAny() any {
 		return &u.OfAnyArray
 	}
 	return nil
+}
+
+// Parameter type for union values.
+type UnionType struct {
+	// Discriminator type. Always "union"
+	Type constant.Union `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UnionType) RawJSON() string { return r.JSON.raw }
+func (r *UnionType) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this UnionType to a UnionTypeParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// UnionTypeParam.Overrides()
+func (r UnionType) ToParam() UnionTypeParam {
+	return param.Override[UnionTypeParam](json.RawMessage(r.RawJSON()))
+}
+
+func NewUnionTypeParam() UnionTypeParam {
+	return UnionTypeParam{
+		Type: "union",
+	}
+}
+
+// Parameter type for union values.
+//
+// This struct has a constant value, construct it with [NewUnionTypeParam].
+type UnionTypeParam struct {
+	// Discriminator type. Always "union"
+	Type constant.Union `json:"type,required"`
+	paramObj
+}
+
+func (r UnionTypeParam) MarshalJSON() (data []byte, err error) {
+	type shadow UnionTypeParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UnionTypeParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
