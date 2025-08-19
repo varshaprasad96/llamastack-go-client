@@ -3,13 +3,7 @@
 package llamastackclient
 
 import (
-	"context"
-	"net/http"
-
-	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
-	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
 	"github.com/varshaprasad96/llamastack-go-client/option"
-	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
 )
 
 // VersionService contains methods and other services that help with interacting
@@ -29,30 +23,4 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 	r = VersionService{}
 	r.Options = opts
 	return
-}
-
-// Get the version of the service.
-func (r *VersionService) Get(ctx context.Context, opts ...option.RequestOption) (res *VersionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v1/version"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Version information for the service.
-type VersionGetResponse struct {
-	// Version number of the service
-	Version string `json:"version,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Version     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VersionGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *VersionGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }

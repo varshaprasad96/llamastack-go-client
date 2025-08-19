@@ -30,10 +30,8 @@ func TestDatasetioAppendRows(t *testing.T) {
 		context.TODO(),
 		"dataset_id",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-				"foo": {
-					OfBool: llamastackclient.Bool(true),
-				},
+			Rows: []map[string]any{{
+				"foo": "bar",
 			}},
 		},
 	)

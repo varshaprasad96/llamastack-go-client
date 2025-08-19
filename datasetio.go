@@ -48,16 +48,8 @@ func (r *DatasetioService) AppendRows(ctx context.Context, datasetID string, bod
 	return
 }
 
-// Get a paginated list of rows from a dataset. Uses offset-based pagination where:
-//
-// - start_index: The starting index (0-based). If None, starts from beginning.
-// - limit: Number of items to return. If None or -1, returns all items.
-//
-// The response includes:
-//
-// - data: List of items for the current page.
-// - has_more: Whether there are more items available after this set.
-func (r *DatasetioService) IterateRows(ctx context.Context, datasetID string, query DatasetioIterateRowsParams, opts ...option.RequestOption) (res *PaginatedResponse, err error) {
+// Iterate over rows in a dataset.
+func (r *DatasetioService) IterateRows(ctx context.Context, datasetID string, query DatasetioIterateRowsParams, opts ...option.RequestOption) (res *DatasetioIterateRowsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
@@ -68,9 +60,10 @@ func (r *DatasetioService) IterateRows(ctx context.Context, datasetID string, qu
 	return
 }
 
+type DatasetioIterateRowsResponse = any
+
 type DatasetioAppendRowsParams struct {
-	// The rows to append to the dataset.
-	Rows []map[string]DatasetioAppendRowsParamsRowUnion `json:"rows,omitzero,required"`
+	Rows []map[string]any `json:"rows,omitzero,required"`
 	paramObj
 }
 
@@ -82,41 +75,10 @@ func (r *DatasetioAppendRowsParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type DatasetioAppendRowsParamsRowUnion struct {
-	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
-	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
-	OfString   param.Opt[string]  `json:",omitzero,inline"`
-	OfAnyArray []any              `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u DatasetioAppendRowsParamsRowUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfBool, u.OfFloat, u.OfString, u.OfAnyArray)
-}
-func (u *DatasetioAppendRowsParamsRowUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *DatasetioAppendRowsParamsRowUnion) asAny() any {
-	if !param.IsOmitted(u.OfBool) {
-		return &u.OfBool.Value
-	} else if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	} else if !param.IsOmitted(u.OfAnyArray) {
-		return &u.OfAnyArray
-	}
-	return nil
-}
-
 type DatasetioIterateRowsParams struct {
-	// The number of rows to get.
+	// The number of rows to return.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Index into dataset for the first row to get. Get all rows if None.
+	// The index to start the iteration from.
 	StartIndex param.Opt[int64] `query:"start_index,omitzero" json:"-"`
 	paramObj
 }

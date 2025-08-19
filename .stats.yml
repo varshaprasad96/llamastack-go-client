@@ -1,4 +1,4 @@
-configured_endpoints: 110
-openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/red-hat-varshaprasad96%2Fllamastack-go-client-f6279ee7a73267777dce9d1187928588af2f4d332211d37b69d2703671b3a563.yml
-openapi_spec_hash: f6bcafc3027a91e089742def656ccd38
+configured_endpoints: 13
+openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/red-hat-varshaprasad96%2Fllamastack-go-client-8341894c3ea2498c5990ab0c9270d75f406241e722989800b52f3de62b9d63c4.yml
+openapi_spec_hash: f4843dde4df62ed69ecc35e63c5069ea
 config_hash: 6dd629ab3bedc20620da3e93b48aa7be
