@@ -12,7 +12,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared"
 )
 
 // InferenceService contains methods and other services that help with interacting
@@ -397,8 +396,8 @@ func (r *GreedySamplingStrategyParam) UnmarshalJSON(data []byte) error {
 }
 
 // InterleavedContentUnion contains all possible properties and values from
-// [string], [shared.ImageContentItem], [shared.TextContentItem],
-// [[]InterleavedContentItemUnion].
+// [string], [InterleavedContentImageContentItem],
+// [InterleavedContentTextContentItem], [[]InterleavedContentItemUnion].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
@@ -410,10 +409,10 @@ type InterleavedContentUnion struct {
 	// This field will be present if the value is a [[]InterleavedContentItemUnion]
 	// instead of an object.
 	OfInterleavedContentItemArray []InterleavedContentItemUnion `json:",inline"`
-	// This field is from variant [shared.ImageContentItem].
-	Image shared.ImageContentItemImage `json:"image"`
-	Type  string                       `json:"type"`
-	// This field is from variant [shared.TextContentItem].
+	// This field is from variant [InterleavedContentImageContentItem].
+	Image InterleavedContentImageContentItemImage `json:"image"`
+	Type  string                                  `json:"type"`
+	// This field is from variant [InterleavedContentTextContentItem].
 	Text string `json:"text"`
 	JSON struct {
 		OfString                      respjson.Field
@@ -430,12 +429,12 @@ func (u InterleavedContentUnion) AsString() (v string) {
 	return
 }
 
-func (u InterleavedContentUnion) AsImageContentItem() (v shared.ImageContentItem) {
+func (u InterleavedContentUnion) AsImageContentItem() (v InterleavedContentImageContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InterleavedContentUnion) AsTextContentItem() (v shared.TextContentItem) {
+func (u InterleavedContentUnion) AsTextContentItem() (v InterleavedContentTextContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -461,15 +460,83 @@ func (r InterleavedContentUnion) ToParam() InterleavedContentUnionParam {
 	return param.Override[InterleavedContentUnionParam](json.RawMessage(r.RawJSON()))
 }
 
-func InterleavedContentParamOfImageContentItem(image shared.ImageContentItemImageParam, type_ shared.ImageContentItemType) InterleavedContentUnionParam {
-	var variant shared.ImageContentItemParam
+// A image content item
+type InterleavedContentImageContentItem struct {
+	// Image as a base64 encoded string or an URL
+	Image InterleavedContentImageContentItemImage `json:"image,required"`
+	// Discriminator type of the content item. Always "image"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Image       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InterleavedContentImageContentItem) RawJSON() string { return r.JSON.raw }
+func (r *InterleavedContentImageContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Image as a base64 encoded string or an URL
+type InterleavedContentImageContentItemImage struct {
+	// base64 encoded image data as string
+	Data string `json:"data"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URL `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InterleavedContentImageContentItemImage) RawJSON() string { return r.JSON.raw }
+func (r *InterleavedContentImageContentItemImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+type InterleavedContentTextContentItem struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InterleavedContentTextContentItem) RawJSON() string { return r.JSON.raw }
+func (r *InterleavedContentTextContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func InterleavedContentParamOfImageContentItem(image InterleavedContentImageContentItemImageParam, type_ string) InterleavedContentUnionParam {
+	var variant InterleavedContentImageContentItemParam
 	variant.Image = image
 	variant.Type = type_
 	return InterleavedContentUnionParam{OfImageContentItem: &variant}
 }
 
-func InterleavedContentParamOfTextContentItem(text string, type_ shared.TextContentItemType) InterleavedContentUnionParam {
-	var variant shared.TextContentItemParam
+func InterleavedContentParamOfTextContentItem(text string, type_ string) InterleavedContentUnionParam {
+	var variant InterleavedContentTextContentItemParam
 	variant.Text = text
 	variant.Type = type_
 	return InterleavedContentUnionParam{OfTextContentItem: &variant}
@@ -479,10 +546,10 @@ func InterleavedContentParamOfTextContentItem(text string, type_ shared.TextCont
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InterleavedContentUnionParam struct {
-	OfString                      param.Opt[string]                  `json:",omitzero,inline"`
-	OfImageContentItem            *shared.ImageContentItemParam      `json:",omitzero,inline"`
-	OfTextContentItem             *shared.TextContentItemParam       `json:",omitzero,inline"`
-	OfInterleavedContentItemArray []InterleavedContentItemUnionParam `json:",omitzero,inline"`
+	OfString                      param.Opt[string]                        `json:",omitzero,inline"`
+	OfImageContentItem            *InterleavedContentImageContentItemParam `json:",omitzero,inline"`
+	OfTextContentItem             *InterleavedContentTextContentItemParam  `json:",omitzero,inline"`
+	OfInterleavedContentItemArray []InterleavedContentItemUnionParam       `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -507,7 +574,7 @@ func (u *InterleavedContentUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InterleavedContentUnionParam) GetImage() *shared.ImageContentItemImageParam {
+func (u InterleavedContentUnionParam) GetImage() *InterleavedContentImageContentItemImageParam {
 	if vt := u.OfImageContentItem; vt != nil {
 		return &vt.Image
 	}
@@ -532,18 +599,91 @@ func (u InterleavedContentUnionParam) GetType() *string {
 	return nil
 }
 
+// A image content item
+//
+// The properties Image, Type are required.
+type InterleavedContentImageContentItemParam struct {
+	// Image as a base64 encoded string or an URL
+	Image InterleavedContentImageContentItemImageParam `json:"image,omitzero,required"`
+	// Discriminator type of the content item. Always "image"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r InterleavedContentImageContentItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow InterleavedContentImageContentItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InterleavedContentImageContentItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InterleavedContentImageContentItemParam](
+		"type", "text", "image", "tool_call",
+	)
+}
+
+// Image as a base64 encoded string or an URL
+type InterleavedContentImageContentItemImageParam struct {
+	// base64 encoded image data as string
+	Data param.Opt[string] `json:"data,omitzero"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URLParam `json:"url,omitzero"`
+	paramObj
+}
+
+func (r InterleavedContentImageContentItemImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow InterleavedContentImageContentItemImageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InterleavedContentImageContentItemImageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+//
+// The properties Text, Type are required.
+type InterleavedContentTextContentItemParam struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r InterleavedContentTextContentItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow InterleavedContentTextContentItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InterleavedContentTextContentItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InterleavedContentTextContentItemParam](
+		"type", "text", "image", "tool_call",
+	)
+}
+
 // InterleavedContentItemUnion contains all possible properties and values from
-// [shared.ImageContentItem], [shared.TextContentItem].
+// [InterleavedContentItemImageContentItem],
+// [InterleavedContentItemTextContentItem].
 //
 // Use the [InterleavedContentItemUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type InterleavedContentItemUnion struct {
-	// This field is from variant [shared.ImageContentItem].
-	Image shared.ImageContentItemImage `json:"image"`
+	// This field is from variant [InterleavedContentItemImageContentItem].
+	Image InterleavedContentItemImageContentItemImage `json:"image"`
 	// Any of nil, nil.
 	Type string `json:"type"`
-	// This field is from variant [shared.TextContentItem].
+	// This field is from variant [InterleavedContentItemTextContentItem].
 	Text string `json:"text"`
 	JSON struct {
 		Image respjson.Field
@@ -553,12 +693,12 @@ type InterleavedContentItemUnion struct {
 	} `json:"-"`
 }
 
-func (u InterleavedContentItemUnion) AsImageContentItem() (v shared.ImageContentItem) {
+func (u InterleavedContentItemUnion) AsImageContentItem() (v InterleavedContentItemImageContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u InterleavedContentItemUnion) AsTextContentItem() (v shared.TextContentItem) {
+func (u InterleavedContentItemUnion) AsTextContentItem() (v InterleavedContentItemTextContentItem) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -580,15 +720,83 @@ func (r InterleavedContentItemUnion) ToParam() InterleavedContentItemUnionParam 
 	return param.Override[InterleavedContentItemUnionParam](json.RawMessage(r.RawJSON()))
 }
 
-func InterleavedContentItemParamOfImageContentItem(image shared.ImageContentItemImageParam, type_ shared.ImageContentItemType) InterleavedContentItemUnionParam {
-	var variant shared.ImageContentItemParam
+// A image content item
+type InterleavedContentItemImageContentItem struct {
+	// Image as a base64 encoded string or an URL
+	Image InterleavedContentItemImageContentItemImage `json:"image,required"`
+	// Discriminator type of the content item. Always "image"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Image       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InterleavedContentItemImageContentItem) RawJSON() string { return r.JSON.raw }
+func (r *InterleavedContentItemImageContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Image as a base64 encoded string or an URL
+type InterleavedContentItemImageContentItemImage struct {
+	// base64 encoded image data as string
+	Data string `json:"data"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URL `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InterleavedContentItemImageContentItemImage) RawJSON() string { return r.JSON.raw }
+func (r *InterleavedContentItemImageContentItemImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+type InterleavedContentItemTextContentItem struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Text        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InterleavedContentItemTextContentItem) RawJSON() string { return r.JSON.raw }
+func (r *InterleavedContentItemTextContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func InterleavedContentItemParamOfImageContentItem(image InterleavedContentItemImageContentItemImageParam, type_ string) InterleavedContentItemUnionParam {
+	var variant InterleavedContentItemImageContentItemParam
 	variant.Image = image
 	variant.Type = type_
 	return InterleavedContentItemUnionParam{OfImageContentItem: &variant}
 }
 
-func InterleavedContentItemParamOfTextContentItem(text string, type_ shared.TextContentItemType) InterleavedContentItemUnionParam {
-	var variant shared.TextContentItemParam
+func InterleavedContentItemParamOfTextContentItem(text string, type_ string) InterleavedContentItemUnionParam {
+	var variant InterleavedContentItemTextContentItemParam
 	variant.Text = text
 	variant.Type = type_
 	return InterleavedContentItemUnionParam{OfTextContentItem: &variant}
@@ -598,8 +806,8 @@ func InterleavedContentItemParamOfTextContentItem(text string, type_ shared.Text
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type InterleavedContentItemUnionParam struct {
-	OfImageContentItem *shared.ImageContentItemParam `json:",omitzero,inline"`
-	OfTextContentItem  *shared.TextContentItemParam  `json:",omitzero,inline"`
+	OfImageContentItem *InterleavedContentItemImageContentItemParam `json:",omitzero,inline"`
+	OfTextContentItem  *InterleavedContentItemTextContentItemParam  `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -620,7 +828,7 @@ func (u *InterleavedContentItemUnionParam) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u InterleavedContentItemUnionParam) GetImage() *shared.ImageContentItemImageParam {
+func (u InterleavedContentItemUnionParam) GetImage() *InterleavedContentItemImageContentItemImageParam {
 	if vt := u.OfImageContentItem; vt != nil {
 		return &vt.Image
 	}
@@ -648,12 +856,84 @@ func (u InterleavedContentItemUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[InterleavedContentItemUnionParam](
 		"type",
-		apijson.Discriminator[shared.ImageContentItemParam]("text"),
-		apijson.Discriminator[shared.ImageContentItemParam]("image"),
-		apijson.Discriminator[shared.ImageContentItemParam]("tool_call"),
-		apijson.Discriminator[shared.TextContentItemParam]("text"),
-		apijson.Discriminator[shared.TextContentItemParam]("image"),
-		apijson.Discriminator[shared.TextContentItemParam]("tool_call"),
+		apijson.Discriminator[InterleavedContentItemImageContentItemParam]("text"),
+		apijson.Discriminator[InterleavedContentItemImageContentItemParam]("image"),
+		apijson.Discriminator[InterleavedContentItemImageContentItemParam]("tool_call"),
+		apijson.Discriminator[InterleavedContentItemTextContentItemParam]("text"),
+		apijson.Discriminator[InterleavedContentItemTextContentItemParam]("image"),
+		apijson.Discriminator[InterleavedContentItemTextContentItemParam]("tool_call"),
+	)
+}
+
+// A image content item
+//
+// The properties Image, Type are required.
+type InterleavedContentItemImageContentItemParam struct {
+	// Image as a base64 encoded string or an URL
+	Image InterleavedContentItemImageContentItemImageParam `json:"image,omitzero,required"`
+	// Discriminator type of the content item. Always "image"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r InterleavedContentItemImageContentItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow InterleavedContentItemImageContentItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InterleavedContentItemImageContentItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InterleavedContentItemImageContentItemParam](
+		"type", "text", "image", "tool_call",
+	)
+}
+
+// Image as a base64 encoded string or an URL
+type InterleavedContentItemImageContentItemImageParam struct {
+	// base64 encoded image data as string
+	Data param.Opt[string] `json:"data,omitzero"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URLParam `json:"url,omitzero"`
+	paramObj
+}
+
+func (r InterleavedContentItemImageContentItemImageParam) MarshalJSON() (data []byte, err error) {
+	type shadow InterleavedContentItemImageContentItemImageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InterleavedContentItemImageContentItemImageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+//
+// The properties Text, Type are required.
+type InterleavedContentItemTextContentItemParam struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r InterleavedContentItemTextContentItemParam) MarshalJSON() (data []byte, err error) {
+	type shadow InterleavedContentItemTextContentItemParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *InterleavedContentItemTextContentItemParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[InterleavedContentItemTextContentItemParam](
+		"type", "text", "image", "tool_call",
 	)
 }
 
@@ -805,15 +1085,15 @@ func (u *JsonSchemaResponseFormatJsonSchemaUnionParam) asAny() any {
 }
 
 func MessageParamOfUserMessage[
-	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
 ](content T, role UserMessageRole) MessageUnionParam {
 	var variant UserMessageParam
 	switch v := any(content).(type) {
 	case string:
 		variant.Content.OfString = param.NewOpt(v)
-	case shared.ImageContentItemParam:
+	case InterleavedContentImageContentItemParam:
 		variant.Content.OfImageContentItem = &v
-	case shared.TextContentItemParam:
+	case InterleavedContentTextContentItemParam:
 		variant.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		variant.Content.OfInterleavedContentItemArray = v
@@ -823,15 +1103,15 @@ func MessageParamOfUserMessage[
 }
 
 func MessageParamOfSystemMessage[
-	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
 ](content T, role SystemMessageRole) MessageUnionParam {
 	var variant SystemMessageParam
 	switch v := any(content).(type) {
 	case string:
 		variant.Content.OfString = param.NewOpt(v)
-	case shared.ImageContentItemParam:
+	case InterleavedContentImageContentItemParam:
 		variant.Content.OfImageContentItem = &v
-	case shared.TextContentItemParam:
+	case InterleavedContentTextContentItemParam:
 		variant.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		variant.Content.OfInterleavedContentItemArray = v
@@ -841,16 +1121,16 @@ func MessageParamOfSystemMessage[
 }
 
 func MessageParamOfToolResponseMessage[
-	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
 ](callID string, content T, role ToolResponseMessageRole) MessageUnionParam {
 	var variant ToolResponseMessageParam
 	variant.CallID = callID
 	switch v := any(content).(type) {
 	case string:
 		variant.Content.OfString = param.NewOpt(v)
-	case shared.ImageContentItemParam:
+	case InterleavedContentImageContentItemParam:
 		variant.Content.OfImageContentItem = &v
-	case shared.TextContentItemParam:
+	case InterleavedContentTextContentItemParam:
 		variant.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		variant.Content.OfInterleavedContentItemArray = v
@@ -860,15 +1140,15 @@ func MessageParamOfToolResponseMessage[
 }
 
 func MessageParamOfCompletionMessage[
-	T string | shared.ImageContentItemParam | shared.TextContentItemParam | []InterleavedContentItemUnionParam,
+	T string | InterleavedContentImageContentItemParam | InterleavedContentTextContentItemParam | []InterleavedContentItemUnionParam,
 ](content T, role CompletionMessageRole, stopReason CompletionMessageStopReason) MessageUnionParam {
 	var variant CompletionMessageParam
 	switch v := any(content).(type) {
 	case string:
 		variant.Content.OfString = param.NewOpt(v)
-	case shared.ImageContentItemParam:
+	case InterleavedContentImageContentItemParam:
 		variant.Content.OfImageContentItem = &v
-	case shared.TextContentItemParam:
+	case InterleavedContentTextContentItemParam:
 		variant.Content.OfTextContentItem = &v
 	case []InterleavedContentItemUnionParam:
 		variant.Content.OfInterleavedContentItemArray = v

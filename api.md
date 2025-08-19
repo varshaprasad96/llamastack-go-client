@@ -1,14 +1,3 @@
-# Shared Params Types
-
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#ImageContentItemParam">ImageContentItemParam</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#TextContentItemParam">TextContentItemParam</a>
-
-# Shared Response Types
-
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#ImageContentItem">ImageContentItem</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#ScoringResult">ScoringResult</a>
-- <a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared">shared</a>.<a href="https://pkg.go.dev/github.com/varshaprasad96/llamastack-go-client/shared#TextContentItem">TextContentItem</a>
-
 # Types
 
 Params Types:

@@ -12,7 +12,6 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
-	"github.com/varshaprasad96/llamastack-go-client/shared"
 	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
@@ -165,11 +164,11 @@ func (r *ToolRuntimeRagToolInsertParamsDocument) UnmarshalJSON(data []byte) erro
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type ToolRuntimeRagToolInsertParamsDocumentContentUnion struct {
-	OfString                      param.Opt[string]                  `json:",omitzero,inline"`
-	OfImageContentItem            *shared.ImageContentItemParam      `json:",omitzero,inline"`
-	OfTextContentItem             *shared.TextContentItemParam       `json:",omitzero,inline"`
-	OfInterleavedContentItemArray []InterleavedContentItemUnionParam `json:",omitzero,inline"`
-	OfURL                         *URLParam                          `json:",omitzero,inline"`
+	OfString                      param.Opt[string]                                              `json:",omitzero,inline"`
+	OfImageContentItem            *ToolRuntimeRagToolInsertParamsDocumentContentImageContentItem `json:",omitzero,inline"`
+	OfTextContentItem             *ToolRuntimeRagToolInsertParamsDocumentContentTextContentItem  `json:",omitzero,inline"`
+	OfInterleavedContentItemArray []InterleavedContentItemUnionParam                             `json:",omitzero,inline"`
+	OfURL                         *URLParam                                                      `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -200,7 +199,7 @@ func (u *ToolRuntimeRagToolInsertParamsDocumentContentUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u ToolRuntimeRagToolInsertParamsDocumentContentUnion) GetImage() *shared.ImageContentItemImageParam {
+func (u ToolRuntimeRagToolInsertParamsDocumentContentUnion) GetImage() *ToolRuntimeRagToolInsertParamsDocumentContentImageContentItemImage {
 	if vt := u.OfImageContentItem; vt != nil {
 		return &vt.Image
 	}
@@ -231,6 +230,78 @@ func (u ToolRuntimeRagToolInsertParamsDocumentContentUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	}
 	return nil
+}
+
+// A image content item
+//
+// The properties Image, Type are required.
+type ToolRuntimeRagToolInsertParamsDocumentContentImageContentItem struct {
+	// Image as a base64 encoded string or an URL
+	Image ToolRuntimeRagToolInsertParamsDocumentContentImageContentItemImage `json:"image,omitzero,required"`
+	// Discriminator type of the content item. Always "image"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r ToolRuntimeRagToolInsertParamsDocumentContentImageContentItem) MarshalJSON() (data []byte, err error) {
+	type shadow ToolRuntimeRagToolInsertParamsDocumentContentImageContentItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ToolRuntimeRagToolInsertParamsDocumentContentImageContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ToolRuntimeRagToolInsertParamsDocumentContentImageContentItem](
+		"type", "text", "image", "tool_call",
+	)
+}
+
+// Image as a base64 encoded string or an URL
+type ToolRuntimeRagToolInsertParamsDocumentContentImageContentItemImage struct {
+	// base64 encoded image data as string
+	Data param.Opt[string] `json:"data,omitzero"`
+	// A URL of the image or data URL in the format of data:image/{type};base64,{data}.
+	// Note that URL could have length limits.
+	URL URLParam `json:"url,omitzero"`
+	paramObj
+}
+
+func (r ToolRuntimeRagToolInsertParamsDocumentContentImageContentItemImage) MarshalJSON() (data []byte, err error) {
+	type shadow ToolRuntimeRagToolInsertParamsDocumentContentImageContentItemImage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ToolRuntimeRagToolInsertParamsDocumentContentImageContentItemImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text content item
+//
+// The properties Text, Type are required.
+type ToolRuntimeRagToolInsertParamsDocumentContentTextContentItem struct {
+	// Text content
+	Text string `json:"text,required"`
+	// Discriminator type of the content item. Always "text"
+	//
+	// Any of "text", "image", "tool_call".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r ToolRuntimeRagToolInsertParamsDocumentContentTextContentItem) MarshalJSON() (data []byte, err error) {
+	type shadow ToolRuntimeRagToolInsertParamsDocumentContentTextContentItem
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ToolRuntimeRagToolInsertParamsDocumentContentTextContentItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ToolRuntimeRagToolInsertParamsDocumentContentTextContentItem](
+		"type", "text", "image", "tool_call",
+	)
 }
 
 // Only one field can be non-zero.
