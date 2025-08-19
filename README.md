@@ -55,10 +55,8 @@ func main() {
 		context.TODO(),
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-				"foo": {
-					OfBool: llamastackclient.Bool(true),
-				},
+			Rows: []map[string]any{{
+				"foo": "bar",
 			}},
 		},
 	)
@@ -305,10 +303,8 @@ err := client.Datasetio.AppendRows(
 	context.TODO(),
 	"REPLACE_ME",
 	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
+		Rows: []map[string]any{{
+			"foo": "bar",
 		}},
 	},
 )
@@ -340,10 +336,8 @@ client.Datasetio.AppendRows(
 	ctx,
 	"REPLACE_ME",
 	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
+		Rows: []map[string]any{{
+			"foo": "bar",
 		}},
 	},
 	// This sets the per-retry timeout
@@ -364,27 +358,6 @@ file returned by `os.Open` will be sent with the file name on disk.
 We also provide a helper `llamastackclient.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
-```go
-// A file from the file system
-file, err := os.Open("/path/to/file")
-llamastackclient.OpenAIV1FileNewParams{
-	File:    file,
-	Purpose: llamastackclient.FilePurposeAssistants,
-}
-
-// A file from a string
-llamastackclient.OpenAIV1FileNewParams{
-	File:    strings.NewReader("my file contents"),
-	Purpose: llamastackclient.FilePurposeAssistants,
-}
-
-// With a custom filename and contentType
-llamastackclient.OpenAIV1FileNewParams{
-	File:    llamastackclient.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
-	Purpose: llamastackclient.FilePurposeAssistants,
-}
-```
-
 ### Retries
 
 Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
@@ -404,10 +377,8 @@ client.Datasetio.AppendRows(
 	context.TODO(),
 	"REPLACE_ME",
 	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
+		Rows: []map[string]any{{
+			"foo": "bar",
 		}},
 	},
 	option.WithMaxRetries(5),
@@ -426,10 +397,8 @@ err := client.Datasetio.AppendRows(
 	context.TODO(),
 	"REPLACE_ME",
 	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
+		Rows: []map[string]any{{
+			"foo": "bar",
 		}},
 	},
 	option.WithResponseInto(&response),
