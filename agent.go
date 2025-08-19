@@ -9,12 +9,14 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
+	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
-	shimjson "github.com/varshaprasad96/llamastack-go-client/internal/encoding/json"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
+	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
 )
 
 // AgentService contains methods and other services that help with interacting with
@@ -46,11 +48,36 @@ func (r *AgentService) New(ctx context.Context, body AgentNewParams, opts ...opt
 	return
 }
 
+// Describe an agent by its ID.
+func (r *AgentService) Get(ctx context.Context, agentID string, opts ...option.RequestOption) (res *AgentGetResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if agentID == "" {
+		err = errors.New("missing required agent_id parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/agents/%s", agentID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // List all agents.
-func (r *AgentService) List(ctx context.Context, query AgentListParams, opts ...option.RequestOption) (res *AgentListResponse, err error) {
+func (r *AgentService) List(ctx context.Context, query AgentListParams, opts ...option.RequestOption) (res *PaginatedResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/agents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
+
+// Delete an agent by its ID and its associated sessions and turns.
+func (r *AgentService) Delete(ctx context.Context, agentID string, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if agentID == "" {
+		err = errors.New("missing required agent_id parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/agents/%s", agentID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -66,22 +93,298 @@ func (r *AgentService) NewSession(ctx context.Context, agentID string, body Agen
 	return
 }
 
-type AgentNewResponse = any
+// List all session(s) of a given agent.
+func (r *AgentService) GetSessions(ctx context.Context, agentID string, query AgentGetSessionsParams, opts ...option.RequestOption) (res *PaginatedResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if agentID == "" {
+		err = errors.New("missing required agent_id parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/agents/%s/sessions", agentID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return
+}
 
-type AgentListResponse = any
+// Configuration for an agent.
+type AgentConfig struct {
+	// The system instructions for the agent
+	Instructions string `json:"instructions,required"`
+	// The model identifier to use for the agent
+	Model       string    `json:"model,required"`
+	ClientTools []ToolDef `json:"client_tools"`
+	// Optional flag indicating whether session data has to be persisted
+	EnableSessionPersistence bool     `json:"enable_session_persistence"`
+	InputShields             []string `json:"input_shields"`
+	MaxInferIters            int64    `json:"max_infer_iters"`
+	// Optional name for the agent, used in telemetry and identification
+	Name          string   `json:"name"`
+	OutputShields []string `json:"output_shields"`
+	// Optional response format configuration
+	ResponseFormat ResponseFormatUnion `json:"response_format"`
+	// Sampling parameters.
+	SamplingParams SamplingParamsResp `json:"sampling_params"`
+	// Whether tool use is required or automatic. This is a hint to the model which may
+	// not be followed. It depends on the Instruction Following capabilities of the
+	// model.
+	//
+	// Any of "auto", "required", "none".
+	//
+	// Deprecated: deprecated
+	ToolChoice AgentConfigToolChoice `json:"tool_choice"`
+	// Configuration for tool use.
+	ToolConfig ToolConfig `json:"tool_config"`
+	// Prompt format for calling custom / zero shot tools.
+	//
+	// Any of "json", "function_tag", "python_list".
+	//
+	// Deprecated: deprecated
+	ToolPromptFormat AgentConfigToolPromptFormat `json:"tool_prompt_format"`
+	Toolgroups       []AgentToolUnion            `json:"toolgroups"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Instructions             respjson.Field
+		Model                    respjson.Field
+		ClientTools              respjson.Field
+		EnableSessionPersistence respjson.Field
+		InputShields             respjson.Field
+		MaxInferIters            respjson.Field
+		Name                     respjson.Field
+		OutputShields            respjson.Field
+		ResponseFormat           respjson.Field
+		SamplingParams           respjson.Field
+		ToolChoice               respjson.Field
+		ToolConfig               respjson.Field
+		ToolPromptFormat         respjson.Field
+		Toolgroups               respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
 
-type AgentNewSessionResponse = any
+// Returns the unmodified JSON received from the API
+func (r AgentConfig) RawJSON() string { return r.JSON.raw }
+func (r *AgentConfig) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this AgentConfig to a AgentConfigParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// AgentConfigParam.Overrides()
+func (r AgentConfig) ToParam() AgentConfigParam {
+	return param.Override[AgentConfigParam](json.RawMessage(r.RawJSON()))
+}
+
+// Whether tool use is required or automatic. This is a hint to the model which may
+// not be followed. It depends on the Instruction Following capabilities of the
+// model.
+type AgentConfigToolChoice string
+
+const (
+	AgentConfigToolChoiceAuto     AgentConfigToolChoice = "auto"
+	AgentConfigToolChoiceRequired AgentConfigToolChoice = "required"
+	AgentConfigToolChoiceNone     AgentConfigToolChoice = "none"
+)
+
+// Prompt format for calling custom / zero shot tools.
+type AgentConfigToolPromptFormat string
+
+const (
+	AgentConfigToolPromptFormatJson        AgentConfigToolPromptFormat = "json"
+	AgentConfigToolPromptFormatFunctionTag AgentConfigToolPromptFormat = "function_tag"
+	AgentConfigToolPromptFormatPythonList  AgentConfigToolPromptFormat = "python_list"
+)
+
+// Configuration for an agent.
+//
+// The properties Instructions, Model are required.
+type AgentConfigParam struct {
+	// The system instructions for the agent
+	Instructions string `json:"instructions,required"`
+	// The model identifier to use for the agent
+	Model string `json:"model,required"`
+	// Optional flag indicating whether session data has to be persisted
+	EnableSessionPersistence param.Opt[bool]  `json:"enable_session_persistence,omitzero"`
+	MaxInferIters            param.Opt[int64] `json:"max_infer_iters,omitzero"`
+	// Optional name for the agent, used in telemetry and identification
+	Name          param.Opt[string] `json:"name,omitzero"`
+	ClientTools   []ToolDefParam    `json:"client_tools,omitzero"`
+	InputShields  []string          `json:"input_shields,omitzero"`
+	OutputShields []string          `json:"output_shields,omitzero"`
+	// Optional response format configuration
+	ResponseFormat ResponseFormatUnionParam `json:"response_format,omitzero"`
+	// Sampling parameters.
+	SamplingParams SamplingParams `json:"sampling_params,omitzero"`
+	// Whether tool use is required or automatic. This is a hint to the model which may
+	// not be followed. It depends on the Instruction Following capabilities of the
+	// model.
+	//
+	// Any of "auto", "required", "none".
+	//
+	// Deprecated: deprecated
+	ToolChoice AgentConfigToolChoice `json:"tool_choice,omitzero"`
+	// Configuration for tool use.
+	ToolConfig ToolConfigParam `json:"tool_config,omitzero"`
+	// Prompt format for calling custom / zero shot tools.
+	//
+	// Any of "json", "function_tag", "python_list".
+	//
+	// Deprecated: deprecated
+	ToolPromptFormat AgentConfigToolPromptFormat `json:"tool_prompt_format,omitzero"`
+	Toolgroups       []AgentToolUnionParam       `json:"toolgroups,omitzero"`
+	paramObj
+}
+
+func (r AgentConfigParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentConfigParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentConfigParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A generic paginated response that follows a simple format.
+type PaginatedResponse struct {
+	// The list of items for the current page
+	Data []map[string]PaginatedResponseDataUnion `json:"data,required"`
+	// Whether there are more items available after this set
+	HasMore bool `json:"has_more,required"`
+	// The URL for accessing this list
+	URL string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		HasMore     respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaginatedResponse) RawJSON() string { return r.JSON.raw }
+func (r *PaginatedResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// PaginatedResponseDataUnion contains all possible properties and values from
+// [bool], [float64], [string], [[]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfBool OfFloat OfString OfAnyArray]
+type PaginatedResponseDataUnion struct {
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfBool     respjson.Field
+		OfFloat    respjson.Field
+		OfString   respjson.Field
+		OfAnyArray respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (u PaginatedResponseDataUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PaginatedResponseDataUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PaginatedResponseDataUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u PaginatedResponseDataUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u PaginatedResponseDataUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *PaginatedResponseDataUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AgentNewResponse struct {
+	AgentID string `json:"agent_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AgentID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AgentNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *AgentNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AgentGetResponse struct {
+	// Configuration for an agent.
+	AgentConfig AgentConfig `json:"agent_config,required"`
+	AgentID     string      `json:"agent_id,required"`
+	CreatedAt   time.Time   `json:"created_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AgentConfig respjson.Field
+		AgentID     respjson.Field
+		CreatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AgentGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *AgentGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AgentNewSessionResponse struct {
+	SessionID string `json:"session_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		SessionID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AgentNewSessionResponse) RawJSON() string { return r.JSON.raw }
+func (r *AgentNewSessionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type AgentNewParams struct {
-	Body any
+	// The configuration for the agent.
+	AgentConfig AgentConfigParam `json:"agent_config,omitzero,required"`
 	paramObj
 }
 
 func (r AgentNewParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Body)
+	type shadow AgentNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AgentNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AgentListParams struct {
@@ -101,13 +404,31 @@ func (r AgentListParams) URLQuery() (v url.Values, err error) {
 }
 
 type AgentNewSessionParams struct {
-	Body any
+	// The name of the session to create.
+	SessionName string `json:"session_name,required"`
 	paramObj
 }
 
 func (r AgentNewSessionParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Body)
+	type shadow AgentNewSessionParams
+	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AgentNewSessionParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AgentGetSessionsParams struct {
+	// The number of sessions to return.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// The index to start the pagination from.
+	StartIndex param.Opt[int64] `query:"start_index,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [AgentGetSessionsParams]'s query parameters as `url.Values`.
+func (r AgentGetSessionsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
