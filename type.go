@@ -73,78 +73,20 @@ const (
 // [ParamTypeStringResp], [ParamTypeNumberResp], [ParamTypeBooleanResp],
 // [ParamTypeArrayResp], [ParamTypeObjectResp], [ParamTypeJsonResp],
 // [ParamTypeUnionResp], [ParamTypeChatCompletionInputResp],
-// [ParamTypeCompletionInputResp], [ParamTypeAgentTurnInputResp].
+// [ParamTypeCompletionInputResp], [ParamTypeAgentTurnInputResp],
+// [ParamTypeParamTypeBaseResp].
 //
 // Use the [ParamTypeUnionResp.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type ParamTypeUnionResp struct {
 	// Any of "string", "number", "boolean", "array", "object", "json", "union",
-	// "chat_completion_input", "completion_input", "agent_turn_input".
+	// "chat_completion_input", "completion_input", "agent_turn_input", nil.
 	Type string `json:"type"`
 	JSON struct {
 		Type respjson.Field
 		raw  string
 	} `json:"-"`
-}
-
-// anyParamTypeResp is implemented by each variant of [ParamTypeUnionResp] to add
-// type safety for the return type of [ParamTypeUnionResp.AsAny]
-type anyParamTypeResp interface {
-	implParamTypeUnionResp()
-}
-
-func (ParamTypeStringResp) implParamTypeUnionResp()              {}
-func (ParamTypeNumberResp) implParamTypeUnionResp()              {}
-func (ParamTypeBooleanResp) implParamTypeUnionResp()             {}
-func (ParamTypeArrayResp) implParamTypeUnionResp()               {}
-func (ParamTypeObjectResp) implParamTypeUnionResp()              {}
-func (ParamTypeJsonResp) implParamTypeUnionResp()                {}
-func (ParamTypeUnionResp) implParamTypeUnionResp()               {}
-func (ParamTypeChatCompletionInputResp) implParamTypeUnionResp() {}
-func (ParamTypeCompletionInputResp) implParamTypeUnionResp()     {}
-func (ParamTypeAgentTurnInputResp) implParamTypeUnionResp()      {}
-
-// Use the following switch statement to find the correct variant
-//
-//	switch variant := ParamTypeUnionResp.AsAny().(type) {
-//	case llamastackclient.ParamTypeStringResp:
-//	case llamastackclient.ParamTypeNumberResp:
-//	case llamastackclient.ParamTypeBooleanResp:
-//	case llamastackclient.ParamTypeArrayResp:
-//	case llamastackclient.ParamTypeObjectResp:
-//	case llamastackclient.ParamTypeJsonResp:
-//	case llamastackclient.ParamTypeUnionResp:
-//	case llamastackclient.ParamTypeChatCompletionInputResp:
-//	case llamastackclient.ParamTypeCompletionInputResp:
-//	case llamastackclient.ParamTypeAgentTurnInputResp:
-//	default:
-//	  fmt.Errorf("no variant present")
-//	}
-func (u ParamTypeUnionResp) AsAny() anyParamTypeResp {
-	switch u.Type {
-	case "string":
-		return u.AsString()
-	case "number":
-		return u.AsNumber()
-	case "boolean":
-		return u.AsBoolean()
-	case "array":
-		return u.AsArray()
-	case "object":
-		return u.AsObject()
-	case "json":
-		return u.AsJson()
-	case "union":
-		return u.AsUnion()
-	case "chat_completion_input":
-		return u.AsChatCompletionInput()
-	case "completion_input":
-		return u.AsCompletionInput()
-	case "agent_turn_input":
-		return u.AsAgentTurnInput()
-	}
-	return nil
 }
 
 func (u ParamTypeUnionResp) AsString() (v ParamTypeStringResp) {
@@ -193,6 +135,11 @@ func (u ParamTypeUnionResp) AsCompletionInput() (v ParamTypeCompletionInputResp)
 }
 
 func (u ParamTypeUnionResp) AsAgentTurnInput() (v ParamTypeAgentTurnInputResp) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ParamTypeUnionResp) AsParamTypeParamTypeBaseResp() (v ParamTypeParamTypeBaseResp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -375,6 +322,30 @@ func (r *ParamTypeAgentTurnInputResp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ParamTypeParamTypeBaseResp struct {
+	// Any of "string", "number", "boolean", "array", "object", "json", "union",
+	// "chat_completion_input", "completion_input", "agent_turn_input".
+	Type string `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ParamTypeParamTypeBaseResp) RawJSON() string { return r.JSON.raw }
+func (r *ParamTypeParamTypeBaseResp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func ParamTypeOfTypeParamTypeBase(type_ string) ParamTypeUnion {
+	var variant ParamTypeParamTypeBase
+	variant.Type = type_
+	return ParamTypeUnion{OfTypeParamTypeBase: &variant}
+}
+
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
@@ -389,6 +360,7 @@ type ParamTypeUnion struct {
 	OfChatCompletionInput *ParamTypeChatCompletionInput `json:",omitzero,inline"`
 	OfCompletionInput     *ParamTypeCompletionInput     `json:",omitzero,inline"`
 	OfAgentTurnInput      *ParamTypeAgentTurnInput      `json:",omitzero,inline"`
+	OfTypeParamTypeBase   *ParamTypeParamTypeBase       `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -402,7 +374,8 @@ func (u ParamTypeUnion) MarshalJSON() ([]byte, error) {
 		u.OfUnion,
 		u.OfChatCompletionInput,
 		u.OfCompletionInput,
-		u.OfAgentTurnInput)
+		u.OfAgentTurnInput,
+		u.OfTypeParamTypeBase)
 }
 func (u *ParamTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -429,6 +402,8 @@ func (u *ParamTypeUnion) asAny() any {
 		return u.OfCompletionInput
 	} else if !param.IsOmitted(u.OfAgentTurnInput) {
 		return u.OfAgentTurnInput
+	} else if !param.IsOmitted(u.OfTypeParamTypeBase) {
+		return u.OfTypeParamTypeBase
 	}
 	return nil
 }
@@ -455,6 +430,8 @@ func (u ParamTypeUnion) GetType() *string {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfAgentTurnInput; vt != nil {
 		return (*string)(&vt.Type)
+	} else if vt := u.OfTypeParamTypeBase; vt != nil {
+		return (*string)(&vt.Type)
 	}
 	return nil
 }
@@ -472,6 +449,16 @@ func init() {
 		apijson.Discriminator[ParamTypeChatCompletionInput]("chat_completion_input"),
 		apijson.Discriminator[ParamTypeCompletionInput]("completion_input"),
 		apijson.Discriminator[ParamTypeAgentTurnInput]("agent_turn_input"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("string"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("number"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("boolean"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("array"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("object"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("json"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("union"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("chat_completion_input"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("completion_input"),
+		apijson.Discriminator[ParamTypeParamTypeBase]("agent_turn_input"),
 	)
 }
 
@@ -683,6 +670,28 @@ func (r ParamTypeAgentTurnInput) MarshalJSON() (data []byte, err error) {
 }
 func (r *ParamTypeAgentTurnInput) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Type is required.
+type ParamTypeParamTypeBase struct {
+	// Any of "string", "number", "boolean", "array", "object", "json", "union",
+	// "chat_completion_input", "completion_input", "agent_turn_input".
+	Type string `json:"type,omitzero,required"`
+	paramObj
+}
+
+func (r ParamTypeParamTypeBase) MarshalJSON() (data []byte, err error) {
+	type shadow ParamTypeParamTypeBase
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ParamTypeParamTypeBase) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ParamTypeParamTypeBase](
+		"type", "string", "number", "boolean", "array", "object", "json", "union", "chat_completion_input", "completion_input", "agent_turn_input",
+	)
 }
 
 // Log probabilities for generated tokens.
