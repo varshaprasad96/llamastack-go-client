@@ -42,8 +42,10 @@ func TestUserAgentHeader(t *testing.T) {
 		context.Background(),
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -74,8 +76,10 @@ func TestRetryAfter(t *testing.T) {
 		context.Background(),
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -117,8 +121,10 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		context.Background(),
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -155,8 +161,10 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		context.Background(),
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -192,8 +200,10 @@ func TestRetryAfterMs(t *testing.T) {
 		context.Background(),
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -223,8 +233,10 @@ func TestContextCancel(t *testing.T) {
 		cancelCtx,
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -251,8 +263,10 @@ func TestContextCancelDelay(t *testing.T) {
 		cancelCtx,
 		"REPLACE_ME",
 		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]any{{
-				"foo": "bar",
+			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+				"foo": {
+					OfBool: llamastackclient.Bool(true),
+				},
 			}},
 		},
 	)
@@ -285,8 +299,10 @@ func TestContextDeadline(t *testing.T) {
 			deadlineCtx,
 			"REPLACE_ME",
 			llamastackclient.DatasetioAppendRowsParams{
-				Rows: []map[string]any{{
-					"foo": "bar",
+				Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
+					"foo": {
+						OfBool: llamastackclient.Bool(true),
+					},
 				}},
 			},
 		)
