@@ -66,6 +66,19 @@ func (r *OpenAIV1ResponseService) List(ctx context.Context, query OpenAIV1Respon
 	return
 }
 
+// Delete an OpenAI response by its ID.
+func (r *OpenAIV1ResponseService) Delete(ctx context.Context, responseID string, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if responseID == "" {
+		err = errors.New("missing required response_id parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/openai/v1/responses/%s", responseID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
 // List input items for a given OpenAI response.
 func (r *OpenAIV1ResponseService) GetInputItems(ctx context.Context, responseID string, query OpenAIV1ResponseGetInputItemsParams, opts ...option.RequestOption) (res *OpenAiv1ResponseGetInputItemsResponse, err error) {
 	opts = append(r.Options[:], opts...)

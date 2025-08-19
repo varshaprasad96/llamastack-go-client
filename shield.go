@@ -64,6 +64,19 @@ func (r *ShieldService) List(ctx context.Context, opts ...option.RequestOption) 
 	return
 }
 
+// Delete a shield by its identifier.
+func (r *ShieldService) Delete(ctx context.Context, identifier string, opts ...option.RequestOption) (err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	if identifier == "" {
+		err = errors.New("missing required identifier parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/shields/%s", identifier)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return
+}
+
 // A safety shield resource that can be used to check content
 type Shield struct {
 	Identifier         string                      `json:"identifier,required"`

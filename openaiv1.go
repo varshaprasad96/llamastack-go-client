@@ -60,6 +60,14 @@ func (r *OpenAIV1Service) Embeddings(ctx context.Context, body OpenAIV1Embedding
 	return
 }
 
+// Classify if text violates OpenAI's Content Policy.
+func (r *OpenAIV1Service) Moderations(ctx context.Context, body OpenAIV1ModerationsParams, opts ...option.RequestOption) (res *OpenAiv1ModerationsResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v1/openai/v1/moderations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // List models using the OpenAI API.
 func (r *OpenAIV1Service) GetModels(ctx context.Context, opts ...option.RequestOption) (res *OpenAiv1GetModelsResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -224,6 +232,51 @@ type OpenAiv1EmbeddingsResponseUsage struct {
 // Returns the unmodified JSON received from the API
 func (r OpenAiv1EmbeddingsResponseUsage) RawJSON() string { return r.JSON.raw }
 func (r *OpenAiv1EmbeddingsResponseUsage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OpenAiv1ModerationsResponse struct {
+	// The unique identifier for the moderation request.
+	ID string `json:"id"`
+	// The model used for moderation.
+	Model   string                              `json:"model"`
+	Results []OpenAiv1ModerationsResponseResult `json:"results"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Model       respjson.Field
+		Results     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OpenAiv1ModerationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *OpenAiv1ModerationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type OpenAiv1ModerationsResponseResult struct {
+	// Categories of content that were flagged.
+	Categories any `json:"categories"`
+	// Scores for each category.
+	CategoryScores any `json:"category_scores"`
+	// Whether the content was flagged.
+	Flagged bool `json:"flagged"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Categories     respjson.Field
+		CategoryScores respjson.Field
+		Flagged        respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r OpenAiv1ModerationsResponseResult) RawJSON() string { return r.JSON.raw }
+func (r *OpenAiv1ModerationsResponseResult) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -448,6 +501,47 @@ func (u *OpenAIV1EmbeddingsParamsInputUnion) UnmarshalJSON(data []byte) error {
 }
 
 func (u *OpenAIV1EmbeddingsParamsInputUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfStringArray) {
+		return &u.OfStringArray
+	}
+	return nil
+}
+
+type OpenAIV1ModerationsParams struct {
+	// The input text to classify.
+	Input OpenAIV1ModerationsParamsInputUnion `json:"input,omitzero,required"`
+	// The model to use for moderation.
+	Model param.Opt[string] `json:"model,omitzero"`
+	paramObj
+}
+
+func (r OpenAIV1ModerationsParams) MarshalJSON() (data []byte, err error) {
+	type shadow OpenAIV1ModerationsParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *OpenAIV1ModerationsParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type OpenAIV1ModerationsParamsInputUnion struct {
+	OfString      param.Opt[string] `json:",omitzero,inline"`
+	OfStringArray []string          `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u OpenAIV1ModerationsParamsInputUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfStringArray)
+}
+func (u *OpenAIV1ModerationsParamsInputUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *OpenAIV1ModerationsParamsInputUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfStringArray) {
