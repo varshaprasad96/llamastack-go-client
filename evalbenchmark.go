@@ -14,6 +14,7 @@ import (
 	"github.com/varshaprasad96/llamastack-go-client/option"
 	"github.com/varshaprasad96/llamastack-go-client/packages/param"
 	"github.com/varshaprasad96/llamastack-go-client/packages/respjson"
+	"github.com/varshaprasad96/llamastack-go-client/shared"
 	"github.com/varshaprasad96/llamastack-go-client/shared/constant"
 )
 
@@ -77,6 +78,25 @@ func (r *EvalBenchmarkService) Evaluate(ctx context.Context, benchmarkID string,
 	path := fmt.Sprintf("v1/eval/benchmarks/%s/evaluations", benchmarkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
+}
+
+// An agent candidate for evaluation.
+//
+// The properties Config, Type are required.
+type AgentCandidateParam struct {
+	// The configuration for the agent candidate.
+	Config AgentConfigParam `json:"config,omitzero,required"`
+	// This field can be elided, and will marshal its zero value as "agent".
+	Type constant.Agent `json:"type,required"`
+	paramObj
+}
+
+func (r AgentCandidateParam) MarshalJSON() (data []byte, err error) {
+	type shadow AgentCandidateParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AgentCandidateParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // A benchmark resource for evaluating model performance.
@@ -191,8 +211,8 @@ func (r *BenchmarkConfigParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BenchmarkConfigEvalCandidateUnionParam struct {
-	OfModel *BenchmarkConfigEvalCandidateModelParam `json:",omitzero,inline"`
-	OfAgent *BenchmarkConfigEvalCandidateAgentParam `json:",omitzero,inline"`
+	OfModel *ModelCandidateParam `json:",omitzero,inline"`
+	OfAgent *AgentCandidateParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -257,51 +277,9 @@ func (u BenchmarkConfigEvalCandidateUnionParam) GetType() *string {
 func init() {
 	apijson.RegisterUnion[BenchmarkConfigEvalCandidateUnionParam](
 		"type",
-		apijson.Discriminator[BenchmarkConfigEvalCandidateModelParam]("model"),
-		apijson.Discriminator[BenchmarkConfigEvalCandidateAgentParam]("agent"),
+		apijson.Discriminator[ModelCandidateParam]("model"),
+		apijson.Discriminator[AgentCandidateParam]("agent"),
 	)
-}
-
-// A model candidate for evaluation.
-//
-// The properties Model, SamplingParams, Type are required.
-type BenchmarkConfigEvalCandidateModelParam struct {
-	// The model ID to evaluate.
-	Model string `json:"model,required"`
-	// The sampling parameters for the model.
-	SamplingParams SamplingParams `json:"sampling_params,omitzero,required"`
-	// (Optional) The system message providing instructions or context to the model.
-	SystemMessage SystemMessageParam `json:"system_message,omitzero"`
-	// This field can be elided, and will marshal its zero value as "model".
-	Type constant.Model `json:"type,required"`
-	paramObj
-}
-
-func (r BenchmarkConfigEvalCandidateModelParam) MarshalJSON() (data []byte, err error) {
-	type shadow BenchmarkConfigEvalCandidateModelParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BenchmarkConfigEvalCandidateModelParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An agent candidate for evaluation.
-//
-// The properties Config, Type are required.
-type BenchmarkConfigEvalCandidateAgentParam struct {
-	// The configuration for the agent candidate.
-	Config AgentConfigParam `json:"config,omitzero,required"`
-	// This field can be elided, and will marshal its zero value as "agent".
-	Type constant.Agent `json:"type,required"`
-	paramObj
-}
-
-func (r BenchmarkConfigEvalCandidateAgentParam) MarshalJSON() (data []byte, err error) {
-	type shadow BenchmarkConfigEvalCandidateAgentParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BenchmarkConfigEvalCandidateAgentParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // The response from an evaluation.
@@ -309,7 +287,7 @@ type EvaluateResponse struct {
 	// The generations from the evaluation.
 	Generations []map[string]EvaluateResponseGenerationUnion `json:"generations,required"`
 	// The scores from the evaluation.
-	Scores map[string]EvaluateResponseScore `json:"scores,required"`
+	Scores map[string]shared.ScoringResult `json:"scores,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Generations respjson.Field
@@ -377,128 +355,26 @@ func (r *EvaluateResponseGenerationUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A scoring result for a single row.
-type EvaluateResponseScore struct {
-	// Map of metric name to aggregated value
-	AggregatedResults map[string]EvaluateResponseScoreAggregatedResultUnion `json:"aggregated_results,required"`
-	// The scoring result for each row. Each row is a map of column name to value.
-	ScoreRows []map[string]EvaluateResponseScoreScoreRowUnion `json:"score_rows,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AggregatedResults respjson.Field
-		ScoreRows         respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r EvaluateResponseScore) RawJSON() string { return r.JSON.raw }
-func (r *EvaluateResponseScore) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// EvaluateResponseScoreAggregatedResultUnion contains all possible properties and
-// values from [bool], [float64], [string], [[]any].
+// A model candidate for evaluation.
 //
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfBool OfFloat OfString OfAnyArray]
-type EvaluateResponseScoreAggregatedResultUnion struct {
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
-	JSON       struct {
-		OfBool     respjson.Field
-		OfFloat    respjson.Field
-		OfString   respjson.Field
-		OfAnyArray respjson.Field
-		raw        string
-	} `json:"-"`
+// The properties Model, SamplingParams, Type are required.
+type ModelCandidateParam struct {
+	// The model ID to evaluate.
+	Model string `json:"model,required"`
+	// The sampling parameters for the model.
+	SamplingParams SamplingParams `json:"sampling_params,omitzero,required"`
+	// (Optional) The system message providing instructions or context to the model.
+	SystemMessage SystemMessageParam `json:"system_message,omitzero"`
+	// This field can be elided, and will marshal its zero value as "model".
+	Type constant.Model `json:"type,required"`
+	paramObj
 }
 
-func (u EvaluateResponseScoreAggregatedResultUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
+func (r ModelCandidateParam) MarshalJSON() (data []byte, err error) {
+	type shadow ModelCandidateParam
+	return param.MarshalObject(r, (*shadow)(&r))
 }
-
-func (u EvaluateResponseScoreAggregatedResultUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u EvaluateResponseScoreAggregatedResultUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u EvaluateResponseScoreAggregatedResultUnion) AsAnyArray() (v []any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u EvaluateResponseScoreAggregatedResultUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *EvaluateResponseScoreAggregatedResultUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// EvaluateResponseScoreScoreRowUnion contains all possible properties and values
-// from [bool], [float64], [string], [[]any].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfBool OfFloat OfString OfAnyArray]
-type EvaluateResponseScoreScoreRowUnion struct {
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
-	JSON       struct {
-		OfBool     respjson.Field
-		OfFloat    respjson.Field
-		OfString   respjson.Field
-		OfAnyArray respjson.Field
-		raw        string
-	} `json:"-"`
-}
-
-func (u EvaluateResponseScoreScoreRowUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u EvaluateResponseScoreScoreRowUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u EvaluateResponseScoreScoreRowUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u EvaluateResponseScoreScoreRowUnion) AsAnyArray() (v []any) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u EvaluateResponseScoreScoreRowUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *EvaluateResponseScoreScoreRowUnion) UnmarshalJSON(data []byte) error {
+func (r *ModelCandidateParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

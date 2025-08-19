@@ -29,7 +29,12 @@ func TestScoringFunctionNewWithOptionalParams(t *testing.T) {
 	err := client.ScoringFunctions.New(context.TODO(), llamastackclient.ScoringFunctionNewParams{
 		Description: "description",
 		ReturnType: llamastackclient.ParamTypeUnion{
-			OfString: &llamastackclient.ParamTypeString{},
+			OfStringType: &llamastackclient.ParamTypeStringType{
+				ParamTypeBase: llamastackclient.ParamTypeBase{
+					Type: llamastackclient.ParamTypeBaseTypeString,
+				},
+				StringTypeParam: llamastackclient.NewStringTypeParam(),
+			},
 		},
 		ScoringFnID: "scoring_fn_id",
 		Params: llamastackclient.ScoringFnParamsUnion{
