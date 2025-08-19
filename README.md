@@ -42,6 +42,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/varshaprasad96/llamastack-go-client"
 	"github.com/varshaprasad96/llamastack-go-client/option"
@@ -51,20 +52,11 @@ func main() {
 	client := llamastackclient.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("LLAMASTACK_GO_CLIENT_API_KEY")
 	)
-	err := client.Datasetio.AppendRows(
-		context.TODO(),
-		"REPLACE_ME",
-		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-				"foo": {
-					OfBool: llamastackclient.Bool(true),
-				},
-			}},
-		},
-	)
+	model, err := client.Models.Get(context.TODO(), "REPLACE_ME")
 	if err != nil {
 		panic(err.Error())
 	}
+	fmt.Printf("%+v\n", model.Identifier)
 }
 
 ```
@@ -270,7 +262,7 @@ client := llamastackclient.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Datasetio.AppendRows(context.TODO(), ...,
+client.Models.Get(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -301,24 +293,14 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-err := client.Datasetio.AppendRows(
-	context.TODO(),
-	"REPLACE_ME",
-	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
-		}},
-	},
-)
+_, err := client.Models.Get(context.TODO(), "REPLACE_ME")
 if err != nil {
 	var apierr *llamastackclient.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/v1/datasetio/append-rows/{dataset_id}": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/v1/models/{model_id}": 400 Bad Request { ... }
 }
 ```
 
@@ -336,16 +318,9 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Datasetio.AppendRows(
+client.Models.Get(
 	ctx,
 	"REPLACE_ME",
-	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
-		}},
-	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -400,16 +375,9 @@ client := llamastackclient.NewClient(
 )
 
 // Override per-request:
-client.Datasetio.AppendRows(
+client.Models.Get(
 	context.TODO(),
 	"REPLACE_ME",
-	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
-		}},
-	},
 	option.WithMaxRetries(5),
 )
 ```
@@ -422,22 +390,15 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-err := client.Datasetio.AppendRows(
+model, err := client.Models.Get(
 	context.TODO(),
 	"REPLACE_ME",
-	llamastackclient.DatasetioAppendRowsParams{
-		Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-			"foo": {
-				OfBool: llamastackclient.Bool(true),
-			},
-		}},
-	},
 	option.WithResponseInto(&response),
 )
 if err != nil {
 	// handle error
 }
-null
+fmt.Printf("%+v\n", model)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

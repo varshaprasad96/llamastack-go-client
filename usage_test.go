@@ -24,18 +24,9 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Datasetio.AppendRows(
-		context.TODO(),
-		"REPLACE_ME",
-		llamastackclient.DatasetioAppendRowsParams{
-			Rows: []map[string]llamastackclient.DatasetioAppendRowsParamsRowUnion{{
-				"foo": {
-					OfBool: llamastackclient.Bool(true),
-				},
-			}},
-		},
-	)
+	model, err := client.Models.Get(context.TODO(), "REPLACE_ME")
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
+	t.Logf("%+v\n", model.Identifier)
 }
