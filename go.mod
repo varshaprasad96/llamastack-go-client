@@ -1,6 +1,6 @@
 module github.com/varshaprasad96/llamastack-go-client
 
-go 1.21
+go 1.22
 
 require (
 	github.com/tidwall/gjson v1.14.4
