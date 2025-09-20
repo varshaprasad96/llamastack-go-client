@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -37,7 +38,7 @@ func NewDatasetioService(opts ...option.RequestOption) (r DatasetioService) {
 
 // Append rows to a dataset.
 func (r *DatasetioService) AppendRows(ctx context.Context, datasetID string, body DatasetioAppendRowsParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
@@ -58,7 +59,7 @@ func (r *DatasetioService) AppendRows(ctx context.Context, datasetID string, bod
 // - data: List of items for the current page.
 // - has_more: Whether there are more items available after this set.
 func (r *DatasetioService) IterateRows(ctx context.Context, datasetID string, query DatasetioIterateRowsParams, opts ...option.RequestOption) (res *PaginatedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
 		return

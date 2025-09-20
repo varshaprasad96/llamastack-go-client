@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -41,7 +42,7 @@ func NewOpenAIV1VectorStoreService(opts ...option.RequestOption) (r OpenAIV1Vect
 
 // Creates a vector store.
 func (r *OpenAIV1VectorStoreService) New(ctx context.Context, body OpenAIV1VectorStoreNewParams, opts ...option.RequestOption) (res *VectorStoreObject, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/vector_stores"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *OpenAIV1VectorStoreService) New(ctx context.Context, body OpenAIV1Vecto
 
 // Retrieves a vector store.
 func (r *OpenAIV1VectorStoreService) Get(ctx context.Context, vectorStoreID string, opts ...option.RequestOption) (res *VectorStoreObject, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *OpenAIV1VectorStoreService) Get(ctx context.Context, vectorStoreID stri
 
 // Updates a vector store.
 func (r *OpenAIV1VectorStoreService) Update(ctx context.Context, vectorStoreID string, body OpenAIV1VectorStoreUpdateParams, opts ...option.RequestOption) (res *VectorStoreObject, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *OpenAIV1VectorStoreService) Update(ctx context.Context, vectorStoreID s
 
 // Returns a list of vector stores.
 func (r *OpenAIV1VectorStoreService) List(ctx context.Context, query OpenAIV1VectorStoreListParams, opts ...option.RequestOption) (res *OpenAiv1VectorStoreListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/vector_stores"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *OpenAIV1VectorStoreService) List(ctx context.Context, query OpenAIV1Vec
 
 // Delete a vector store.
 func (r *OpenAIV1VectorStoreService) Delete(ctx context.Context, vectorStoreID string, opts ...option.RequestOption) (res *OpenAiv1VectorStoreDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *OpenAIV1VectorStoreService) Delete(ctx context.Context, vectorStoreID s
 // Search for chunks in a vector store. Searches a vector store for relevant chunks
 // based on a query and optional file attribute filters.
 func (r *OpenAIV1VectorStoreService) Search(ctx context.Context, vectorStoreID string, body OpenAIV1VectorStoreSearchParams, opts ...option.RequestOption) (res *OpenAiv1VectorStoreSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return

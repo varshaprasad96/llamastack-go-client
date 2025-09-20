@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -40,7 +41,7 @@ func NewAgentSessionService(opts ...option.RequestOption) (r AgentSessionService
 
 // Retrieve an agent session by its ID.
 func (r *AgentSessionService) Get(ctx context.Context, sessionID string, params AgentSessionGetParams, opts ...option.RequestOption) (res *AgentSessionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AgentSessionService) Get(ctx context.Context, sessionID string, params 
 
 // Delete an agent session by its ID and its associated turns.
 func (r *AgentSessionService) Delete(ctx context.Context, sessionID string, body AgentSessionDeleteParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
