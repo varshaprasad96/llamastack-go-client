@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewScoringService(opts ...option.RequestOption) (r ScoringService) {
 
 // Score a list of rows.
 func (r *ScoringService) Score(ctx context.Context, body ScoringScoreParams, opts ...option.RequestOption) (res *ScoringScoreResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/scoring/score"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *ScoringService) Score(ctx context.Context, body ScoringScoreParams, opt
 
 // Score a batch of rows.
 func (r *ScoringService) ScoreBatch(ctx context.Context, body ScoringScoreBatchParams, opts ...option.RequestOption) (res *ScoringScoreBatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/scoring/score-batch"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -40,7 +41,7 @@ func NewOpenAIV1ResponseService(opts ...option.RequestOption) (r OpenAIV1Respons
 
 // Create a new OpenAI response.
 func (r *OpenAIV1ResponseService) New(ctx context.Context, body OpenAIV1ResponseNewParams, opts ...option.RequestOption) (res *ResponseObject, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/responses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *OpenAIV1ResponseService) New(ctx context.Context, body OpenAIV1Response
 
 // Retrieve an OpenAI response by its ID.
 func (r *OpenAIV1ResponseService) Get(ctx context.Context, responseID string, opts ...option.RequestOption) (res *ResponseObject, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if responseID == "" {
 		err = errors.New("missing required response_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *OpenAIV1ResponseService) Get(ctx context.Context, responseID string, op
 
 // List all OpenAI responses.
 func (r *OpenAIV1ResponseService) List(ctx context.Context, query OpenAIV1ResponseListParams, opts ...option.RequestOption) (res *OpenAiv1ResponseListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/responses"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *OpenAIV1ResponseService) List(ctx context.Context, query OpenAIV1Respon
 
 // Delete an OpenAI response by its ID.
 func (r *OpenAIV1ResponseService) Delete(ctx context.Context, responseID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if responseID == "" {
 		err = errors.New("missing required response_id parameter")
@@ -81,7 +82,7 @@ func (r *OpenAIV1ResponseService) Delete(ctx context.Context, responseID string,
 
 // List input items for a given OpenAI response.
 func (r *OpenAIV1ResponseService) GetInputItems(ctx context.Context, responseID string, query OpenAIV1ResponseGetInputItemsParams, opts ...option.RequestOption) (res *OpenAiv1ResponseGetInputItemsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if responseID == "" {
 		err = errors.New("missing required response_id parameter")
 		return

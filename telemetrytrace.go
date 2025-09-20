@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -38,7 +39,7 @@ func NewTelemetryTraceService(opts ...option.RequestOption) (r TelemetryTraceSer
 
 // Query traces.
 func (r *TelemetryTraceService) Query(ctx context.Context, body TelemetryTraceQueryParams, opts ...option.RequestOption) (res *TelemetryTraceQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/telemetry/traces"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *TelemetryTraceService) Query(ctx context.Context, body TelemetryTraceQu
 
 // Get a span by its ID.
 func (r *TelemetryTraceService) GetSpan(ctx context.Context, spanID string, query TelemetryTraceGetSpanParams, opts ...option.RequestOption) (res *Span, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.TraceID == "" {
 		err = errors.New("missing required trace_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *TelemetryTraceService) GetSpan(ctx context.Context, spanID string, quer
 
 // Get a trace by its ID.
 func (r *TelemetryTraceService) GetTrace(ctx context.Context, traceID string, opts ...option.RequestOption) (res *Trace, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if traceID == "" {
 		err = errors.New("missing required trace_id parameter")
 		return

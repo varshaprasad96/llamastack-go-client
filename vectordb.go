@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewVectorDBService(opts ...option.RequestOption) (r VectorDBService) {
 
 // Register a vector database.
 func (r *VectorDBService) New(ctx context.Context, body VectorDBNewParams, opts ...option.RequestOption) (res *VectorDB, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/vector-dbs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *VectorDBService) New(ctx context.Context, body VectorDBNewParams, opts 
 
 // Get a vector database by its identifier.
 func (r *VectorDBService) Get(ctx context.Context, vectorDBID string, opts ...option.RequestOption) (res *VectorDB, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorDBID == "" {
 		err = errors.New("missing required vector_db_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *VectorDBService) Get(ctx context.Context, vectorDBID string, opts ...op
 
 // List all vector databases.
 func (r *VectorDBService) List(ctx context.Context, opts ...option.RequestOption) (res *VectorDBListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/vector-dbs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -65,7 +66,7 @@ func (r *VectorDBService) List(ctx context.Context, opts ...option.RequestOption
 
 // Unregister a vector database.
 func (r *VectorDBService) Delete(ctx context.Context, vectorDBID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if vectorDBID == "" {
 		err = errors.New("missing required vector_db_id parameter")

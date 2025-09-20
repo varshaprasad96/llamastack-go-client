@@ -5,6 +5,7 @@ package llamastackclient
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewPostTrainingService(opts ...option.RequestOption) (r PostTrainingService
 
 // Run supervised fine-tuning of a model.
 func (r *PostTrainingService) FineTuneSupervised(ctx context.Context, body PostTrainingFineTuneSupervisedParams, opts ...option.RequestOption) (res *PostTrainingJob, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/post-training/supervised-fine-tune"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *PostTrainingService) FineTuneSupervised(ctx context.Context, body PostT
 
 // Get all training jobs.
 func (r *PostTrainingService) ListJobs(ctx context.Context, opts ...option.RequestOption) (res *PostTrainingListJobsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/post-training/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *PostTrainingService) ListJobs(ctx context.Context, opts ...option.Reque
 
 // Run preference optimization of a model.
 func (r *PostTrainingService) OptimizePreferences(ctx context.Context, body PostTrainingOptimizePreferencesParams, opts ...option.RequestOption) (res *PostTrainingJob, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/post-training/preference-optimize"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

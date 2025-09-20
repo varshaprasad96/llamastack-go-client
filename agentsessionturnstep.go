@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -37,7 +38,7 @@ func NewAgentSessionTurnStepService(opts ...option.RequestOption) (r AgentSessio
 
 // Retrieve an agent step by its ID.
 func (r *AgentSessionTurnStepService) Get(ctx context.Context, stepID string, query AgentSessionTurnStepGetParams, opts ...option.RequestOption) (res *AgentSessionTurnStepGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return

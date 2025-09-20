@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -40,7 +41,7 @@ func NewOpenAIV1VectorStoreFileService(opts ...option.RequestOption) (r OpenAIV1
 
 // Attach a file to a vector store.
 func (r *OpenAIV1VectorStoreFileService) New(ctx context.Context, vectorStoreID string, body OpenAIV1VectorStoreFileNewParams, opts ...option.RequestOption) (res *VectorStoreFile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *OpenAIV1VectorStoreFileService) New(ctx context.Context, vectorStoreID 
 
 // Retrieves a vector store file.
 func (r *OpenAIV1VectorStoreFileService) Get(ctx context.Context, fileID string, query OpenAIV1VectorStoreFileGetParams, opts ...option.RequestOption) (res *VectorStoreFile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.VectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *OpenAIV1VectorStoreFileService) Get(ctx context.Context, fileID string,
 
 // Updates a vector store file.
 func (r *OpenAIV1VectorStoreFileService) Update(ctx context.Context, fileID string, params OpenAIV1VectorStoreFileUpdateParams, opts ...option.RequestOption) (res *VectorStoreFile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.VectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *OpenAIV1VectorStoreFileService) Update(ctx context.Context, fileID stri
 
 // List files in a vector store.
 func (r *OpenAIV1VectorStoreFileService) List(ctx context.Context, vectorStoreID string, query OpenAIV1VectorStoreFileListParams, opts ...option.RequestOption) (res *OpenAiv1VectorStoreFileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *OpenAIV1VectorStoreFileService) List(ctx context.Context, vectorStoreID
 
 // Delete a vector store file.
 func (r *OpenAIV1VectorStoreFileService) Delete(ctx context.Context, fileID string, body OpenAIV1VectorStoreFileDeleteParams, opts ...option.RequestOption) (res *OpenAiv1VectorStoreFileDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.VectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *OpenAIV1VectorStoreFileService) Delete(ctx context.Context, fileID stri
 
 // Retrieves the contents of a vector store file.
 func (r *OpenAIV1VectorStoreFileService) GetContent(ctx context.Context, fileID string, query OpenAIV1VectorStoreFileGetContentParams, opts ...option.RequestOption) (res *OpenAiv1VectorStoreFileGetContentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.VectorStoreID == "" {
 		err = errors.New("missing required vector_store_id parameter")
 		return

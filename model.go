@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewModelService(opts ...option.RequestOption) (r ModelService) {
 
 // Register a model.
 func (r *ModelService) New(ctx context.Context, body ModelNewParams, opts ...option.RequestOption) (res *Model, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *ModelService) New(ctx context.Context, body ModelNewParams, opts ...opt
 
 // Get a model by its identifier.
 func (r *ModelService) Get(ctx context.Context, modelID string, opts ...option.RequestOption) (res *Model, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if modelID == "" {
 		err = errors.New("missing required model_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ModelService) Get(ctx context.Context, modelID string, opts ...option.R
 
 // List all models.
 func (r *ModelService) List(ctx context.Context, opts ...option.RequestOption) (res *ModelListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *ModelService) List(ctx context.Context, opts ...option.RequestOption) (
 
 // Unregister a model.
 func (r *ModelService) Delete(ctx context.Context, modelID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if modelID == "" {
 		err = errors.New("missing required model_id parameter")

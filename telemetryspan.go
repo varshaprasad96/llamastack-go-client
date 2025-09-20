@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -38,7 +39,7 @@ func NewTelemetrySpanService(opts ...option.RequestOption) (r TelemetrySpanServi
 
 // Save spans to a dataset.
 func (r *TelemetrySpanService) Export(ctx context.Context, body TelemetrySpanExportParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/telemetry/spans/export"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -47,7 +48,7 @@ func (r *TelemetrySpanService) Export(ctx context.Context, body TelemetrySpanExp
 
 // Query spans.
 func (r *TelemetrySpanService) Query(ctx context.Context, body TelemetrySpanQueryParams, opts ...option.RequestOption) (res *TelemetrySpanQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/telemetry/spans"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *TelemetrySpanService) Query(ctx context.Context, body TelemetrySpanQuer
 
 // Get a span tree by its ID.
 func (r *TelemetrySpanService) GetTree(ctx context.Context, spanID string, body TelemetrySpanGetTreeParams, opts ...option.RequestOption) (res *TelemetrySpanGetTreeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if spanID == "" {
 		err = errors.New("missing required span_id parameter")
 		return

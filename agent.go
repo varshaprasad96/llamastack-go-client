@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -42,7 +43,7 @@ func NewAgentService(opts ...option.RequestOption) (r AgentService) {
 
 // Create an agent with the given configuration.
 func (r *AgentService) New(ctx context.Context, body AgentNewParams, opts ...option.RequestOption) (res *AgentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/agents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *AgentService) New(ctx context.Context, body AgentNewParams, opts ...opt
 
 // Describe an agent by its ID.
 func (r *AgentService) Get(ctx context.Context, agentID string, opts ...option.RequestOption) (res *AgentGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if agentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *AgentService) Get(ctx context.Context, agentID string, opts ...option.R
 
 // List all agents.
 func (r *AgentService) List(ctx context.Context, query AgentListParams, opts ...option.RequestOption) (res *PaginatedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/agents"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -70,7 +71,7 @@ func (r *AgentService) List(ctx context.Context, query AgentListParams, opts ...
 
 // Delete an agent by its ID and its associated sessions and turns.
 func (r *AgentService) Delete(ctx context.Context, agentID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if agentID == "" {
 		err = errors.New("missing required agent_id parameter")
@@ -83,7 +84,7 @@ func (r *AgentService) Delete(ctx context.Context, agentID string, opts ...optio
 
 // Create a new session for an agent.
 func (r *AgentService) NewSession(ctx context.Context, agentID string, body AgentNewSessionParams, opts ...option.RequestOption) (res *AgentNewSessionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if agentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AgentService) NewSession(ctx context.Context, agentID string, body Agen
 
 // List all session(s) of a given agent.
 func (r *AgentService) GetSessions(ctx context.Context, agentID string, query AgentGetSessionsParams, opts ...option.RequestOption) (res *PaginatedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if agentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return

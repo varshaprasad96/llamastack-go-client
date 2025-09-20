@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewEvalBenchmarkJobService(opts ...option.RequestOption) (r EvalBenchmarkJo
 
 // Get the status of a job.
 func (r *EvalBenchmarkJobService) Get(ctx context.Context, jobID string, query EvalBenchmarkJobGetParams, opts ...option.RequestOption) (res *Job, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.BenchmarkID == "" {
 		err = errors.New("missing required benchmark_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *EvalBenchmarkJobService) Get(ctx context.Context, jobID string, query E
 
 // Cancel a job.
 func (r *EvalBenchmarkJobService) Cancel(ctx context.Context, jobID string, body EvalBenchmarkJobCancelParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if body.BenchmarkID == "" {
 		err = errors.New("missing required benchmark_id parameter")
@@ -69,7 +70,7 @@ func (r *EvalBenchmarkJobService) Cancel(ctx context.Context, jobID string, body
 
 // Get the result of a job.
 func (r *EvalBenchmarkJobService) Result(ctx context.Context, jobID string, query EvalBenchmarkJobResultParams, opts ...option.RequestOption) (res *EvaluateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.BenchmarkID == "" {
 		err = errors.New("missing required benchmark_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *EvalBenchmarkJobService) Result(ctx context.Context, jobID string, quer
 
 // Run an evaluation on a benchmark.
 func (r *EvalBenchmarkJobService) Run(ctx context.Context, benchmarkID string, body EvalBenchmarkJobRunParams, opts ...option.RequestOption) (res *Job, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if benchmarkID == "" {
 		err = errors.New("missing required benchmark_id parameter")
 		return

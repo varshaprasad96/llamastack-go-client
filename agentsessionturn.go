@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -41,7 +42,7 @@ func NewAgentSessionTurnService(opts ...option.RequestOption) (r AgentSessionTur
 
 // Create a new turn for an agent.
 func (r *AgentSessionTurnService) New(ctx context.Context, sessionID string, params AgentSessionTurnNewParams, opts ...option.RequestOption) (res *Turn, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *AgentSessionTurnService) New(ctx context.Context, sessionID string, par
 
 // Retrieve an agent turn by its ID.
 func (r *AgentSessionTurnService) Get(ctx context.Context, turnID string, query AgentSessionTurnGetParams, opts ...option.RequestOption) (res *Turn, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AgentSessionTurnService) Get(ctx context.Context, turnID string, query 
 // endpoint can be used to submit the outputs from the tool calls once they are
 // ready.
 func (r *AgentSessionTurnService) Resume(ctx context.Context, turnID string, params AgentSessionTurnResumeParams, opts ...option.RequestOption) (res *Turn, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if params.AgentID == "" {
 		err = errors.New("missing required agent_id parameter")
 		return
