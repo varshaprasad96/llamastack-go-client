@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewDatasetService(opts ...option.RequestOption) (r DatasetService) {
 
 // Register a new dataset.
 func (r *DatasetService) New(ctx context.Context, body DatasetNewParams, opts ...option.RequestOption) (res *Dataset, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/datasets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *DatasetService) New(ctx context.Context, body DatasetNewParams, opts ..
 
 // Get a dataset by its ID.
 func (r *DatasetService) Get(ctx context.Context, datasetID string, opts ...option.RequestOption) (res *Dataset, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *DatasetService) Get(ctx context.Context, datasetID string, opts ...opti
 
 // List all datasets.
 func (r *DatasetService) List(ctx context.Context, opts ...option.RequestOption) (res *DatasetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/datasets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *DatasetService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Unregister a dataset by its ID.
 func (r *DatasetService) Delete(ctx context.Context, datasetID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")

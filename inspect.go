@@ -5,6 +5,7 @@ package llamastackclient
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewInspectService(opts ...option.RequestOption) (r InspectService) {
 
 // List all routes.
 func (r *InspectService) ListRoutes(ctx context.Context, opts ...option.RequestOption) (res *InspectListRoutesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/inspect/routes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

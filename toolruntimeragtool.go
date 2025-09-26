@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewToolRuntimeRagToolService(opts ...option.RequestOption) (r ToolRuntimeRa
 
 // Index documents so they can be used by the RAG system
 func (r *ToolRuntimeRagToolService) Insert(ctx context.Context, body ToolRuntimeRagToolInsertParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/tool-runtime/rag-tool/insert"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -45,7 +46,7 @@ func (r *ToolRuntimeRagToolService) Insert(ctx context.Context, body ToolRuntime
 
 // Query the RAG system for context; typically invoked by the agent
 func (r *ToolRuntimeRagToolService) Query(ctx context.Context, body ToolRuntimeRagToolQueryParams, opts ...option.RequestOption) (res *ToolRuntimeRagToolQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/tool-runtime/rag-tool/query"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

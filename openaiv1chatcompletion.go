@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -41,7 +42,7 @@ func NewOpenAIV1ChatCompletionService(opts ...option.RequestOption) (r OpenAIV1C
 // Generate an OpenAI-compatible chat completion for the given messages using the
 // specified model.
 func (r *OpenAIV1ChatCompletionService) New(ctx context.Context, body OpenAIV1ChatCompletionNewParams, opts ...option.RequestOption) (res *OpenAiv1ChatCompletionNewResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/chat/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *OpenAIV1ChatCompletionService) New(ctx context.Context, body OpenAIV1Ch
 
 // Describe a chat completion by its ID.
 func (r *OpenAIV1ChatCompletionService) Get(ctx context.Context, completionID string, opts ...option.RequestOption) (res *OpenAiv1ChatCompletionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if completionID == "" {
 		err = errors.New("missing required completion_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *OpenAIV1ChatCompletionService) Get(ctx context.Context, completionID st
 
 // List all chat completions.
 func (r *OpenAIV1ChatCompletionService) List(ctx context.Context, query OpenAIV1ChatCompletionListParams, opts ...option.RequestOption) (res *OpenAiv1ChatCompletionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/chat/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -40,7 +41,7 @@ func NewToolService(opts ...option.RequestOption) (r ToolService) {
 
 // Get a tool by its name.
 func (r *ToolService) Get(ctx context.Context, toolName string, opts ...option.RequestOption) (res *Tool, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if toolName == "" {
 		err = errors.New("missing required tool_name parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ToolService) Get(ctx context.Context, toolName string, opts ...option.R
 
 // List tools with optional tool group.
 func (r *ToolService) List(ctx context.Context, query ToolListParams, opts ...option.RequestOption) (res *ToolListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/tools"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

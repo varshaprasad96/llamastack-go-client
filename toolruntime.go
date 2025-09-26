@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiquery"
@@ -39,7 +40,7 @@ func NewToolRuntimeService(opts ...option.RequestOption) (r ToolRuntimeService) 
 
 // Run a tool with the given arguments.
 func (r *ToolRuntimeService) Invoke(ctx context.Context, body ToolRuntimeInvokeParams, opts ...option.RequestOption) (res *ToolRuntimeInvokeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/tool-runtime/invoke"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *ToolRuntimeService) Invoke(ctx context.Context, body ToolRuntimeInvokeP
 
 // List all tools in the runtime.
 func (r *ToolRuntimeService) ListTools(ctx context.Context, query ToolRuntimeListToolsParams, opts ...option.RequestOption) (res *ToolRuntimeListToolsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/tool-runtime/list-tools"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

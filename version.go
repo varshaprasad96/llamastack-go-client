@@ -5,6 +5,7 @@ package llamastackclient
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -33,7 +34,7 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 
 // Get the version of the service.
 func (r *VersionService) Get(ctx context.Context, opts ...option.RequestOption) (res *VersionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -40,7 +41,7 @@ func NewEvalBenchmarkService(opts ...option.RequestOption) (r EvalBenchmarkServi
 
 // Register a benchmark.
 func (r *EvalBenchmarkService) New(ctx context.Context, body EvalBenchmarkNewParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/eval/benchmarks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -49,7 +50,7 @@ func (r *EvalBenchmarkService) New(ctx context.Context, body EvalBenchmarkNewPar
 
 // Get a benchmark by its ID.
 func (r *EvalBenchmarkService) Get(ctx context.Context, benchmarkID string, opts ...option.RequestOption) (res *Benchmark, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if benchmarkID == "" {
 		err = errors.New("missing required benchmark_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *EvalBenchmarkService) Get(ctx context.Context, benchmarkID string, opts
 
 // List all benchmarks.
 func (r *EvalBenchmarkService) List(ctx context.Context, opts ...option.RequestOption) (res *EvalBenchmarkListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/eval/benchmarks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *EvalBenchmarkService) List(ctx context.Context, opts ...option.RequestO
 
 // Evaluate a list of rows on a benchmark.
 func (r *EvalBenchmarkService) Evaluate(ctx context.Context, benchmarkID string, body EvalBenchmarkEvaluateParams, opts ...option.RequestOption) (res *EvaluateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if benchmarkID == "" {
 		err = errors.New("missing required benchmark_id parameter")
 		return

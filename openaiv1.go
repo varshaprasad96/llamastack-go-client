@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -45,7 +46,7 @@ func NewOpenAIV1Service(opts ...option.RequestOption) (r OpenAIV1Service) {
 // Generate an OpenAI-compatible completion for the given prompt using the
 // specified model.
 func (r *OpenAIV1Service) Completions(ctx context.Context, body OpenAIV1CompletionsParams, opts ...option.RequestOption) (res *OpenAiv1CompletionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/completions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *OpenAIV1Service) Completions(ctx context.Context, body OpenAIV1Completi
 // Generate OpenAI-compatible embeddings for the given input using the specified
 // model.
 func (r *OpenAIV1Service) Embeddings(ctx context.Context, body OpenAIV1EmbeddingsParams, opts ...option.RequestOption) (res *OpenAiv1EmbeddingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/embeddings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -62,7 +63,7 @@ func (r *OpenAIV1Service) Embeddings(ctx context.Context, body OpenAIV1Embedding
 
 // Classify if text violates OpenAI's Content Policy.
 func (r *OpenAIV1Service) Moderations(ctx context.Context, body OpenAIV1ModerationsParams, opts ...option.RequestOption) (res *OpenAiv1ModerationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/moderations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -70,7 +71,7 @@ func (r *OpenAIV1Service) Moderations(ctx context.Context, body OpenAIV1Moderati
 
 // List models using the OpenAI API.
 func (r *OpenAIV1Service) GetModels(ctx context.Context, opts ...option.RequestOption) (res *OpenAiv1GetModelsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/models"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
 	"github.com/varshaprasad96/llamastack-go-client/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewSyntheticDataGenerationService(opts ...option.RequestOption) (r Syntheti
 }
 
 func (r *SyntheticDataGenerationService) Generate(ctx context.Context, body SyntheticDataGenerationGenerateParams, opts ...option.RequestOption) (res *SyntheticDataGenerationGenerateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/synthetic-data-generation/generate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

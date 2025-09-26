@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -41,7 +42,7 @@ func NewTelemetryService(opts ...option.RequestOption) (r TelemetryService) {
 
 // Log an event.
 func (r *TelemetryService) LogEvent(ctx context.Context, body TelemetryLogEventParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "v1/telemetry/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
@@ -50,7 +51,7 @@ func (r *TelemetryService) LogEvent(ctx context.Context, body TelemetryLogEventP
 
 // Query metrics.
 func (r *TelemetryService) QueryMetric(ctx context.Context, metricName string, body TelemetryQueryMetricParams, opts ...option.RequestOption) (res *TelemetryQueryMetricResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if metricName == "" {
 		err = errors.New("missing required metric_name parameter")
 		return

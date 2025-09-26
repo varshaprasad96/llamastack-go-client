@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/varshaprasad96/llamastack-go-client/internal/apiform"
 	"github.com/varshaprasad96/llamastack-go-client/internal/apijson"
@@ -47,7 +48,7 @@ func NewOpenAIV1FileService(opts ...option.RequestOption) (r OpenAIV1FileService
 // - file: The File object (not file name) to be uploaded.
 // - purpose: The intended purpose of the uploaded file.
 func (r *OpenAIV1FileService) New(ctx context.Context, body OpenAIV1FileNewParams, opts ...option.RequestOption) (res *OpenAIFile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/files"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *OpenAIV1FileService) New(ctx context.Context, body OpenAIV1FileNewParam
 
 // Returns information about a specific file.
 func (r *OpenAIV1FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *OpenAIFile, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required file_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *OpenAIV1FileService) Get(ctx context.Context, fileID string, opts ...op
 
 // Returns a list of files that belong to the user's organization.
 func (r *OpenAIV1FileService) List(ctx context.Context, query OpenAIV1FileListParams, opts ...option.RequestOption) (res *OpenAiv1FileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/openai/v1/files"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -75,7 +76,7 @@ func (r *OpenAIV1FileService) List(ctx context.Context, query OpenAIV1FileListPa
 
 // Delete a file.
 func (r *OpenAIV1FileService) Delete(ctx context.Context, fileID string, opts ...option.RequestOption) (res *OpenAiv1FileDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required file_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *OpenAIV1FileService) Delete(ctx context.Context, fileID string, opts ..
 
 // Returns the contents of the specified file.
 func (r *OpenAIV1FileService) GetContent(ctx context.Context, fileID string, opts ...option.RequestOption) (res *OpenAiv1FileGetContentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required file_id parameter")
 		return
